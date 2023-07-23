@@ -9,7 +9,6 @@ file_name = f"{APP_NAME}_{VERSION_NAME}"
 binary_keys = []
 data_keys = [
     ('src/resources/logo.ico', 'resources'),
-    ('src/resources/icon/*.*', 'resources/icon'),
     ('src/i18n/en-us/LC_MESSAGES/messages.mo', 'i18n/en-us/LC_MESSAGES'),
     ('src/i18n/ja/LC_MESSAGES/messages.mo', 'i18n/ja/LC_MESSAGES'),
     ('src/i18n/ko/LC_MESSAGES/messages.mo', 'i18n/ko/LC_MESSAGES'),

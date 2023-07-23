@@ -32,8 +32,4 @@ class LoadUsecase:
         """モーフ生成にあったモーションを取得する"""
         motion = original_motion.copy()
 
-        if "両目" in motion.bones.names:
-            logger.warning("モーションに両目キーフレームが存在しているため、除外して表情を生成します", decoration=MLogger.Decoration.BOX)
-            del motion.bones["両目"]
-
         return motion

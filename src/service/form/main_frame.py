@@ -7,6 +7,7 @@ from mlib.pmx.pmx_collection import PmxModel
 from mlib.service.form.base_frame import BaseFrame
 from mlib.utils.file_utils import save_histories
 from mlib.vmd.vmd_collection import VmdMotion
+from mlib.base.logger import ConsoleHandler
 from service.form.panel.config_panel import ConfigPanel
 from service.form.panel.file_panel import FilePanel
 from service.worker.load_worker import LoadWorker
@@ -37,6 +38,9 @@ class MainFrame(BaseFrame):
         self.save_worker = SaveWorker(self, self.on_save_result)
 
         self.file_panel.exec_btn_ctrl.exec_worker = self.save_worker
+
+        MLogger.console_handler = ConsoleHandler(self.file_panel.console_ctrl.text_ctrl)
+        MLogger.console_handler2 = ConsoleHandler(self.config_panel.console_ctrl.text_ctrl)
 
     def on_change_tab(self, event: wx.Event) -> None:
         if self.notebook.GetSelection() == self.config_panel.tab_idx:
@@ -91,6 +95,7 @@ class MainFrame(BaseFrame):
         self.file_panel.motion_ctrl.original_data = original_motion
         self.file_panel.motion_ctrl.data = motion
         self.file_panel.exec_btn_ctrl.Enable(True)
+        self.file_panel.output_motion_ctrl.data = VmdMotion(self.file_panel.output_motion_ctrl.path)
 
         if not (self.file_panel.model_ctrl.data and self.file_panel.motion_ctrl.data):
             return

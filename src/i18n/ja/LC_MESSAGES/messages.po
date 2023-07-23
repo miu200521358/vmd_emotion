@@ -17,341 +17,256 @@ msgstr ""
 "Generated-By: Babel 2.12.1\n"
 
 msgid "人物モデル"
-msgstr ""
-
+msgstr "人物モデル"
 
 msgid "表情を付けたい人物モデルを指定してください"
-msgstr ""
-
+msgstr "表情を付けたい人物モデルを指定してください"
 
 msgid "(未設定)"
-msgstr ""
-
+msgstr "(未設定)"
 
 msgid "{t}に記録されているモデル名です。\n文字列は選択およびコピー可能です。"
-msgstr ""
-
+msgstr "{t}に記録されているモデル名です。\n文字列は選択およびコピー可能です。"
 
 msgid "開く"
-msgstr ""
-
+msgstr "開く"
 
 msgid "履歴"
-msgstr ""
-
+msgstr "履歴"
 
 msgid "これまでに指定された事のある{t}を再指定することができます。"
-msgstr ""
-
+msgstr "これまでに指定された事のある{t}を再指定することができます。"
 
 msgid "表示モーション"
-msgstr ""
-
+msgstr "表示モーション"
 
 msgid "表情を付けたいモーションを指定してください"
-msgstr ""
-
+msgstr "表情を付けたいモーションを指定してください"
 
 msgid "表情モーション出力先"
-msgstr ""
-
+msgstr "表情モーション出力先"
 
 msgid "表情モーションの出力ファイルパスです\n任意の値に変更可能です"
-msgstr ""
-
+msgstr "表情モーションの出力ファイルパスです\n任意の値に変更可能です"
 
 msgid "表情モーション出力停止"
-msgstr ""
-
+msgstr "表情モーション出力停止"
 
 msgid "生成した表情のみをVMDモーションデータとして出力します\n読み込み結果を設定タブで確認した後にクリックできるようになります"
-msgstr ""
-
+msgstr "生成した表情のみをVMDモーションデータとして出力します\n読み込み結果を設定タブで確認した後にクリックできるようになります"
 
 msgid "モーションの任意のキーフレの結果の表示や再生ができます"
-msgstr ""
-
+msgstr "モーションの任意のキーフレの結果の表示や再生ができます"
 
 msgid "モーションを再生することができます（ただし重いです）"
-msgstr ""
-
+msgstr "モーションを再生することができます（ただし重いです）"
 
 msgid "ファイルを選んでダブルクリック、またはOKボタンをクリックしてください。"
-msgstr ""
-
+msgstr "ファイルを選んでダブルクリック、またはOKボタンをクリックしてください。"
 
 msgid "ファイル履歴選択"
-msgstr ""
-
+msgstr "ファイル履歴選択"
 
 msgid "人物: 読み込み開始"
-msgstr ""
-
+msgstr "人物: 読み込み開始"
 
 msgid "----------------------"
-msgstr ""
-
+msgstr "----------------------"
 
 msgid "PMXモデルデータ読み取り開始"
-msgstr ""
-
+msgstr "PMXモデルデータ読み取り開始"
 
 msgid "頂点データ読み取り"
-msgstr ""
-
+msgstr "頂点データ読み取り"
 
 msgid "-- 頂点データ読み取り [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- 頂点データ読み取り [{i} ({p:.2f}%)]"
 
 msgid "頂点データ読み取り完了: {c}"
-msgstr ""
-
+msgstr "頂点データ読み取り完了: {c}"
 
 msgid "面データ読み取り"
-msgstr ""
-
+msgstr "面データ読み取り"
 
 msgid "-- 面データ読み取り [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- 面データ読み取り [{i} ({p:.2f}%)]"
 
 msgid "面データ読み取り完了: {c}"
-msgstr ""
-
+msgstr "面データ読み取り完了: {c}"
 
 msgid "テクスチャデータ読み取り完了: {c}"
-msgstr ""
-
+msgstr "テクスチャデータ読み取り完了: {c}"
 
 msgid "材質データ読み取り完了: {c}"
-msgstr ""
-
+msgstr "材質データ読み取り完了: {c}"
 
 msgid "ボーンデータ読み取り完了: {c}"
-msgstr ""
-
+msgstr "ボーンデータ読み取り完了: {c}"
 
 msgid "モーフデータ読み取り完了: {c}"
-msgstr ""
-
+msgstr "モーフデータ読み取り完了: {c}"
 
 msgid "表示枠データ読み取り完了: {c}"
-msgstr ""
-
+msgstr "表示枠データ読み取り完了: {c}"
 
 msgid "剛体データ読み取り完了: {c}"
-msgstr ""
-
+msgstr "剛体データ読み取り完了: {c}"
 
 msgid "ジョイントデータ読み取り完了: {c}"
-msgstr ""
-
+msgstr "ジョイントデータ読み取り完了: {c}"
 
 msgid "モデルセットアップ開始"
-msgstr ""
-
+msgstr "モデルセットアップ開始"
 
 msgid "モデルセットアップ：システム用ボーン"
-msgstr ""
-
+msgstr "モデルセットアップ：システム用ボーン"
 
 msgid "モデルセットアップ：ボーン"
-msgstr ""
-
+msgstr "モデルセットアップ：ボーン"
 
 msgid "-- モデルセットアップ：ボーン [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- モデルセットアップ：ボーン [{i} ({p:.2f}%)]"
 
 msgid "モデルセットアップ：ボーンツリー"
-msgstr ""
-
+msgstr "モデルセットアップ：ボーンツリー"
 
 msgid "モデルセットアップ完了"
-msgstr ""
-
+msgstr "モデルセットアップ完了"
 
 msgid "モーション読み込み開始"
-msgstr ""
-
+msgstr "モーション読み込み開始"
 
 msgid "VMDモーションデータ読み取り開始"
-msgstr ""
-
+msgstr "VMDモーションデータ読み取り開始"
 
 msgid "カメラデータ読み取り完了: {c}"
-msgstr ""
-
+msgstr "カメラデータ読み取り完了: {c}"
 
 msgid "照明データ読み取り完了: {c}"
-msgstr ""
-
+msgstr "照明データ読み取り完了: {c}"
 
 msgid "セルフ影データ読み取り完了: {c}"
-msgstr ""
-
+msgstr "セルフ影データ読み取り完了: {c}"
 
 msgid "IKデータ読み取り完了: {c}"
-msgstr ""
-
+msgstr "IKデータ読み取り完了: {c}"
 
 msgid "モーションに両目キーフレームが存在しているため、除外して表情を生成します"
-msgstr ""
-
+msgstr "モーションに両目キーフレームが存在しているため、除外して表情を生成します"
 
 msgid "描画準備開始"
-msgstr ""
-
+msgstr "描画準備開始"
 
 msgid "モデル描画準備"
-msgstr ""
-
+msgstr "モデル描画準備"
 
 msgid "ボーンアニメーション"
-msgstr ""
-
+msgstr "ボーンアニメーション"
 
 msgid "-- ボーンアニメーション [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- ボーンアニメーション [{i} ({p:.2f}%)]"
 
 msgid "キーフレ確認"
-msgstr ""
-
+msgstr "キーフレ確認"
 
 msgid "-- キーフレ確認 [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- キーフレ確認 [{i} ({p:.2f}%)]"
 
 msgid "ボーンモーフ計算"
-msgstr ""
-
+msgstr "ボーンモーフ計算"
 
 msgid "ボーンモーション計算"
-msgstr ""
-
+msgstr "ボーンモーション計算"
 
 msgid "ボーン行列計算"
-msgstr ""
-
+msgstr "ボーン行列計算"
 
 msgid "ボーン変形行列リストアップ"
-msgstr ""
-
+msgstr "ボーン変形行列リストアップ"
 
 msgid "ボーン変形行列積"
-msgstr ""
-
+msgstr "ボーン変形行列積"
 
 msgid "-- ボーン変形行列積 [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- ボーン変形行列積 [{i} ({p:.2f}%)]"
 
 msgid "ボーン行列結果"
-msgstr ""
-
+msgstr "ボーン行列結果"
 
 msgid "-- ボーン行列結果 [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- ボーン行列結果 [{i} ({p:.2f}%)]"
 
 msgid "-- ボーン変形行列積 [{i}]"
-msgstr ""
-
+msgstr "-- ボーン変形行列積 [{i}]"
 
 msgid "目線変動量取得"
-msgstr ""
-
+msgstr "目線変動量取得"
 
 msgid "目線変曲点抽出"
-msgstr ""
-
+msgstr "目線変曲点抽出"
 
 msgid "-- 目線変動量取得 [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- 目線変動量取得 [{i} ({p:.2f}%)]"
 
 msgid "目線生成"
-msgstr ""
-
+msgstr "目線生成"
 
 msgid "目線生成[{f}] 向き[{d}] 回転[{r}]"
-msgstr ""
-
+msgstr "目線生成[{f}] 向き[{d}] 回転[{r}]"
 
 msgid "モーション出力開始"
-msgstr ""
-
+msgstr "モーション出力開始"
 
 msgid "*** モーション出力成功 ***\n出力先: {f}"
-msgstr ""
-
+msgstr "*** モーション出力成功 ***\n出力先: {f}"
 
 msgid "頭などの動きに合わせて目線を生成します"
-msgstr ""
-
+msgstr "頭などの動きに合わせて目線を生成します"
 
 msgid "目線キーフレを作成する頻度。値が小さいほど、小さな動きでも目線が動くようになります。"
-msgstr ""
-
+msgstr "目線キーフレを作成する頻度。値が小さいほど、小さな動きでも目線が動くようになります。"
 
 msgid "目線頻度"
-msgstr ""
-
+msgstr "目線頻度"
 
 msgid "\nEnterキーを押下したタイミングで値が反映されます。"
-msgstr ""
-
+msgstr "\nEnterキーを押下したタイミングで値が反映されます。"
 
 msgid "目線キーフレで設定する値の大きさ。値が大きいほど、目線を大きく動かすようになります。"
-msgstr ""
-
+msgstr "目線キーフレで設定する値の大きさ。値が大きいほど、目線を大きく動かすようになります。"
 
 msgid "目線の振り幅"
-msgstr ""
-
+msgstr "目線の振り幅"
 
 msgid "目線キーフレを作成する頻度。\n値が小さいほど、小さな動きでも目線が動くようになります。"
-msgstr ""
-
+msgstr "目線キーフレを作成する頻度。\n値が小さいほど、小さな動きでも目線が動くようになります。"
 
 msgid "目線キーフレで設定する値の大きさ。\n値が大きいほど、目線を大きく動かすようになります。"
-msgstr ""
-
+msgstr "目線キーフレで設定する値の大きさ。\n値が大きいほど、目線を大きく動かすようになります。"
 
 msgid "目線生成開始"
-msgstr ""
-
+msgstr "目線生成開始"
 
 msgid "目線キーフレで設定する横方向の値の大きさ。\n値が大きいほど、目線を大きく動かすようになります。"
-msgstr ""
-
+msgstr "目線キーフレで設定する横方向の値の大きさ。\n値が大きいほど、目線を大きく動かすようになります。"
 
 msgid "目線の横振り幅"
-msgstr ""
-
+msgstr "目線の横振り幅"
 
 msgid "目線キーフレで設定する縦方向の値の大きさ。\n値が大きいほど、目線を大きく動かすようになります。"
-msgstr ""
-
+msgstr "目線キーフレで設定する縦方向の値の大きさ。\n値が大きいほど、目線を大きく動かすようになります。"
 
 msgid "目線の縦振り幅"
-msgstr ""
-
+msgstr "目線の縦振り幅"
 
 msgid "-- モデルセットアップ：ボーンツリー [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- モデルセットアップ：ボーンツリー [{i} ({p:.2f}%)]"
 
 msgid "-- ボーンデータ読み取り [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- ボーンデータ読み取り [{i} ({p:.2f}%)]"
 
 msgid "ボーン計算"
-msgstr ""
-
+msgstr "ボーン計算"
 
 msgid "-- ボーン計算 [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- ボーン計算 [{i} ({p:.2f}%)]"

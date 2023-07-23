@@ -23,11 +23,20 @@ class GazeWorker(BaseWorker):
         file_panel: FilePanel = self.frame.file_panel
         model: PmxModel = file_panel.model_ctrl.data
         motion: VmdMotion = file_panel.motion_ctrl.data
+        output_motion: VmdMotion = file_panel.output_motion_ctrl.data
 
-        logger.info("視線生成開始", decoration=MLogger.Decoration.BOX)
-        GazeUsecase().create_gaze(model, motion)
+        logger.info("目線生成開始", decoration=MLogger.Decoration.BOX)
 
-        self.result_data = motion
+        GazeUsecase().create_gaze(
+            model,
+            motion,
+            output_motion,
+            self.frame.config_panel.gaze_infection_slider.GetValue(),
+            self.frame.config_panel.gaze_ratio_x_slider.GetValue(),
+            self.frame.config_panel.gaze_ratio_y_slider.GetValue(),
+        )
+
+        self.result_data = motion, output_motion
 
     def output_log(self):
         file_panel: FilePanel = self.frame.file_panel

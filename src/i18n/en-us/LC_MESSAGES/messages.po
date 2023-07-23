@@ -17,341 +17,256 @@ msgstr ""
 "Generated-By: Babel 2.12.1\n"
 
 msgid "人物モデル"
-msgstr ""
-
+msgstr "People Models"
 
 msgid "表情を付けたい人物モデルを指定してください"
-msgstr ""
-
+msgstr "Specify the person model to which you want to add facial expressions"
 
 msgid "(未設定)"
-msgstr ""
-
+msgstr "(Not set)"
 
 msgid "{t}に記録されているモデル名です。\n文字列は選択およびコピー可能です。"
-msgstr ""
-
+msgstr "The model name as recorded in {t}. \The ɛn string can be selected and copied"
 
 msgid "開く"
-msgstr ""
-
+msgstr "Open"
 
 msgid "履歴"
-msgstr ""
-
+msgstr "History"
 
 msgid "これまでに指定された事のある{t}を再指定することができます。"
-msgstr ""
-
+msgstr "You can re-specify {t} that has been previously specified"
 
 msgid "表示モーション"
-msgstr ""
-
+msgstr "Display Motion"
 
 msgid "表情を付けたいモーションを指定してください"
-msgstr ""
-
+msgstr "Please specify the motion to which you want to add facial expressions"
 
 msgid "表情モーション出力先"
-msgstr ""
-
+msgstr "Expression motion output destination"
 
 msgid "表情モーションの出力ファイルパスです\n任意の値に変更可能です"
-msgstr ""
-
+msgstr "This is the output file path for the facial expression motion.
 
 msgid "表情モーション出力停止"
-msgstr ""
-
+msgstr "Stop expression motion output"
 
 msgid "生成した表情のみをVMDモーションデータとして出力します\n読み込み結果を設定タブで確認した後にクリックできるようになります"
-msgstr ""
-
+msgstr "Only the generated facial expressions will be output as VMD motion data, which can be clicked on after checking the results in the settings tab of the Јn loading results"
 
 msgid "モーションの任意のキーフレの結果の表示や再生ができます"
-msgstr ""
-
+msgstr "You can view and playback the results of any keyfre of motion"
 
 msgid "モーションを再生することができます（ただし重いです）"
-msgstr ""
-
+msgstr "Can play motion (but it is heavy)"
 
 msgid "ファイルを選んでダブルクリック、またはOKボタンをクリックしてください。"
-msgstr ""
-
+msgstr "Please select the file and double click or click the OK button"
 
 msgid "ファイル履歴選択"
-msgstr ""
-
+msgstr "File History Selection"
 
 msgid "人物: 読み込み開始"
-msgstr ""
-
+msgstr "Person: start reading"
 
 msgid "----------------------"
-msgstr ""
-
+msgstr "----------------------"
 
 msgid "PMXモデルデータ読み取り開始"
-msgstr ""
-
+msgstr "PMX model data read started"
 
 msgid "頂点データ読み取り"
-msgstr ""
-
+msgstr "Vertex data read"
 
 msgid "-- 頂点データ読み取り [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- Vertex data read [{i} ({p:.2f}%)]"
 
 msgid "頂点データ読み取り完了: {c}"
-msgstr ""
-
+msgstr "Vertex data read complete: {c}"
 
 msgid "面データ読み取り"
-msgstr ""
-
+msgstr "Surface data read"
 
 msgid "-- 面データ読み取り [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- Surface data read [{i} ({p:.2f}%)]"
 
 msgid "面データ読み取り完了: {c}"
-msgstr ""
-
+msgstr "Surface data read complete: {c}"
 
 msgid "テクスチャデータ読み取り完了: {c}"
-msgstr ""
-
+msgstr "Texture data read complete: {c}"
 
 msgid "材質データ読み取り完了: {c}"
-msgstr ""
-
+msgstr "Material data read complete: {c}"
 
 msgid "ボーンデータ読み取り完了: {c}"
-msgstr ""
-
+msgstr "Bone data read complete: {c}"
 
 msgid "モーフデータ読み取り完了: {c}"
-msgstr ""
-
+msgstr "Morph data read complete: {c}"
 
 msgid "表示枠データ読み取り完了: {c}"
-msgstr ""
-
+msgstr "Display frame data read complete: {c}"
 
 msgid "剛体データ読み取り完了: {c}"
-msgstr ""
-
+msgstr "Rigid data read complete: {c}"
 
 msgid "ジョイントデータ読み取り完了: {c}"
-msgstr ""
-
+msgstr "Joint data read complete: {c}"
 
 msgid "モデルセットアップ開始"
-msgstr ""
-
+msgstr "Model setup started"
 
 msgid "モデルセットアップ：システム用ボーン"
-msgstr ""
-
+msgstr "Model Setup: bones for systems"
 
 msgid "モデルセットアップ：ボーン"
-msgstr ""
-
+msgstr "Model setup: bone"
 
 msgid "-- モデルセットアップ：ボーン [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- Model setup: bone [{i} ({p:.2f}%)]"
 
 msgid "モデルセットアップ：ボーンツリー"
-msgstr ""
-
+msgstr "Model Setup: Bone Tree"
 
 msgid "モデルセットアップ完了"
-msgstr ""
-
+msgstr "Model setup complete"
 
 msgid "モーション読み込み開始"
-msgstr ""
-
+msgstr "Motion loading started"
 
 msgid "VMDモーションデータ読み取り開始"
-msgstr ""
-
+msgstr "Start reading VMD motion data"
 
 msgid "カメラデータ読み取り完了: {c}"
-msgstr ""
-
+msgstr "Camera data read complete: {c}"
 
 msgid "照明データ読み取り完了: {c}"
-msgstr ""
-
+msgstr "Lighting data read complete: {c}"
 
 msgid "セルフ影データ読み取り完了: {c}"
-msgstr ""
-
+msgstr "Self shadow data read complete: {c}"
 
 msgid "IKデータ読み取り完了: {c}"
-msgstr ""
-
+msgstr "IK data read complete: {c}"
 
 msgid "モーションに両目キーフレームが存在しているため、除外して表情を生成します"
-msgstr ""
-
+msgstr "Since both eye keyframes are present in the motion, exclude them and generate facial expressions"
 
 msgid "描画準備開始"
-msgstr ""
-
+msgstr "Prepare to draw"
 
 msgid "モデル描画準備"
-msgstr ""
-
+msgstr "Prepare to draw the model"
 
 msgid "ボーンアニメーション"
-msgstr ""
-
+msgstr "Bone Animation"
 
 msgid "-- ボーンアニメーション [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- Bone animation [{i} ({p:.2f}%)]"
 
 msgid "キーフレ確認"
-msgstr ""
-
+msgstr "Keefre confirmation"
 
 msgid "-- キーフレ確認 [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- Keefre confirmation [{i} ({p:.2f}%)]"
 
 msgid "ボーンモーフ計算"
-msgstr ""
-
+msgstr "Bone Morph Calculation"
 
 msgid "ボーンモーション計算"
-msgstr ""
-
+msgstr "Bone Motion Calculation"
 
 msgid "ボーン行列計算"
-msgstr ""
-
+msgstr "Bourne Matrix Calculation"
 
 msgid "ボーン変形行列リストアップ"
-msgstr ""
-
+msgstr "Bourne deformation matrix listing"
 
 msgid "ボーン変形行列積"
-msgstr ""
-
+msgstr "Bourne deformation matrix product"
 
 msgid "-- ボーン変形行列積 [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- Bourne deformation matrix product [{i} ({p:.2f}%)]"
 
 msgid "ボーン行列結果"
-msgstr ""
-
+msgstr "Bourne Matrix Results"
 
 msgid "-- ボーン行列結果 [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- Bourne matrix result [{i} ({p:.2f}%)]"
 
 msgid "-- ボーン変形行列積 [{i}]"
-msgstr ""
-
+msgstr "-- Bourne deformation matrix product [{i}]"
 
 msgid "目線変動量取得"
-msgstr ""
-
+msgstr "Eye line variation acquisition"
 
 msgid "目線変曲点抽出"
-msgstr ""
-
+msgstr "Eye inflection point extraction"
 
 msgid "-- 目線変動量取得 [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- Obtaining the eye variation amount [{i} ({p:.2f}%)]"
 
 msgid "目線生成"
-msgstr ""
-
+msgstr "Eye generation"
 
 msgid "目線生成[{f}] 向き[{d}] 回転[{r}]"
-msgstr ""
-
+msgstr "Eye generation [{f}] orientation [{d}] rotation [{r}]"
 
 msgid "モーション出力開始"
-msgstr ""
-
+msgstr "Motion output started"
 
 msgid "*** モーション出力成功 ***\n出力先: {f}"
-msgstr ""
-
+msgstr "*** Motion output succeeded ***\nOutput to: {f}"
 
 msgid "頭などの動きに合わせて目線を生成します"
-msgstr ""
-
+msgstr "It generates a line of sight according to the movement of the head and other parts of the body"
 
 msgid "目線キーフレを作成する頻度。値が小さいほど、小さな動きでも目線が動くようになります。"
-msgstr ""
-
+msgstr "The frequency at which the line-of-sight kiefre is created. The smaller the value, the more eye movement will occur with small movements"
 
 msgid "目線頻度"
-msgstr ""
-
+msgstr "Eye frequency"
 
 msgid "\nEnterキーを押下したタイミングで値が反映されます。"
-msgstr ""
-
+msgstr "The value is reflected at the time the \nEnter key is pressed"
 
 msgid "目線キーフレで設定する値の大きさ。値が大きいほど、目線を大きく動かすようになります。"
-msgstr ""
-
+msgstr "The size of the value to be set in the eye keyfrequency. The higher the value, the greater the eye movement"
 
 msgid "目線の振り幅"
-msgstr ""
-
+msgstr "The swing of the eye"
 
 msgid "目線キーフレを作成する頻度。\n値が小さいほど、小さな動きでも目線が動くようになります。"
-msgstr ""
-
+msgstr "The frequency with which the eye keyfre is created. \The smaller the ↪Lo_N09↩n value, the more eye movement will occur even with small movements"
 
 msgid "目線キーフレで設定する値の大きさ。\n値が大きいほど、目線を大きく動かすようになります。"
-msgstr ""
-
+msgstr "The size of the value to be set in the eye line keyfre. \The larger the ↪Lo_N09↩n value, the larger the eye movement"
 
 msgid "目線生成開始"
-msgstr ""
-
+msgstr "Start generating line of sight"
 
 msgid "目線キーフレで設定する横方向の値の大きさ。\n値が大きいほど、目線を大きく動かすようになります。"
-msgstr ""
-
+msgstr "The magnitude of the horizontal value to be set in the eye line keyfre. \The larger the ↪Lo_N09↩n value, the larger the eye line will move"
 
 msgid "目線の横振り幅"
-msgstr ""
-
+msgstr "Horizontal swing of the eye line"
 
 msgid "目線キーフレで設定する縦方向の値の大きさ。\n値が大きいほど、目線を大きく動かすようになります。"
-msgstr ""
-
+msgstr "The magnitude of the vertical value to be set in the eye line keyfre. \The larger the ↪Lo_N09↩n value, the larger the eye line will move"
 
 msgid "目線の縦振り幅"
-msgstr ""
-
+msgstr "Vertical swing of the eye line"
 
 msgid "-- モデルセットアップ：ボーンツリー [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- Model setup: bone tree [{i} ({p:.2f}%)]"
 
 msgid "-- ボーンデータ読み取り [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- Bone data read [{i} ({p:.2f}%)]"
 
 msgid "ボーン計算"
-msgstr ""
-
+msgstr "Bourne Calculation"
 
 msgid "-- ボーン計算 [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- Bourne calculation [{i} ({p:.2f}%)]"

@@ -17,341 +17,256 @@ msgstr ""
 "Generated-By: Babel 2.12.1\n"
 
 msgid "人物モデル"
-msgstr ""
-
+msgstr "人物模型"
 
 msgid "表情を付けたい人物モデルを指定してください"
-msgstr ""
-
+msgstr "请指定要添加面部表情的人物模型"
 
 msgid "(未設定)"
-msgstr ""
-
+msgstr "（未设定）"
 
 msgid "{t}に記録されているモデル名です。\n文字列は選択およびコピー可能です。"
-msgstr ""
-
+msgstr "{t}中记录的型号名称。\可以选择并复制ɑn 字符串"
 
 msgid "開く"
-msgstr ""
-
+msgstr "打开"
 
 msgid "履歴"
-msgstr ""
-
+msgstr "历史"
 
 msgid "これまでに指定された事のある{t}を再指定することができます。"
-msgstr ""
-
+msgstr "如果以前指定过{t}，则可以重新指定{t}"
 
 msgid "表示モーション"
-msgstr ""
-
+msgstr "显示运动"
 
 msgid "表情を付けたいモーションを指定してください"
-msgstr ""
-
+msgstr "请指定要添加面部表情的动作"
 
 msgid "表情モーション出力先"
-msgstr ""
-
+msgstr "表情动作输出目的地"
 
 msgid "表情モーションの出力ファイルパスです\n任意の値に変更可能です"
-msgstr ""
-
+msgstr "这是面部表情动作的输出文件路径。
 
 msgid "表情モーション出力停止"
-msgstr ""
-
+msgstr "停止表情动作输出"
 
 msgid "生成した表情のみをVMDモーションデータとして出力します\n読み込み結果を設定タブで確認した後にクリックできるようになります"
-msgstr ""
-
+msgstr "只有生成的面部表情会作为 VMD 运动数据输出，在设置选项卡中检查加载结果后，你就可以点击它们了"
 
 msgid "モーションの任意のキーフレの結果の表示や再生ができます"
-msgstr ""
-
+msgstr "您可以查看和回放任何关键动作的结果"
 
 msgid "モーションを再生することができます（ただし重いです）"
-msgstr ""
-
+msgstr "可以播放动作（但很重）"
 
 msgid "ファイルを選んでダブルクリック、またはOKボタンをクリックしてください。"
-msgstr ""
-
+msgstr 选择文件并双击或单击 "确定 "按钮。
 
 msgid "ファイル履歴選択"
-msgstr ""
-
+msgstr "文件历史选择"
 
 msgid "人物: 読み込み開始"
-msgstr ""
-
+msgstr "人：开始阅读"
 
 msgid "----------------------"
-msgstr ""
-
+msgstr "----------------------"
 
 msgid "PMXモデルデータ読み取り開始"
-msgstr ""
-
+msgstr "开始读取 PMX 模型数据"
 
 msgid "頂点データ読み取り"
-msgstr ""
-
+msgstr "顶点数据读取"
 
 msgid "-- 頂点データ読み取り [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "--顶点数据读取 [{i} ({p:.2f}%)]"
 
 msgid "頂点データ読み取り完了: {c}"
-msgstr ""
-
+msgstr "顶点数据读取完毕：{c}"
 
 msgid "面データ読み取り"
-msgstr ""
-
+msgstr "表面数据读取"
 
 msgid "-- 面データ読み取り [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "--读取的表面数据 [{i} ({p:.2f}%)]"
 
 msgid "面データ読み取り完了: {c}"
-msgstr ""
-
+msgstr "表面数据读取完毕：{c}"
 
 msgid "テクスチャデータ読み取り完了: {c}"
-msgstr ""
-
+msgstr "纹理数据读取完毕：{c}"
 
 msgid "材質データ読み取り完了: {c}"
-msgstr ""
-
+msgstr "材料数据读取完毕：{c}"
 
 msgid "ボーンデータ読み取り完了: {c}"
-msgstr ""
-
+msgstr "伯恩数据读取完毕：{c}"
 
 msgid "モーフデータ読み取り完了: {c}"
-msgstr ""
-
+msgstr "变形数据读取完毕：{c}"
 
 msgid "表示枠データ読み取り完了: {c}"
-msgstr ""
-
+msgstr "显示帧数据读取完毕：{c}"
 
 msgid "剛体データ読み取り完了: {c}"
-msgstr ""
-
+msgstr "刚性数据读取完毕：{c}"
 
 msgid "ジョイントデータ読み取り完了: {c}"
-msgstr ""
-
+msgstr "联合数据读取完毕：{c}"
 
 msgid "モデルセットアップ開始"
-msgstr ""
-
+msgstr "模型设置开始"
 
 msgid "モデルセットアップ：システム用ボーン"
-msgstr ""
-
+msgstr "模型设置：系统的骨骼"
 
 msgid "モデルセットアップ：ボーン"
-msgstr ""
-
+msgstr "模型设置：骨骼"
 
 msgid "-- モデルセットアップ：ボーン [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- 模型设置：骨骼 [{i} ({p:.2f}%)]"
 
 msgid "モデルセットアップ：ボーンツリー"
-msgstr ""
-
+msgstr "模型设置：骨树"
 
 msgid "モデルセットアップ完了"
-msgstr ""
-
+msgstr "模型设置完成"
 
 msgid "モーション読み込み開始"
-msgstr ""
-
+msgstr "运动装载开始"
 
 msgid "VMDモーションデータ読み取り開始"
-msgstr ""
-
+msgstr "开始读取 VMD 运动数据"
 
 msgid "カメラデータ読み取り完了: {c}"
-msgstr ""
-
+msgstr "相机数据读取完毕：{c}"
 
 msgid "照明データ読み取り完了: {c}"
-msgstr ""
-
+msgstr "照明数据读取完毕：{c}"
 
 msgid "セルフ影データ読み取り完了: {c}"
-msgstr ""
-
+msgstr "自影数据读取完毕：{c}"
 
 msgid "IKデータ読み取り完了: {c}"
-msgstr ""
-
+msgstr "IK 数据读取完毕：{c}"
 
 msgid "モーションに両目キーフレームが存在しているため、除外して表情を生成します"
-msgstr ""
-
+msgstr "两个眼睛关键帧都存在于运动中，应排除在外以生成面部表情"
 
 msgid "描画準備開始"
-msgstr ""
-
+msgstr "开始准备画画"
 
 msgid "モデル描画準備"
-msgstr ""
-
+msgstr "准备绘制模型
 
 msgid "ボーンアニメーション"
-msgstr ""
-
+msgstr "骨骼动画"
 
 msgid "-- ボーンアニメーション [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "--骨骼动画 [{i} ({p:.2f}%)]"
 
 msgid "キーフレ確認"
-msgstr ""
-
+msgstr "Keefre确认"
 
 msgid "-- キーフレ確認 [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "--Keefre确认[{i}（{p:.2f}%）]"
 
 msgid "ボーンモーフ計算"
-msgstr ""
-
+msgstr "骨骼变形计算"
 
 msgid "ボーンモーション計算"
-msgstr ""
-
+msgstr "骨骼运动计算"
 
 msgid "ボーン行列計算"
-msgstr ""
-
+msgstr "伯恩矩阵计算"
 
 msgid "ボーン変形行列リストアップ"
-msgstr ""
-
+msgstr "伯恩变形矩阵列表"
 
 msgid "ボーン変形行列積"
-msgstr ""
-
+msgstr "伯恩变形矩阵乘积"
 
 msgid "-- ボーン変形行列積 [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "--伯恩变形矩阵乘积[{i}（{p:.2f}%）]"
 
 msgid "ボーン行列結果"
-msgstr ""
-
+msgstr "伯恩矩阵结果"
 
 msgid "-- ボーン行列結果 [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "--伯恩矩阵结果 [{i} ({p:.2f}%)]"
 
 msgid "-- ボーン変形行列積 [{i}]"
-msgstr ""
-
+msgstr "--伯恩变形矩阵乘积[{i}]"
 
 msgid "目線変動量取得"
-msgstr ""
-
+msgstr "眼线变化的获得"
 
 msgid "目線変曲点抽出"
-msgstr ""
-
+msgstr "眼球拐点提取"
 
 msgid "-- 目線変動量取得 [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "--获得眼睛的变化[{i}（{p:.2f}%）]"
 
 msgid "目線生成"
-msgstr ""
-
+msgstr "眼睛一代"
 
 msgid "目線生成[{f}] 向き[{d}] 回転[{r}]"
-msgstr ""
-
+msgstr "眼球生成 [{f}] 方向 [{d}] 旋转 [{r}]"
 
 msgid "モーション出力開始"
-msgstr ""
-
+msgstr "运动输出启动"
 
 msgid "*** モーション出力成功 ***\n出力先: {f}"
-msgstr ""
-
+msgstr "*** Successful motion output *****/nOutput to: {f}"
 
 msgid "頭などの動きに合わせて目線を生成します"
-msgstr ""
-
+msgstr "它会根据头部和身体其他部位的运动产生视线"
 
 msgid "目線キーフレを作成する頻度。値が小さいほど、小さな動きでも目線が動くようになります。"
-msgstr ""
-
+msgstr "眼球移动的频率。该值越小，即使动作很小，眼球移动也会越多"
 
 msgid "目線頻度"
-msgstr ""
-
+msgstr "眼频"
 
 msgid "\nEnterキーを押下したタイミングで値が反映されます。"
-msgstr ""
-
+msgstr "按下 \nEnter 键时，该值就会反映出来"
 
 msgid "目線キーフレで設定する値の大きさ。値が大きいほど、目線を大きく動かすようになります。"
-msgstr ""
-
+msgstr "眼睛关键帧中设定值的大小。数值越大，眼球运动越剧烈"
 
 msgid "目線の振り幅"
-msgstr ""
-
+msgstr "眼神波动"
 
 msgid "目線キーフレを作成する頻度。\n値が小さいほど、小さな動きでも目線が動くようになります。"
-msgstr ""
-
+msgstr "眼球关键帧产生的频率。\ዄn值越小，即使是很小的动作，眼球移动的次数也越多"
 
 msgid "目線キーフレで設定する値の大きさ。\n値が大きいほど、目線を大きく動かすようになります。"
-msgstr ""
-
+msgstr "眼线关键帧中设定值的大小。\ɛn值越大，眼球移动的幅度就越大"
 
 msgid "目線生成開始"
-msgstr ""
-
+msgstr "开始生成眼睛"
 
 msgid "目線キーフレで設定する横方向の値の大きさ。\n値が大きいほど、目線を大きく動かすようになります。"
-msgstr ""
-
+msgstr "眼线关键帧所设置的水平值的大小。\数值越大，眼睛移动的幅度就越大"
 
 msgid "目線の横振り幅"
-msgstr ""
-
+msgstr "眼线的水平摆动"
 
 msgid "目線キーフレで設定する縦方向の値の大きさ。\n値が大きいほど、目線を大きく動かすようになります。"
-msgstr ""
-
+msgstr "眼线关键帧设置的垂直值的大小。\ɑn值越大，眼球移动的幅度就越大"
 
 msgid "目線の縦振り幅"
-msgstr ""
-
+msgstr "眼线垂直摆动"
 
 msgid "-- モデルセットアップ：ボーンツリー [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- 模型设置：骨树 [{i} ({p:.2f}%)]"
 
 msgid "-- ボーンデータ読み取り [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- 伯恩数据读取 [{i} ({p:.2f}%)]"
 
 msgid "ボーン計算"
-msgstr ""
-
+msgstr "伯恩计算"
 
 msgid "-- ボーン計算 [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "--伯恩计算 [{i} ({p:.2f}%)]"

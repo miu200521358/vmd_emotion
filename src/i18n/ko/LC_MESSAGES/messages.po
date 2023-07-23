@@ -17,341 +17,256 @@ msgstr ""
 "Generated-By: Babel 2.12.1\n"
 
 msgid "人物モデル"
-msgstr ""
-
+msgstr "인물 모델"
 
 msgid "表情を付けたい人物モデルを指定してください"
-msgstr ""
-
+msgstr "표정을 부여하고 싶은 인물 모델을 지정해 주세요"
 
 msgid "(未設定)"
-msgstr ""
-
+msgstr "(미설정)"
 
 msgid "{t}に記録されているモデル名です。\n文字列は選択およびコピー可能です。"
-msgstr ""
-
+msgstr "{t}에 기록된 모델명입니다. \n 문자열은 선택 및 복사할 수 있습니다"
 
 msgid "開く"
-msgstr ""
-
+msgstr "열기"
 
 msgid "履歴"
-msgstr ""
-
+msgstr "역사"
 
 msgid "これまでに指定された事のある{t}を再指定することができます。"
-msgstr ""
-
+msgstr "이전에 지정한 적이 있는 {t}를 다시 지정할 수 있습니다"
 
 msgid "表示モーション"
-msgstr ""
-
+msgstr "디스플레이 모션"
 
 msgid "表情を付けたいモーションを指定してください"
-msgstr ""
-
+msgstr "표정을 부여하고 싶은 모션을 지정해 주세요"
 
 msgid "表情モーション出力先"
-msgstr ""
-
+msgstr "표정 모션 출력처"
 
 msgid "表情モーションの出力ファイルパスです\n任意の値に変更可能です"
-msgstr ""
-
+msgstr "표정 모션의 출력 파일 경로입니다\n 임의의 값으로 변경 가능합니다"
 
 msgid "表情モーション出力停止"
-msgstr ""
-
+msgstr "표정 모션 출력 정지"
 
 msgid "生成した表情のみをVMDモーションデータとして出力します\n読み込み結果を設定タブで確認した後にクリックできるようになります"
-msgstr ""
-
+msgstr "생성한 표정만 VMD 모션 데이터로 출력합니다\n 불러온 결과를 설정 탭에서 확인 후 클릭할 수 있습니다"
 
 msgid "モーションの任意のキーフレの結果の表示や再生ができます"
-msgstr ""
-
+msgstr "모션의 임의의 키프레임의 결과물을 표시하거나 재생할 수 있습니다"
 
 msgid "モーションを再生することができます（ただし重いです）"
-msgstr ""
-
+msgstr "모션 재생이 가능합니다 (하지만 무겁습니다)"
 
 msgid "ファイルを選んでダブルクリック、またはOKボタンをクリックしてください。"
-msgstr ""
-
+msgstr "파일을 선택하고 두 번 클릭하거나 확인 버튼을 클릭하세요"
 
 msgid "ファイル履歴選択"
-msgstr ""
-
+msgstr "파일 기록 선택"
 
 msgid "人物: 読み込み開始"
-msgstr ""
-
+msgstr "인물: 로딩 시작"
 
 msgid "----------------------"
-msgstr ""
-
+msgstr "----------------------"
 
 msgid "PMXモデルデータ読み取り開始"
-msgstr ""
-
+msgstr "PMX 모델 데이터 읽기 시작"
 
 msgid "頂点データ読み取り"
-msgstr ""
-
+msgstr "정점 데이터 읽기"
 
 msgid "-- 頂点データ読み取り [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- 정점 데이터 읽기 [{i} ({p:.2f}%)]"
 
 msgid "頂点データ読み取り完了: {c}"
-msgstr ""
-
+msgstr "정점 데이터 읽기 완료: {c}"
 
 msgid "面データ読み取り"
-msgstr ""
-
+msgstr "면 데이터 읽기"
 
 msgid "-- 面データ読み取り [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- 면 데이터 읽기 [{i} ({p:.2f}%)]"
 
 msgid "面データ読み取り完了: {c}"
-msgstr ""
-
+msgstr "면 데이터 판독 완료: {c}"
 
 msgid "テクスチャデータ読み取り完了: {c}"
-msgstr ""
-
+msgstr "텍스처 데이터 읽기 완료: {c}"
 
 msgid "材質データ読み取り完了: {c}"
-msgstr ""
-
+msgstr "재료 데이터 읽기 완료: {c}"
 
 msgid "ボーンデータ読み取り完了: {c}"
-msgstr ""
-
+msgstr "본 데이터 읽기 완료: {c}"
 
 msgid "モーフデータ読み取り完了: {c}"
-msgstr ""
-
+msgstr "모프 데이터 읽기 완료: {c}"
 
 msgid "表示枠データ読み取り完了: {c}"
-msgstr ""
-
+msgstr "표시 프레임 데이터 읽기 완료: {c}"
 
 msgid "剛体データ読み取り完了: {c}"
-msgstr ""
-
+msgstr "강체 데이터 읽기 완료: {c}"
 
 msgid "ジョイントデータ読み取り完了: {c}"
-msgstr ""
-
+msgstr "공동 데이터 읽기 완료: {c}"
 
 msgid "モデルセットアップ開始"
-msgstr ""
-
+msgstr "모델 셋업 시작"
 
 msgid "モデルセットアップ：システム用ボーン"
-msgstr ""
-
+msgstr "모델 설정: 시스템용 뼈대"
 
 msgid "モデルセットアップ：ボーン"
-msgstr ""
-
+msgstr "모델 설정: 뼈"
 
 msgid "-- モデルセットアップ：ボーン [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- 모델 설정: 본 [{i} ({p:.2f}%)]"
 
 msgid "モデルセットアップ：ボーンツリー"
-msgstr ""
-
+msgstr "모델 셋업: 본트리"
 
 msgid "モデルセットアップ完了"
-msgstr ""
-
+msgstr "모델 설정 완료"
 
 msgid "モーション読み込み開始"
-msgstr ""
-
+msgstr "모션 불러오기 시작"
 
 msgid "VMDモーションデータ読み取り開始"
-msgstr ""
-
+msgstr "VMD 모션 데이터 읽기 시작"
 
 msgid "カメラデータ読み取り完了: {c}"
-msgstr ""
-
+msgstr "카메라 데이터 읽기 완료: {c}"
 
 msgid "照明データ読み取り完了: {c}"
-msgstr ""
-
+msgstr "조명 데이터 판독 완료: {c}"
 
 msgid "セルフ影データ読み取り完了: {c}"
-msgstr ""
-
+msgstr "자기 그림자 데이터 읽기 완료: {c}"
 
 msgid "IKデータ読み取り完了: {c}"
-msgstr ""
-
+msgstr "IK 데이터 읽기 완료: {c}"
 
 msgid "モーションに両目キーフレームが存在しているため、除外して表情を生成します"
-msgstr ""
-
+msgstr "모션에 양안 키프레임이 존재하기 때문에 제외하여 표정을 생성합니다"
 
 msgid "描画準備開始"
-msgstr ""
-
+msgstr "그리기 준비 시작"
 
 msgid "モデル描画準備"
-msgstr ""
-
+msgstr "모델 그리기 준비"
 
 msgid "ボーンアニメーション"
-msgstr ""
-
+msgstr "본 애니메이션"
 
 msgid "-- ボーンアニメーション [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- 본 애니메이션 [{i} ({p:.2f}%)]"
 
 msgid "キーフレ確認"
-msgstr ""
-
+msgstr "키프레임 확인"
 
 msgid "-- キーフレ確認 [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- 키프레 확인 [{i} ({p:.2f}%)]"
 
 msgid "ボーンモーフ計算"
-msgstr ""
-
+msgstr "본모프 계산"
 
 msgid "ボーンモーション計算"
-msgstr ""
-
+msgstr "본모션 계산"
 
 msgid "ボーン行列計算"
-msgstr ""
-
+msgstr "본 매트릭스 계산"
 
 msgid "ボーン変形行列リストアップ"
-msgstr ""
-
+msgstr "뼈 변형 매트릭스 목록"
 
 msgid "ボーン変形行列積"
-msgstr ""
-
+msgstr "본 변형 행렬곱"
 
 msgid "-- ボーン変形行列積 [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- 본 변형 행렬곱 [{i} ({p:.2f}%)]"
 
 msgid "ボーン行列結果"
-msgstr ""
-
+msgstr "본 매트릭스 결과"
 
 msgid "-- ボーン行列結果 [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- 본행렬 결과 [{i} ({p:.2f}%)]"
 
 msgid "-- ボーン変形行列積 [{i}]"
-msgstr ""
-
+msgstr "-- 본 변형 행렬곱 [{i}]"
 
 msgid "目線変動量取得"
-msgstr ""
-
+msgstr "시선변동량 획득"
 
 msgid "目線変曲点抽出"
-msgstr ""
-
+msgstr "시선 변곡점 추출"
 
 msgid "-- 目線変動量取得 [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- 시선변동량 획득 [{i} ({p:.2f}%)]"
 
 msgid "目線生成"
-msgstr ""
-
+msgstr "시선 생성"
 
 msgid "目線生成[{f}] 向き[{d}] 回転[{r}]"
-msgstr ""
-
+msgstr "시선 생성[{f}} 방향[{d}} 회전[{r}}"
 
 msgid "モーション出力開始"
-msgstr ""
-
+msgstr "모션 출력 시작"
 
 msgid "*** モーション出力成功 ***\n出力先: {f}"
-msgstr ""
-
+msgstr "*** 모션 출력 성공 ***\n 출력 대상: {f}"
 
 msgid "頭などの動きに合わせて目線を生成します"
-msgstr ""
-
+msgstr "머리 등의 움직임에 따라 눈동자를 생성합니다"
 
 msgid "目線キーフレを作成する頻度。値が小さいほど、小さな動きでも目線が動くようになります。"
-msgstr ""
-
+msgstr "시선 키프레임을 생성하는 빈도. 값이 작을수록 작은 움직임에도 시선이 움직일 수 있도록 합니다"
 
 msgid "目線頻度"
-msgstr ""
-
+msgstr "시선 빈도"
 
 msgid "\nEnterキーを押下したタイミングで値が反映されます。"
-msgstr ""
-
+msgstr "\nEnter 키를 누른 타이밍에 값이 반영됩니다"
 
 msgid "目線キーフレで設定する値の大きさ。値が大きいほど、目線を大きく動かすようになります。"
-msgstr ""
-
+msgstr "시선 키프레임에서 설정하는 값의 크기. 값이 클수록 시선이 더 크게 움직이게 됩니다"
 
 msgid "目線の振り幅"
-msgstr ""
-
+msgstr "눈빛의 폭"
 
 msgid "目線キーフレを作成する頻度。\n値が小さいほど、小さな動きでも目線が動くようになります。"
-msgstr ""
-
+msgstr "시선 키프레임을 생성하는 빈도. \n 값이 작을수록 작은 움직임에도 시선이 움직이게 됩니다"
 
 msgid "目線キーフレで設定する値の大きさ。\n値が大きいほど、目線を大きく動かすようになります。"
-msgstr ""
-
+msgstr "시선 키프레임에서 설정하는 값의 크기. \n 값이 클수록 눈동자를 크게 움직이게 됩니다"
 
 msgid "目線生成開始"
-msgstr ""
-
+msgstr "시선 생성 시작"
 
 msgid "目線キーフレで設定する横方向の値の大きさ。\n値が大きいほど、目線を大きく動かすようになります。"
-msgstr ""
-
+msgstr "시선 키프레임에서 설정하는 가로 방향의 값의 크기. \n 값이 클수록 눈동자를 크게 움직이게 됩니다"
 
 msgid "目線の横振り幅"
-msgstr ""
-
+msgstr "시선의 가로폭"
 
 msgid "目線キーフレで設定する縦方向の値の大きさ。\n値が大きいほど、目線を大きく動かすようになります。"
-msgstr ""
-
+msgstr "시선 키프레임에서 설정하는 세로 방향 값의 크기. \n 값이 클수록 눈동자를 크게 움직이게 됩니다"
 
 msgid "目線の縦振り幅"
-msgstr ""
-
+msgstr "시선의 세로로 흔들리는 폭"
 
 msgid "-- モデルセットアップ：ボーンツリー [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- 모델 설정: 뼈대 [{i} ({p:.2f}%)]"
 
 msgid "-- ボーンデータ読み取り [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- 본 데이터 읽기 [{i} ({p:.2f}%)]"
 
 msgid "ボーン計算"
-msgstr ""
-
+msgstr "본 계산"
 
 msgid "-- ボーン計算 [{i} ({p:.2f}%)]"
-msgstr ""
-
+msgstr "-- 본 계산 [{i} ({p:.2f}%)]"
