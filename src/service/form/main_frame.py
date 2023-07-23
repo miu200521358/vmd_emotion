@@ -71,7 +71,7 @@ class MainFrame(BaseFrame):
     def on_result(
         self,
         result: bool,
-        data: Optional[tuple[PmxModel, PmxModel, VmdMotion]],
+        data: Optional[tuple[PmxModel, PmxModel, VmdMotion, VmdMotion]],
         elapsed_time: str,
     ) -> None:
         self.file_panel.console_ctrl.write(f"\n----------------\n{elapsed_time}")
@@ -84,11 +84,12 @@ class MainFrame(BaseFrame):
 
         logger.info("描画準備開始", decoration=MLogger.Decoration.BOX)
 
-        original_model, model, motion = data
+        original_model, model, original_motion, motion = data
 
         self.file_panel.model_ctrl.original_data = original_model
         self.file_panel.model_ctrl.data = model
-        self.file_panel.motion_ctrl.set_data(motion)
+        self.file_panel.motion_ctrl.original_data = original_motion
+        self.file_panel.motion_ctrl.data = motion
         self.file_panel.exec_btn_ctrl.Enable(True)
 
         if not (self.file_panel.model_ctrl.data and self.file_panel.motion_ctrl.data):
@@ -98,7 +99,7 @@ class MainFrame(BaseFrame):
         self.config_panel.fno = 0
 
         try:
-            logger.info("人物モデル描画準備")
+            logger.info("モデル描画準備")
             self.config_panel.canvas.append_model_set(self.file_panel.model_ctrl.data, self.file_panel.motion_ctrl.data, bone_alpha=0.0)
             self.config_panel.canvas.Refresh()
             self.notebook.ChangeSelection(self.config_panel.tab_idx)
