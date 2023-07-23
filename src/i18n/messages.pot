@@ -16,15 +16,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.12.1\n"
 
-
-msgid "VMDモーション"
-msgstr ""
-
 msgid "人物モデル"
 msgstr ""
 
 
-msgid "お着替えさせたい対象の人物モデルを指定してください"
+msgid "表情を付けたい人物モデルを指定してください"
 msgstr ""
 
 
@@ -52,7 +48,7 @@ msgid "表示モーション"
 msgstr ""
 
 
-msgid "任意でVMDモーションデータを指定する事ができます\n空欄の場合、人物と衣装は初期状態で表示します"
+msgid "表情を付けたいモーションを指定してください"
 msgstr ""
 
 
@@ -76,7 +72,15 @@ msgid "モーションの任意のキーフレの結果の表示や再生がで�
 msgstr ""
 
 
-msgid "モーションを指定している場合、再生することができます"
+msgid "モーションを再生することができます（ただし重いです）"
+msgstr ""
+
+
+msgid "視線生成"
+msgstr ""
+
+
+msgid "頭の動きに合わせて視線を生成します"
 msgstr ""
 
 
@@ -200,30 +204,14 @@ msgid "IKデータ読み取り完了: {c}"
 msgstr ""
 
 
-msgid "描画準備開始"
-msgstr ""
-
-
-msgid "人物モデル描画準備"
-msgstr ""
-
-
-msgid "モーションを再生することができます（ただし重いです）"
-msgstr ""
-
-
-msgid "視線生成"
-msgstr ""
-
-
-msgid "頭の動きに合わせて視線を生成します"
-msgstr ""
-
-
 msgid "モーションに両目キーフレームが存在しているため、除外して表情を生成します"
 msgstr ""
 
 
-msgid "視線生成開始"
+msgid "描画準備開始"
+msgstr ""
+
+
+msgid "モデル描画準備"
 msgstr ""
 

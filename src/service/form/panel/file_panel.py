@@ -30,7 +30,7 @@ class FilePanel(BasePanel):
             is_show_name=True,
             name_spacer=3,
             is_save=False,
-            tooltip="お着替えさせたい対象の人物モデルを指定してください",
+            tooltip="表情を付けたい人物モデルを指定してください",
             file_change_event=self.on_change_model_pmx,
         )
         self.model_ctrl.set_parent_sizer(self.root_sizer)
@@ -43,7 +43,7 @@ class FilePanel(BasePanel):
             is_show_name=True,
             name_spacer=1,
             is_save=False,
-            tooltip="任意でVMDモーションデータを指定する事ができます\n空欄の場合、人物と衣装は初期状態で表示します",
+            tooltip="表情を付けたいモーションを指定してください",
             file_change_event=self.on_change_motion,
         )
         self.motion_ctrl.set_parent_sizer(self.root_sizer)
