@@ -1,0 +1,209 @@
+# Translations template for PROJECT.
+# Copyright (C) 2023 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2023-04-06 02:14+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.12.1\n"
+
+
+msgid "VMDモーション"
+msgstr ""
+
+msgid "人物モデル"
+msgstr ""
+
+
+msgid "お着替えさせたい対象の人物モデルを指定してください"
+msgstr ""
+
+
+msgid "(未設定)"
+msgstr ""
+
+
+msgid "{t}に記録されているモデル名です。\n文字列は選択およびコピー可能です。"
+msgstr ""
+
+
+msgid "開く"
+msgstr ""
+
+
+msgid "履歴"
+msgstr ""
+
+
+msgid "これまでに指定された事のある{t}を再指定することができます。"
+msgstr ""
+
+
+msgid "表示モーション"
+msgstr ""
+
+
+msgid "任意でVMDモーションデータを指定する事ができます\n空欄の場合、人物と衣装は初期状態で表示します"
+msgstr ""
+
+
+msgid "表情モーション出力先"
+msgstr ""
+
+
+msgid "表情モーションの出力ファイルパスです\n任意の値に変更可能です"
+msgstr ""
+
+
+msgid "表情モーション出力停止"
+msgstr ""
+
+
+msgid "生成した表情のみをVMDモーションデータとして出力します\n読み込み結果を設定タブで確認した後にクリックできるようになります"
+msgstr ""
+
+
+msgid "モーションの任意のキーフレの結果の表示や再生ができます"
+msgstr ""
+
+
+msgid "モーションを指定している場合、再生することができます"
+msgstr ""
+
+
+msgid "ファイルを選んでダブルクリック、またはOKボタンをクリックしてください。"
+msgstr ""
+
+
+msgid "ファイル履歴選択"
+msgstr ""
+
+
+msgid "人物: 読み込み開始"
+msgstr ""
+
+
+msgid "----------------------"
+msgstr ""
+
+
+msgid "PMXモデルデータ読み取り開始"
+msgstr ""
+
+
+msgid "頂点データ読み取り"
+msgstr ""
+
+
+msgid "-- 頂点データ読み取り [{i} ({p:.2f}%)]"
+msgstr ""
+
+
+msgid "頂点データ読み取り完了: {c}"
+msgstr ""
+
+
+msgid "面データ読み取り"
+msgstr ""
+
+
+msgid "-- 面データ読み取り [{i} ({p:.2f}%)]"
+msgstr ""
+
+
+msgid "面データ読み取り完了: {c}"
+msgstr ""
+
+
+msgid "テクスチャデータ読み取り完了: {c}"
+msgstr ""
+
+
+msgid "材質データ読み取り完了: {c}"
+msgstr ""
+
+
+msgid "ボーンデータ読み取り完了: {c}"
+msgstr ""
+
+
+msgid "モーフデータ読み取り完了: {c}"
+msgstr ""
+
+
+msgid "表示枠データ読み取り完了: {c}"
+msgstr ""
+
+
+msgid "剛体データ読み取り完了: {c}"
+msgstr ""
+
+
+msgid "ジョイントデータ読み取り完了: {c}"
+msgstr ""
+
+
+msgid "モデルセットアップ開始"
+msgstr ""
+
+
+msgid "モデルセットアップ：システム用ボーン"
+msgstr ""
+
+
+msgid "モデルセットアップ：ボーン"
+msgstr ""
+
+
+msgid "-- モデルセットアップ：ボーン [{i} ({p:.2f}%)]"
+msgstr ""
+
+
+msgid "モデルセットアップ：ボーンツリー"
+msgstr ""
+
+
+msgid "モデルセットアップ完了"
+msgstr ""
+
+
+msgid "モーション読み込み開始"
+msgstr ""
+
+
+msgid "VMDモーションデータ読み取り開始"
+msgstr ""
+
+
+msgid "カメラデータ読み取り完了: {c}"
+msgstr ""
+
+
+msgid "照明データ読み取り完了: {c}"
+msgstr ""
+
+
+msgid "セルフ影データ読み取り完了: {c}"
+msgstr ""
+
+
+msgid "IKデータ読み取り完了: {c}"
+msgstr ""
+
+
+msgid "描画準備開始"
+msgstr ""
+
+
+msgid "人物モデル描画準備"
+msgstr ""
+
