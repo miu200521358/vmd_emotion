@@ -38,6 +38,8 @@ class GazeWorker(BaseWorker):
 
         self.result_data = motion, output_motion
 
+        logger.info("目線生成完了", decoration=MLogger.Decoration.BOX)
+
     def output_log(self):
         file_panel: FilePanel = self.frame.file_panel
         output_log_path = os.path.join(get_root_dir(), f"{os.path.basename(file_panel.output_motion_ctrl.path)}_gaze.log")

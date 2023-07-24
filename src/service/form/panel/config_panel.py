@@ -85,15 +85,15 @@ class ConfigPanel(CanvasPanel):
 
         gaze_infection_tooltip = __("目線キーフレを作成する頻度。\n値が小さいほど、小さな動きでも目線が動くようになります。")
 
-        self.gaze_infection_title_ctrl = wx.StaticText(self.scrolled_window, wx.ID_ANY, __("目線頻度"), wx.DefaultPosition, wx.DefaultSize, 0)
+        self.gaze_infection_title_ctrl = wx.StaticText(self.scrolled_window, wx.ID_ANY, __("頻度"), wx.DefaultPosition, wx.DefaultSize, 0)
         self.gaze_infection_title_ctrl.SetToolTip(gaze_infection_tooltip)
         self.gaze_sizer.Add(self.gaze_infection_title_ctrl, 0, wx.ALL, 3)
 
         self.gaze_infection_slider = FloatSliderCtrl(
             parent=self.scrolled_window,
-            value=0.05,
-            min_value=0.001,
-            max_value=0.5,
+            value=0.3,
+            min_value=0.1,
+            max_value=1.0,
             increment=0.01,
             spin_increment=0.01,
             border=3,
@@ -104,15 +104,15 @@ class ConfigPanel(CanvasPanel):
 
         gaze_ratio_x_tooltip = __("目線キーフレで設定する縦方向の値の大きさ。\n値が大きいほど、目線を大きく動かすようになります。")
 
-        self.gaze_ratio_x_title_ctrl = wx.StaticText(self.scrolled_window, wx.ID_ANY, __("目線の縦振り幅"), wx.DefaultPosition, wx.DefaultSize, 0)
+        self.gaze_ratio_x_title_ctrl = wx.StaticText(self.scrolled_window, wx.ID_ANY, __("縦振り幅"), wx.DefaultPosition, wx.DefaultSize, 0)
         self.gaze_ratio_x_title_ctrl.SetToolTip(gaze_ratio_x_tooltip)
         self.gaze_sizer.Add(self.gaze_ratio_x_title_ctrl, 0, wx.ALL, 3)
 
         self.gaze_ratio_x_slider = FloatSliderCtrl(
             parent=self.scrolled_window,
-            value=0.15,
-            min_value=0.1,
-            max_value=1.0,
+            value=0.8,
+            min_value=0.5,
+            max_value=1.5,
             increment=0.05,
             spin_increment=0.05,
             border=3,
@@ -123,15 +123,15 @@ class ConfigPanel(CanvasPanel):
 
         gaze_ratio_y_tooltip = __("目線キーフレで設定する横方向の値の大きさ。\n値が大きいほど、目線を大きく動かすようになります。")
 
-        self.gaze_ratio_y_title_ctrl = wx.StaticText(self.scrolled_window, wx.ID_ANY, __("目線の横振り幅"), wx.DefaultPosition, wx.DefaultSize, 0)
+        self.gaze_ratio_y_title_ctrl = wx.StaticText(self.scrolled_window, wx.ID_ANY, __("横振り幅"), wx.DefaultPosition, wx.DefaultSize, 0)
         self.gaze_ratio_y_title_ctrl.SetToolTip(gaze_ratio_y_tooltip)
         self.gaze_sizer.Add(self.gaze_ratio_y_title_ctrl, 0, wx.ALL, 3)
 
         self.gaze_ratio_y_slider = FloatSliderCtrl(
             parent=self.scrolled_window,
-            value=0.2,
-            min_value=0.1,
-            max_value=1.0,
+            value=0.8,
+            min_value=0.5,
+            max_value=1.5,
             increment=0.05,
             spin_increment=0.05,
             border=3,

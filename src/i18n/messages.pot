@@ -355,3 +355,7 @@ msgstr ""
 msgid "-- ボーン計算 [{i} ({p:.2f}%)]"
 msgstr ""
 
+
+msgid "目線生成完了"
+msgstr ""
+

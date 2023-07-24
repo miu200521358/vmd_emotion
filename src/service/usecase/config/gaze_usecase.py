@@ -45,6 +45,7 @@ class GazeUsecase:
             if not prev_gaze:
                 # 初回はスルー
                 prev_gaze = gaze_vector
+                gaze_dots.append(1.0)
                 continue
 
             # 目線の向き
@@ -58,7 +59,7 @@ class GazeUsecase:
         logger.info("目線変曲点抽出", decoration=MLogger.Decoration.LINE)
         # logger.debug(gaze_dots)
 
-        infection_eyes = get_infections(gaze_dots, gaze_infection)
+        infection_eyes = get_infections(gaze_dots, gaze_infection * 0.1)
         # logger.debug(infection_eyes)
 
         logger.info("目線生成", decoration=MLogger.Decoration.LINE)
@@ -67,6 +68,8 @@ class GazeUsecase:
         motion.bones["両目"].append(bf)
 
         for fidx in infection_eyes:
+            logger.count("目線生成", index=fidx, total_index_count=len(infection_eyes), display_block=1000)
+
             if 1 > fidx:
                 continue
 
@@ -76,15 +79,48 @@ class GazeUsecase:
 
             # 目線の変動が一定以上であれば目線を動かす
             gaze_full_qq = MQuaternion.rotate(gaze_vector, infection_gaze_vector)
-            gaze_x_qq, gaze_y_qq, gaze_z_qq, _ = gaze_full_qq.separate_by_axis(MVector3D(1, 0, 0))
+            # Zは前向きの捩れになるので捨てる
+            gaze_original_x_qq, gaze_original_y_qq, gaze_z_qq, _ = gaze_full_qq.separate_by_axis(MVector3D(1, 0, 0))
 
-            gaze_ratio_x_qq = MQuaternion.slerp(MQuaternion(), gaze_x_qq, gaze_ratio_x)
-            gaze_ratio_y_qq = MQuaternion.slerp(MQuaternion(), gaze_y_qq, gaze_ratio_y)
-            gaze_ratio_qq = gaze_ratio_x_qq * gaze_ratio_y_qq
+            # 目線の上下運動
+            x = gaze_original_x_qq.to_signed_degrees(MVector3D(0, 0, -1))
+            # 補正値を求める(初期で少し下げ目にしておく)
+            correct_x = fitted_x_function(x) * gaze_ratio_x - 2
+            gaze_x_qq = MQuaternion.from_axis_angles(gaze_original_x_qq.xyz, correct_x)
+
+            # 目線の左右運動
+            y = gaze_original_y_qq.to_signed_degrees(MVector3D(0, 0, -1))
+            # 補正値を求める
+            correct_y = fitted_y_function(y) * gaze_ratio_y
+            gaze_y_qq = MQuaternion.from_axis_angles(gaze_original_y_qq.xyz, correct_y)
+
+            gaze_qq = gaze_x_qq * gaze_y_qq
 
             bf = VmdBoneFrame(fno, "両目")
-            bf.rotation = gaze_ratio_qq
+            bf.rotation = gaze_qq
             motion.bones["両目"].append(bf)
             output_motion.bones["両目"].append(bf.copy())
 
-            logger.info("目線生成[{f}] 向き[{d}] 回転[{r}]", f=fno, d=infection_gaze_vector, r=gaze_ratio_qq.to_euler_degrees_mmd())
+            logger.debug("目線生成[{f}] 向き[{d}] 回転[{r}]", f=fno, d=infection_gaze_vector, r=gaze_qq.to_euler_degrees_mmd())
+
+
+def fitted_x_function(x: float):
+    y = (
+        3.87509926e-08 * abs(x) ** 5
+        - 9.78877468e-06 * abs(x) ** 4
+        + 9.11972307e-04 * abs(x) ** 3
+        - 3.94872605e-02 * abs(x) ** 2
+        + 9.13973880e-01 * abs(x)
+    )
+    return y if x >= 0 else -y
+
+
+def fitted_y_function(x: float):
+    y = (
+        1.47534033e-09 * abs(x) ** 5
+        - 1.19583063e-06 * abs(x) ** 4
+        + 2.32587413e-04 * abs(x) ** 3
+        - 1.93864420e-02 * abs(x) ** 2
+        + 8.94363417e-01 * abs(x)
+    )
+    return y if x >= 0 else -y

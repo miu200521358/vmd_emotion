@@ -270,3 +270,6 @@ msgstr "Bourne Calculation"
 
 msgid "-- ボーン計算 [{i} ({p:.2f}%)]"
 msgstr "-- Bourne calculation [{i} ({p:.2f}%)]"
+
+msgid "目線生成完了"
+msgstr "Line of sight generation complete"
