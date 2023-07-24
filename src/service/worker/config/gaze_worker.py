@@ -34,6 +34,7 @@ class GazeWorker(BaseWorker):
             self.frame.config_panel.gaze_infection_slider.GetValue(),
             self.frame.config_panel.gaze_ratio_x_slider.GetValue(),
             self.frame.config_panel.gaze_ratio_y_slider.GetValue(),
+            int(self.frame.config_panel.gaze_reset_slider.GetValue()),
         )
 
         self.result_data = motion, output_motion

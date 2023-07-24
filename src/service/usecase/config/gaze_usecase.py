@@ -21,6 +21,7 @@ class GazeUsecase:
         gaze_infection: float,
         gaze_ratio_x: float,
         gaze_ratio_y: float,
+        gaze_reset_num: int,
     ) -> None:
         """目線生成"""
 
@@ -64,18 +65,25 @@ class GazeUsecase:
 
         logger.info("目線生成", decoration=MLogger.Decoration.LINE)
 
-        bf = VmdBoneFrame(eye_fnos[0], "両目")
-        motion.bones["両目"].append(bf)
+        # 最初は静止
+        start_bf = VmdBoneFrame(eye_fnos[0], "両目")
+        motion.bones["両目"].append(start_bf)
+        output_motion.bones["両目"].append(start_bf.copy())
 
-        for fidx in infection_eyes:
-            logger.count("目線生成", index=fidx, total_index_count=len(infection_eyes), display_block=1000)
+        # 最後は静止
+        end_bf = VmdBoneFrame(eye_fnos[-1], "両目")
+        motion.bones["両目"].append(end_bf)
+        output_motion.bones["両目"].append(end_bf.copy())
 
-            if 1 > fidx:
+        for i, iidx in enumerate(infection_eyes):
+            logger.count("目線生成", index=i, total_index_count=len(infection_eyes), display_block=1000)
+
+            if 1 > i:
                 continue
 
-            fno = eye_fnos[fidx - 1]
-            gaze_vector = gaze_vectors[fidx - 1]
-            infection_gaze_vector = gaze_vectors[fidx]
+            fno = eye_fnos[iidx - 1]
+            gaze_vector = gaze_vectors[iidx - 1]
+            infection_gaze_vector = gaze_vectors[iidx]
 
             # 目線の変動が一定以上であれば目線を動かす
             gaze_full_qq = MQuaternion.rotate(gaze_vector, infection_gaze_vector)
@@ -102,6 +110,28 @@ class GazeUsecase:
             output_motion.bones["両目"].append(bf.copy())
 
             logger.debug("目線生成[{f}] 向き[{d}] 回転[{r}]", f=fno, d=infection_gaze_vector, r=gaze_qq.to_euler_degrees_mmd())
+
+        for i, (iidx, next_iidx) in enumerate(zip(infection_eyes[:-1], infection_eyes[1:])):
+            logger.count("目線クリア", index=i, total_index_count=len(infection_eyes), display_block=100)
+
+            fno = eye_fnos[iidx]
+            next_fno = eye_fnos[next_iidx]
+
+            # 前の目線との間に静止期間を設ける
+            if gaze_reset_num * 3 > next_fno - fno:
+                continue
+
+            # 前側の元に戻るキーフレ
+            bf = VmdBoneFrame(fno + gaze_reset_num, "両目")
+            motion.bones["両目"].append(bf)
+            output_motion.bones["両目"].append(bf.copy())
+
+            # 後側の元に戻るキーフレ
+            next_bf = VmdBoneFrame(next_fno - gaze_reset_num, "両目")
+            motion.bones["両目"].append(next_bf)
+            output_motion.bones["両目"].append(next_bf.copy())
+
+            logger.debug("目線クリア 始[{d}] 終[{r}]", d=bf.index, r=next_bf.index)
 
 
 def fitted_x_function(x: float):

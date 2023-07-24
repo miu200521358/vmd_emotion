@@ -140,6 +140,25 @@ class ConfigPanel(CanvasPanel):
         )
         self.gaze_sizer.Add(self.gaze_ratio_y_slider.sizer, 0, wx.ALL, 3)
 
+        gaze_reset_tooltip = __("目線をリセットするキーフレ間隔\n値が小さいほど、目線を細かくリセットします")
+
+        self.gaze_reset_title_ctrl = wx.StaticText(self.scrolled_window, wx.ID_ANY, __("リセット"), wx.DefaultPosition, wx.DefaultSize, 0)
+        self.gaze_reset_title_ctrl.SetToolTip(gaze_reset_tooltip)
+        self.gaze_sizer.Add(self.gaze_reset_title_ctrl, 0, wx.ALL, 3)
+
+        self.gaze_reset_slider = FloatSliderCtrl(
+            parent=self.scrolled_window,
+            value=7,
+            min_value=5,
+            max_value=15,
+            increment=1,
+            spin_increment=1,
+            border=3,
+            size=wx.Size(100, -1),
+            tooltip=gaze_reset_tooltip,
+        )
+        self.gaze_sizer.Add(self.gaze_reset_slider.sizer, 0, wx.ALL, 3)
+
         self.window_sizer.Add(self.gaze_sizer, 0, wx.ALL, 3)
 
         # --------------
@@ -192,6 +211,7 @@ class ConfigPanel(CanvasPanel):
         self.gaze_infection_slider.Enable(enable)
         self.gaze_ratio_x_slider.Enable(enable)
         self.gaze_ratio_y_slider.Enable(enable)
+        self.gaze_reset_slider.Enable(enable)
 
     def on_frame_change(self, event: wx.Event):
         self.Enable(False)

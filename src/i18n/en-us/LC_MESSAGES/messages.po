@@ -273,3 +273,9 @@ msgstr "-- Bourne calculation [{i} ({p:.2f}%)]"
 
 msgid "目線生成完了"
 msgstr "Line of sight generation complete"
+
+msgid "目線をリセットするキーフレ間隔\n値が小さいほど、目線を細かくリセットします"
+msgstr "The smaller the keyfrequency interval\n value that resets the line of sight, the finer the line of sight is reset"
+
+msgid "-- 目線生成 [{i} ({p:.2f}%)]"
+msgstr "-- eye line generation [{i} ({p:.2f}%)]"
