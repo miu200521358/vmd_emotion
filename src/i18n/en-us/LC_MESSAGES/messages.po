@@ -339,3 +339,27 @@ msgstr "Eye line interpolation curve"
 
 msgid "-- 目線補間曲線 [{i} ({p:.2f}%)]"
 msgstr "-- Eye interpolation curve [{i} ({p:.2f}%)]"
+
+msgid "マウスホイールでのスクロールは変更のあったキーフレに次々に飛びます"
+msgstr "Scrolling with the mouse wheel jumps one after the other to the keyfre that has changed"
+
+msgid "頻度"
+msgstr "Frequency"
+
+msgid "横振り幅"
+msgstr "horizontal amplitude"
+
+msgid "縦振り幅"
+msgstr "Vertical swing width"
+
+msgid "リセット"
+msgstr "Reset"
+
+msgid "再生"
+msgstr "Play"
+
+msgid "表情モーション出力"
+msgstr "Expression motion output"
+
+msgid "表情モーション出力停止"
+msgstr "Stop expression motion output"

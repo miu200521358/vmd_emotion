@@ -10,10 +10,13 @@ from mlib.vmd.vmd_part import VmdBoneFrame
 from mlib.base.interpolation import get_infections
 from mlib.base.math import MQuaternion
 from mlib.base.interpolation import create_interpolation
+from mlib.base.interpolation import IP_MAX
+from mlib.base.math import MVector2D
 
 logger = MLogger(os.path.basename(__file__), level=1)
 __ = logger.get_text
 
+X_AXIS = MVector3D(1, 0, 0)
 Z_AXIS = MVector3D(0, 0, -1)
 
 
@@ -65,7 +68,7 @@ class GazeUsecase:
         logger.info("目線変曲点抽出", decoration=MLogger.Decoration.LINE)
         # logger.debug(gaze_dots)
 
-        infection_eyes = get_infections(gaze_dots, gaze_infection * 0.1)
+        infection_eyes = get_infections(gaze_dots, (1 - gaze_infection) * 0.02)
         # logger.debug(infection_eyes)
 
         logger.info("目線生成", decoration=MLogger.Decoration.LINE)
@@ -93,7 +96,7 @@ class GazeUsecase:
             # 目線の変動が一定以上であれば目線を動かす
             gaze_full_qq = MQuaternion.rotate(gaze_vector, infection_gaze_vector)
             # Zは前向きの捩れになるので捨てる
-            gaze_original_x_qq, gaze_original_y_qq, gaze_z_qq, _ = gaze_full_qq.separate_by_axis(MVector3D(1, 0, 0))
+            gaze_original_x_qq, gaze_original_y_qq, gaze_z_qq, _ = gaze_full_qq.separate_by_axis(X_AXIS)
 
             # 目線の上下運動
             x = gaze_original_x_qq.to_signed_degrees(Z_AXIS)
@@ -139,7 +142,7 @@ class GazeUsecase:
             logger.debug("目線クリア 始[{d}] 終[{r}]", d=bf.index, r=next_bf.index)
 
         eye_fnos = output_motion.bones["両目"].indexes
-        for fidx, (prev_fno, now_fno, next_fno) in enumerate(zip(eye_fnos, eye_fnos[1:], eye_fnos[2:])):
+        for fidx, (prev_fno, now_fno, next_fno) in enumerate(zip(eye_fnos[:-2:2], eye_fnos[1:-1:2], eye_fnos[2::2])):
             logger.count("目線補間曲線", index=fidx, total_index_count=len(eye_fnos), display_block=100)
 
             prev_bf = output_motion.bones["両目"][prev_fno]
@@ -163,12 +166,18 @@ class GazeUsecase:
             now_degrees: list[float] = []
             for fidx in range(now_fno - prev_fno):
                 now_degrees.append(a * fidx**2 + b * fidx + c)
-            prev_bf.interpolations.rotation = create_interpolation(now_degrees)
+            now_interpolation = create_interpolation(now_degrees)
 
             next_degrees: list[float] = []
             for fidx in range(now_fno - prev_fno, next_fno - prev_fno):
                 next_degrees.append(a * fidx**2 + b * fidx + c)
-            now_bf.interpolations.rotation = create_interpolation(next_degrees)
+            next_interpolation = create_interpolation(next_degrees)
+
+            prev_bf.interpolations.rotation.end = MVector2D(IP_MAX, IP_MAX) - now_interpolation.start
+            now_bf.interpolations.rotation.start = now_interpolation.start
+            now_bf.interpolations.rotation.end = MVector2D(IP_MAX, IP_MAX) - next_interpolation.start
+            next_bf.interpolations.rotation.start = next_interpolation.start
+            next_bf.interpolations.rotation.end = next_interpolation.end
 
             logger.debug(
                 f"目線補間曲線 係数[{a:.3f}, {b:.3f}, {c:.3f}] prev[{prev_bf.index}][{prev_bf.interpolations.rotation}] "

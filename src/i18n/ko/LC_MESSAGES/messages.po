@@ -339,3 +339,27 @@ msgstr "시선 보간곡선"
 
 msgid "-- 目線補間曲線 [{i} ({p:.2f}%)]"
 msgstr "-- 시선 보간 곡선 [{i} ({p:.2f}%)]"
+
+msgid "マウスホイールでのスクロールは変更のあったキーフレに次々に飛びます"
+msgstr "마우스 휠로 스크롤하면 변경된 키프레임으로 차례로 이동합니다"
+
+msgid "頻度"
+msgstr "빈도"
+
+msgid "横振り幅"
+msgstr "가로 흔들림 폭"
+
+msgid "縦振り幅"
+msgstr "세로로 흔들리는 폭"
+
+msgid "リセット"
+msgstr "리셋"
+
+msgid "再生"
+msgstr "재생"
+
+msgid "表情モーション出力"
+msgstr "표정 모션 출력"
+
+msgid "表情モーション出力停止"
+msgstr "표정 모션 출력 정지"

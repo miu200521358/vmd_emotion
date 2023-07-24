@@ -104,6 +104,7 @@ class MainFrame(BaseFrame):
         self.config_panel.fno = 0
         # まばたき条件の初期化
         self.config_panel.blink_set.initialize(blink_conditions)
+        self.config_panel.frame_slider.SetMaxFrameNo(motion.max_fno)
 
         try:
             logger.info("モデル描画準備")

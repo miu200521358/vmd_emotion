@@ -5,11 +5,11 @@ import wx
 from mlib.base.logger import MLogger
 from mlib.pmx.canvas import CanvasPanel
 from mlib.service.form.base_frame import BaseFrame
-from mlib.service.form.widgets.spin_ctrl import WheelSpinCtrl
 from mlib.vmd.vmd_collection import VmdMotion
 from mlib.service.form.widgets.console_ctrl import ConsoleCtrl
 from service.worker.config.gaze_worker import GazeWorker
 from mlib.service.form.widgets.float_slider_ctrl import FloatSliderCtrl
+from mlib.service.form.widgets.frame_slider_ctrl import FrameSliderCtrl
 from service.form.widgets.blink_ctrl_set import BlinkCtrlSet
 
 logger = MLogger(os.path.basename(__file__))
@@ -63,11 +63,17 @@ class ConfigPanel(CanvasPanel):
         self.gaze_infection_title_ctrl.SetToolTip(frame_tooltip)
         self.play_sizer.Add(self.gaze_infection_title_ctrl, 0, wx.ALL, 3)
 
-        self.frame_ctrl = WheelSpinCtrl(
-            self.scrolled_window, initial=0, min=0, max=10000, size=wx.Size(70, -1), change_event=self.on_frame_change
+        # スライダー
+        self.frame_slider = FrameSliderCtrl(
+            self.scrolled_window, border=3, size=wx.Size(700, -1), tooltip=frame_tooltip, change_event=self.on_frame_change
         )
-        self.frame_ctrl.SetToolTip(frame_tooltip)
-        self.play_sizer.Add(self.frame_ctrl, 0, wx.ALL, 3)
+        self.play_sizer.Add(self.frame_slider.sizer, 0, wx.ALL, 0)
+
+        # self.frame_ctrl = WheelSpinCtrl(
+        #     self.scrolled_window, initial=0, min=0, max=10000, size=wx.Size(70, -1), change_event=self.on_frame_change
+        # )
+        # self.frame_ctrl.SetToolTip(frame_tooltip)
+        # self.play_sizer.Add(self.frame_ctrl, 0, wx.ALL, 3)
 
         self.play_ctrl = wx.Button(self.scrolled_window, wx.ID_ANY, __("再生"), wx.DefaultPosition, wx.Size(80, -1))
         self.play_ctrl.SetToolTip(__("モーションを再生することができます（ただし重いです）"))
@@ -84,7 +90,7 @@ class ConfigPanel(CanvasPanel):
         self.create_gaze_ctrl.SetToolTip(__("頭などの動きに合わせて目線を生成します"))
         self.gaze_sizer.Add(self.create_gaze_ctrl, 0, wx.ALL, 3)
 
-        gaze_infection_tooltip = __("目線キーフレを作成する頻度。\n値が小さいほど、小さな動きでも目線が動くようになります。")
+        gaze_infection_tooltip = __("目線キーフレを作成する頻度。\n値が大きいほど、小さな動きでも目線が動くようになります。")
 
         self.gaze_infection_title_ctrl = wx.StaticText(self.scrolled_window, wx.ID_ANY, __("頻度"), wx.DefaultPosition, wx.DefaultSize, 0)
         self.gaze_infection_title_ctrl.SetToolTip(gaze_infection_tooltip)
@@ -92,7 +98,7 @@ class ConfigPanel(CanvasPanel):
 
         self.gaze_infection_slider = FloatSliderCtrl(
             parent=self.scrolled_window,
-            value=0.2,
+            value=0.5,
             min_value=0.1,
             max_value=1.0,
             increment=0.01,
@@ -200,11 +206,11 @@ class ConfigPanel(CanvasPanel):
 
     @property
     def fno(self) -> int:
-        return self.frame_ctrl.GetValue()
+        return self.frame_slider.GetValue()
 
     @fno.setter
     def fno(self, v: int) -> None:
-        self.frame_ctrl.SetValue(v)
+        self.frame_slider.SetValue(v)
 
     def stop_play(self) -> None:
         self.play_ctrl.SetLabelText(__("再生"))
@@ -220,7 +226,7 @@ class ConfigPanel(CanvasPanel):
         self.scrolled_window.SetPosition(wx.Point(0, self.canvas.size.height))
 
     def Enable(self, enable: bool):
-        self.frame_ctrl.Enable(enable)
+        self.frame_slider.Enable(enable)
         self.play_ctrl.Enable(enable)
         self.create_gaze_ctrl.Enable(enable)
         self.gaze_infection_slider.Enable(enable)
@@ -245,6 +251,11 @@ class ConfigPanel(CanvasPanel):
         self.frame.file_panel.motion_ctrl.data = motion
         self.canvas.model_sets[0].motion = motion
         self.frame.file_panel.output_motion_ctrl.data = output_motion
+        # 関連ボーン・モーフのキーがある箇所に飛ぶ
+        key_fnos = [fno for bone_name in ("両目", "左目", "右目") for fno in output_motion.bones[bone_name].indexes] + [
+            fno for bone_name in ("まばたき", "あ", "い", "う", "え", "お") for fno in output_motion.bones[bone_name].indexes
+        ]
+        self.frame_slider.SetKeyFrames(sorted(set(key_fnos)))
 
         self.on_frame_change(wx.EVT_BUTTON)
 

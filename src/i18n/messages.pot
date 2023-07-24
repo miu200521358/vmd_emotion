@@ -447,3 +447,35 @@ msgstr ""
 msgid "-- 目線補間曲線 [{i} ({p:.2f}%)]"
 msgstr ""
 
+
+msgid "マウスホイールでのスクロールは変更のあったキーフレに次々に飛びます"
+msgstr ""
+
+
+msgid "頻度"
+msgstr ""
+
+
+msgid "横振り幅"
+msgstr ""
+
+
+msgid "縦振り幅"
+msgstr ""
+
+
+msgid "リセット"
+msgstr ""
+
+
+msgid "再生"
+msgstr ""
+
+
+msgid "表情モーション出力"
+msgstr ""
+
+
+msgid "表情モーション出力停止"
+msgstr ""
+
