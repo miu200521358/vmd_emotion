@@ -4,6 +4,7 @@ from mlib.base.exception import MApplicationException
 from mlib.base.logger import MLogger
 from mlib.pmx.pmx_collection import PmxModel
 from mlib.vmd.vmd_collection import VmdMotion
+from service.usecase.config.blink_usecase import BLINK_CONDITIONS
 
 logger = MLogger(os.path.basename(__file__), level=1)
 __ = logger.get_text
@@ -33,3 +34,6 @@ class LoadUsecase:
         motion = original_motion.copy()
 
         return motion
+
+    def get_blink_conditions(self) -> dict[str, float]:
+        return BLINK_CONDITIONS

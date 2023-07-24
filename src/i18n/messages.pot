@@ -367,3 +367,67 @@ msgstr ""
 msgid "-- 目線生成 [{i} ({p:.2f}%)]"
 msgstr ""
 
+
+msgid "まばたき生成"
+msgstr ""
+
+
+msgid "頭などの動きに合わせてをまばたきを生成します。目線が入ってない場合、先に目線を生成します。"
+msgstr ""
+
+
+msgid "イントロ"
+msgstr ""
+
+
+msgid "エンディング"
+msgstr ""
+
+
+msgid "ターンの開始時"
+msgstr ""
+
+
+msgid "キックやジャンプの着地後"
+msgstr ""
+
+
+msgid "腕が顔の前を横切った時"
+msgstr ""
+
+
+msgid "振り向いた時"
+msgstr ""
+
+
+msgid "条件プルダウンの選択肢を上方向に移動できます。"
+msgstr ""
+
+
+msgid "まばたきを生成する条件の選択肢"
+msgstr ""
+
+
+msgid "条件プルダウンの選択肢を下方向に移動できます。"
+msgstr ""
+
+
+msgid "まばたきを生成する条件の発生確率"
+msgstr ""
+
+
+msgid "まばたき生成条件の発生確率を0%に設定します"
+msgstr ""
+
+
+msgid "まばたき生成条件の発生確率を40%に設定します"
+msgstr ""
+
+
+msgid "まばたき生成条件の発生確率を80%に設定します"
+msgstr ""
+
+
+msgid "まばたき生成条件の発生確率を100%に設定します"
+msgstr ""
+

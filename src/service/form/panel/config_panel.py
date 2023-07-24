@@ -10,6 +10,7 @@ from mlib.vmd.vmd_collection import VmdMotion
 from mlib.service.form.widgets.console_ctrl import ConsoleCtrl
 from service.worker.config.gaze_worker import GazeWorker
 from mlib.service.form.widgets.float_slider_ctrl import FloatSliderCtrl
+from service.form.widgets.blink_ctrl_set import BlinkCtrlSet
 
 logger = MLogger(os.path.basename(__file__))
 __ = logger.get_text
@@ -160,6 +161,20 @@ class ConfigPanel(CanvasPanel):
         self.gaze_sizer.Add(self.gaze_reset_slider.sizer, 0, wx.ALL, 3)
 
         self.window_sizer.Add(self.gaze_sizer, 0, wx.ALL, 3)
+
+        # --------------
+        # まばたき作成
+
+        self.blink_sizer = wx.BoxSizer(wx.HORIZONTAL)
+
+        self.create_blink_ctrl = wx.Button(self.scrolled_window, wx.ID_ANY, __("まばたき生成"), wx.DefaultPosition, wx.Size(120, -1))
+        self.create_blink_ctrl.SetToolTip(__("頭などの動きに合わせてをまばたきを生成します。"))
+        self.blink_sizer.Add(self.create_blink_ctrl, 0, wx.ALL, 3)
+
+        self.blink_set = BlinkCtrlSet(self, self.scrolled_window)
+        self.blink_sizer.Add(self.blink_set.sizer, 0, wx.ALL, 3)
+
+        self.window_sizer.Add(self.blink_sizer, 0, wx.ALL, 3)
 
         # --------------
 

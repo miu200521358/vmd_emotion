@@ -75,7 +75,7 @@ class MainFrame(BaseFrame):
     def on_result(
         self,
         result: bool,
-        data: Optional[tuple[PmxModel, PmxModel, VmdMotion, VmdMotion]],
+        data: Optional[tuple[PmxModel, PmxModel, VmdMotion, VmdMotion, dict[str, float]]],
         elapsed_time: str,
     ) -> None:
         self.file_panel.console_ctrl.write(f"\n----------------\n{elapsed_time}")
@@ -88,7 +88,7 @@ class MainFrame(BaseFrame):
 
         logger.info("描画準備開始", decoration=MLogger.Decoration.BOX)
 
-        original_model, model, original_motion, motion = data
+        original_model, model, original_motion, motion, blink_conditions = data
 
         self.file_panel.model_ctrl.original_data = original_model
         self.file_panel.model_ctrl.data = model
@@ -102,6 +102,8 @@ class MainFrame(BaseFrame):
 
         # キーフレを戻す
         self.config_panel.fno = 0
+        # まばたき条件の初期化
+        self.config_panel.blink_set.initialize(blink_conditions)
 
         try:
             logger.info("モデル描画準備")

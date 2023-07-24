@@ -56,7 +56,9 @@ class LoadWorker(BaseWorker):
         else:
             motion = VmdMotion("empty")
 
-        self.result_data = (original_model, model, original_motion, motion)
+        blink_conditions = usecase.get_blink_conditions()
+
+        self.result_data = (original_model, model, original_motion, motion, blink_conditions)
 
     def output_log(self):
         file_panel: FilePanel = self.frame.file_panel
