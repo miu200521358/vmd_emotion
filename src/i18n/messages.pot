@@ -431,3 +431,19 @@ msgstr ""
 msgid "まばたき生成条件の発生確率を100%に設定します"
 msgstr ""
 
+
+msgid "目線クリア"
+msgstr ""
+
+
+msgid "-- 目線クリア [{i} ({p:.2f}%)]"
+msgstr ""
+
+
+msgid "目線補間曲線"
+msgstr ""
+
+
+msgid "-- 目線補間曲線 [{i} ({p:.2f}%)]"
+msgstr ""
+

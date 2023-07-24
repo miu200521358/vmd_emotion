@@ -34,7 +34,7 @@ class BlinkCtrlSet:
             self.window,
             wx.ID_ANY,
             wx.DefaultPosition,
-            wx.Size(300, -1),
+            wx.Size(400, -1),
             choices=[],
         )
         self.condition_choice_ctrl.SetToolTip(__("まばたきを生成する条件の選択肢"))
@@ -60,7 +60,7 @@ class BlinkCtrlSet:
             increment=1,
             spin_increment=1,
             border=3,
-            size=wx.Size(160, -1),
+            size=wx.Size(120, -1),
             tooltip=__("まばたきを生成する条件の発生確率"),
         )
 

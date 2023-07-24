@@ -279,3 +279,63 @@ msgstr "The smaller the keyfrequency interval\n value that resets the line of si
 
 msgid "-- 目線生成 [{i} ({p:.2f}%)]"
 msgstr "-- eye line generation [{i} ({p:.2f}%)]"
+
+msgid "まばたき生成"
+msgstr "Blink generation"
+
+msgid "頭などの動きに合わせてをまばたきを生成します。目線が入ってない場合、先に目線を生成します。"
+msgstr "Generates blinks as the head and other parts of the body move. If no eye line is included, it generates the eye line first"
+
+msgid "イントロ"
+msgstr "Intro"
+
+msgid "エンディング"
+msgstr "Ending"
+
+msgid "ターンの開始時"
+msgstr "At the beginning of the turn"
+
+msgid "キックやジャンプの着地後"
+msgstr "After landing a kick or jump"
+
+msgid "腕が顔の前を横切った時"
+msgstr "When his arm crosses in front of his face"
+
+msgid "振り向いた時"
+msgstr "When I turned around.."
+
+msgid "条件プルダウンの選択肢を上方向に移動できます。"
+msgstr "You can move the choices in the condition pulldown upward"
+
+msgid "まばたきを生成する条件の選択肢"
+msgstr "Choice of conditions that generate blinking"
+
+msgid "条件プルダウンの選択肢を下方向に移動できます。"
+msgstr "You can move the choices in the condition pulldown downwards"
+
+msgid "まばたきを生成する条件の発生確率"
+msgstr "Probability of occurrence of conditions that produce blinking"
+
+msgid "まばたき生成条件の発生確率を0%に設定します"
+msgstr "Set the probability of occurrence of the blink generation condition to 0%"
+
+msgid "まばたき生成条件の発生確率を40%に設定します"
+msgstr "Set the probability of occurrence of the blink generation condition to 40%"
+
+msgid "まばたき生成条件の発生確率を80%に設定します"
+msgstr "Set the probability of occurrence of the blink generation condition to 80%"
+
+msgid "まばたき生成条件の発生確率を100%に設定します"
+msgstr "Set the probability of occurrence of the blink generation condition to 100%"
+
+msgid "目線クリア"
+msgstr "Clear line of sight"
+
+msgid "-- 目線クリア [{i} ({p:.2f}%)]"
+msgstr "-- eye clear [{i} ({p:.2f}%)]"
+
+msgid "目線補間曲線"
+msgstr "Eye line interpolation curve"
+
+msgid "-- 目線補間曲線 [{i} ({p:.2f}%)]"
+msgstr "-- Eye interpolation curve [{i} ({p:.2f}%)]"

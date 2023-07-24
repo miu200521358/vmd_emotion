@@ -1,5 +1,7 @@
 import os
 
+from numpy.linalg import solve
+
 from mlib.base.logger import MLogger
 from mlib.pmx.pmx_collection import PmxModel
 from mlib.vmd.vmd_collection import VmdMotion
@@ -7,9 +9,12 @@ from mlib.base.math import MVector3D
 from mlib.vmd.vmd_part import VmdBoneFrame
 from mlib.base.interpolation import get_infections
 from mlib.base.math import MQuaternion
+from mlib.base.interpolation import create_interpolation
 
 logger = MLogger(os.path.basename(__file__), level=1)
 __ = logger.get_text
+
+Z_AXIS = MVector3D(0, 0, -1)
 
 
 class GazeUsecase:
@@ -40,7 +45,7 @@ class GazeUsecase:
         gaze_dots: list[float] = []
         for fidx, fno in enumerate(eye_fnos):
             logger.count("目線変動量取得", index=fidx, total_index_count=len(eye_fnos), display_block=100)
-            eye_global_direction_vector = eye_matrixes[fno, "両目"].global_matrix * MVector3D(0, 0, -1)
+            eye_global_direction_vector = eye_matrixes[fno, "両目"].global_matrix * Z_AXIS
             gaze_vector = (eye_global_direction_vector - eye_matrixes[fno, "両目"].position).normalized()
 
             if not prev_gaze:
@@ -91,13 +96,13 @@ class GazeUsecase:
             gaze_original_x_qq, gaze_original_y_qq, gaze_z_qq, _ = gaze_full_qq.separate_by_axis(MVector3D(1, 0, 0))
 
             # 目線の上下運動
-            x = gaze_original_x_qq.to_signed_degrees(MVector3D(0, 0, -1))
+            x = gaze_original_x_qq.to_signed_degrees(Z_AXIS)
             # 補正値を求める(初期で少し下げ目にしておく)
             correct_x = fitted_x_function(x) * gaze_ratio_x - 2
             gaze_x_qq = MQuaternion.from_axis_angles(gaze_original_x_qq.xyz, correct_x)
 
             # 目線の左右運動
-            y = gaze_original_y_qq.to_signed_degrees(MVector3D(0, 0, -1))
+            y = gaze_original_y_qq.to_signed_degrees(Z_AXIS)
             # 補正値を求める
             correct_y = fitted_y_function(y) * gaze_ratio_y
             gaze_y_qq = MQuaternion.from_axis_angles(gaze_original_y_qq.xyz, correct_y)
@@ -132,6 +137,43 @@ class GazeUsecase:
             output_motion.bones["両目"].append(next_bf.copy())
 
             logger.debug("目線クリア 始[{d}] 終[{r}]", d=bf.index, r=next_bf.index)
+
+        eye_fnos = output_motion.bones["両目"].indexes
+        for fidx, (prev_fno, now_fno, next_fno) in enumerate(zip(eye_fnos, eye_fnos[1:], eye_fnos[2:])):
+            logger.count("目線補間曲線", index=fidx, total_index_count=len(eye_fnos), display_block=100)
+
+            prev_bf = output_motion.bones["両目"][prev_fno]
+            now_bf = output_motion.bones["両目"][now_fno]
+            next_bf = output_motion.bones["両目"][next_fno]
+
+            prev_degree = prev_bf.rotation.to_signed_degrees(Z_AXIS)
+            now_degree = now_bf.rotation.to_signed_degrees(Z_AXIS)
+            next_degree = next_bf.rotation.to_signed_degrees(Z_AXIS)
+
+            prev_degree = 1
+            now_degree = now_bf.rotation.dot(prev_bf.rotation)
+            next_degree = next_bf.rotation.dot(now_bf.rotation)
+
+            x1 = 0
+            x2 = now_fno - prev_fno
+            x3 = next_fno - prev_fno
+
+            a, b, c = solve([[x1**2, x1, 1], [x2**2, x2, 1], [x3**2, x3, 1]], [prev_degree, now_degree, next_degree])
+
+            now_degrees: list[float] = []
+            for fidx in range(now_fno - prev_fno):
+                now_degrees.append(a * fidx**2 + b * fidx + c)
+            prev_bf.interpolations.rotation = create_interpolation(now_degrees)
+
+            next_degrees: list[float] = []
+            for fidx in range(now_fno - prev_fno, next_fno - prev_fno):
+                next_degrees.append(a * fidx**2 + b * fidx + c)
+            now_bf.interpolations.rotation = create_interpolation(next_degrees)
+
+            logger.debug(
+                f"目線補間曲線 係数[{a:.3f}, {b:.3f}, {c:.3f}] prev[{prev_bf.index}][{prev_bf.interpolations.rotation}] "
+                + f"now[{now_bf.index}][{now_bf.interpolations.rotation}]"
+            )
 
 
 def fitted_x_function(x: float):

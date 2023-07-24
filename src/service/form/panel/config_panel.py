@@ -92,7 +92,7 @@ class ConfigPanel(CanvasPanel):
 
         self.gaze_infection_slider = FloatSliderCtrl(
             parent=self.scrolled_window,
-            value=0.3,
+            value=0.2,
             min_value=0.1,
             max_value=1.0,
             increment=0.01,
@@ -111,7 +111,7 @@ class ConfigPanel(CanvasPanel):
 
         self.gaze_ratio_x_slider = FloatSliderCtrl(
             parent=self.scrolled_window,
-            value=0.8,
+            value=0.7,
             min_value=0.5,
             max_value=1.5,
             increment=0.05,
@@ -130,7 +130,7 @@ class ConfigPanel(CanvasPanel):
 
         self.gaze_ratio_y_slider = FloatSliderCtrl(
             parent=self.scrolled_window,
-            value=0.8,
+            value=0.7,
             min_value=0.5,
             max_value=1.5,
             increment=0.05,
@@ -227,6 +227,8 @@ class ConfigPanel(CanvasPanel):
         self.gaze_ratio_x_slider.Enable(enable)
         self.gaze_ratio_y_slider.Enable(enable)
         self.gaze_reset_slider.Enable(enable)
+        self.create_blink_ctrl.Enable(enable)
+        self.blink_set.Enable(enable)
 
     def on_frame_change(self, event: wx.Event):
         self.Enable(False)
