@@ -32,6 +32,9 @@ class BlinkWorker(BaseWorker):
             motion,
             output_motion,
             self.frame.config_panel.blink_set.condition_probabilities,
+            self.frame.config_panel.blink_set.linkage_depth_ctrl.GetValue(),
+            self.frame.config_panel.blink_set.blink_span_ctrl.GetValue(),
+            "下",
         )
 
         self.result_data = motion, output_motion

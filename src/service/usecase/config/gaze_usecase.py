@@ -2,16 +2,12 @@ import os
 
 from numpy.linalg import solve
 
+from mlib.base.interpolation import IP_MAX, create_interpolation, get_infections
 from mlib.base.logger import MLogger
+from mlib.base.math import MQuaternion, MVector2D, MVector3D
 from mlib.pmx.pmx_collection import PmxModel
 from mlib.vmd.vmd_collection import VmdMotion
-from mlib.base.math import MVector3D
 from mlib.vmd.vmd_part import VmdBoneFrame
-from mlib.base.interpolation import get_infections
-from mlib.base.math import MQuaternion
-from mlib.base.interpolation import create_interpolation
-from mlib.base.interpolation import IP_MAX
-from mlib.base.math import MVector2D
 
 logger = MLogger(os.path.basename(__file__), level=1)
 __ = logger.get_text
@@ -28,7 +24,11 @@ class GazeUsecase:
         output_motion: VmdMotion,
         gaze_infection: float,
         gaze_ratio_x: float,
+        gaze_limit_upper_x: int,
+        gaze_limit_lower_x: int,
         gaze_ratio_y: float,
+        gaze_limit_upper_y: int,
+        gaze_limit_lower_y: int,
         gaze_reset_num: int,
     ) -> None:
         """目線生成"""
@@ -112,8 +112,12 @@ class GazeUsecase:
 
             gaze_qq = gaze_x_qq * gaze_y_qq
             gaze_degrees = gaze_qq.to_euler_degrees()
-            # Z回転を殺す
-            gaze_xy_qq = MQuaternion.from_euler_degrees(gaze_degrees.x, gaze_degrees.y, 0)
+            # Z回転を殺して上下限を設定する
+            gaze_xy_qq = MQuaternion.from_euler_degrees(
+                max(gaze_limit_lower_x, min(gaze_limit_upper_x, gaze_degrees.x)),
+                max(gaze_limit_lower_y, min(gaze_limit_upper_y, gaze_degrees.y)),
+                0,
+            )
 
             bf = VmdBoneFrame(fno, "両目")
             bf.rotation = gaze_xy_qq

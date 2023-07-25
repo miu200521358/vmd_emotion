@@ -414,3 +414,48 @@ msgstr "Blink point detection [jump]"
 
 msgid "まばたきポイント検出 [ターン]"
 msgstr "Blink point detection [turns]"
+
+msgid "縦上限"
+msgstr "Vertical Upper Limit"
+
+msgid "縦下限"
+msgstr "Vertical lower limit"
+
+msgid "横上限"
+msgstr "Upper lateral limit"
+
+msgid "横下限"
+msgstr "Lower horizontal limit"
+
+msgid "目線キーフレで設定する縦方向の値の上限。\n上限を超えた回転量になった場合、上限までしか動かしません。"
+msgstr "The upper limit of the vertical value to be set by the eye keyfre. \If the amount of rotation exceeds the ɑn upper limit, it will only be moved up to the upper limit"
+
+msgid "目線キーフレで設定する縦方向の値の下限。\n下限を超えた回転量になった場合、下限までしか動かしません。"
+msgstr "The lower limit of the vertical value to be set by the eye keyfre. \If the amount of rotation exceeds the ϵn lower limit, it will only be moved to the lower limit"
+
+msgid "目線キーフレで設定する横方向の値の上限（向かって左側）。\n上限を超えた回転量になった場合、上限までしか動かしません。"
+msgstr "The upper limit of the horizontal value to be set by the eye keyfre (left side toward you). \If the amount of rotation exceeds the ɑn upper limit, it will only be moved up to the upper limit"
+
+msgid "目線キーフレで設定する横方向の値の下限（向かって右側）。\n下限を超えた回転量になった場合、下限までしか動かしません。"
+msgstr "The lower limit of the horizontal value set by the eye keyfre (right side toward you). \If the amount of rotation exceeds the ϵn lower limit, it will only be moved to the lower limit"
+
+msgid "まばたきを生成する条件の発生確率。"
+msgstr "The probability of occurrence of the condition that produces a blink"
+
+msgid "100%の場合、該当する箇所で必ず発生しますが、近隣により上位（順番が上）のまばたきの発生が予定されている場合、そちらを優先します。"
+msgstr "At 100%, the blink will always occur at the appropriate location, but if a higher (higher order) blink is scheduled to occur in the neighborhood, that will take precedence"
+
+msgid "条件発生確率"
+msgstr "Condition probability of occurrence"
+
+msgid "まばたきを生成する際の連動部位（眉下・目線下）の変動量"
+msgstr "The amount of variation in the interlocking site (below the eyebrow and eye line) when generating a blink"
+
+msgid "値が大きいほど、大きく連動します"
+msgstr "The higher the value, the greater the linkage"
+
+msgid "連動の深さ"
+msgstr "Depth of Linkage"
+
+msgid "まばたきの間隔\n値が小さいほど、細かくまばたきをします"
+msgstr "The smaller the blink interval ⱖn value, the finer the blink"

@@ -31,10 +31,14 @@ class GazeWorker(BaseWorker):
             model,
             motion,
             output_motion,
-            self.frame.config_panel.gaze_infection_slider.GetValue(),
-            self.frame.config_panel.gaze_ratio_x_slider.GetValue(),
-            self.frame.config_panel.gaze_ratio_y_slider.GetValue(),
-            int(self.frame.config_panel.gaze_reset_slider.GetValue()),
+            self.frame.config_panel.gaze_infection_ctrl.GetValue(),
+            self.frame.config_panel.gaze_ratio_x_ctrl.GetValue(),
+            self.frame.config_panel.gaze_limit_upper_x_ctrl.GetValue(),
+            self.frame.config_panel.gaze_limit_lower_x_ctrl.GetValue(),
+            self.frame.config_panel.gaze_ratio_y_ctrl.GetValue(),
+            self.frame.config_panel.gaze_limit_upper_y_ctrl.GetValue(),
+            self.frame.config_panel.gaze_limit_lower_y_ctrl.GetValue(),
+            self.frame.config_panel.gaze_reset_ctrl.GetValue(),
         )
 
         self.result_data = motion, output_motion

@@ -5,13 +5,13 @@ import wx
 from mlib.base.logger import MLogger
 from mlib.pmx.canvas import CanvasPanel
 from mlib.service.form.base_frame import BaseFrame
-from mlib.vmd.vmd_collection import VmdMotion
 from mlib.service.form.widgets.console_ctrl import ConsoleCtrl
-from service.worker.config.gaze_worker import GazeWorker
-from mlib.service.form.widgets.float_slider_ctrl import FloatSliderCtrl
 from mlib.service.form.widgets.frame_slider_ctrl import FrameSliderCtrl
+from mlib.service.form.widgets.spin_ctrl import WheelSpinCtrl, WheelSpinCtrlDouble
+from mlib.vmd.vmd_collection import VmdMotion
 from service.form.widgets.blink_ctrl_set import BlinkCtrlSet
 from service.worker.config.blink_worker import BlinkWorker
+from service.worker.config.gaze_worker import GazeWorker
 
 logger = MLogger(os.path.basename(__file__))
 __ = logger.get_text
@@ -67,7 +67,7 @@ class ConfigPanel(CanvasPanel):
 
         # スライダー
         self.frame_slider = FrameSliderCtrl(
-            self.scrolled_window, border=3, size=wx.Size(700, -1), tooltip=frame_tooltip, change_event=self.on_frame_change
+            self.scrolled_window, border=3, size=wx.Size(900, -1), tooltip=frame_tooltip, change_event=self.on_frame_change
         )
         self.play_sizer.Add(self.frame_slider.sizer, 0, wx.ALL, 0)
 
@@ -92,81 +92,101 @@ class ConfigPanel(CanvasPanel):
         self.create_gaze_ctrl.SetToolTip(__("頭などの動きに合わせて目線を生成します"))
         self.gaze_sizer.Add(self.create_gaze_ctrl, 0, wx.ALL, 3)
 
+        # --------------
         gaze_infection_tooltip = __("目線キーフレを作成する頻度。\n値が大きいほど、小さな動きでも目線が動くようになります。")
 
         self.gaze_infection_title_ctrl = wx.StaticText(self.scrolled_window, wx.ID_ANY, __("頻度"), wx.DefaultPosition, wx.DefaultSize, 0)
         self.gaze_infection_title_ctrl.SetToolTip(gaze_infection_tooltip)
         self.gaze_sizer.Add(self.gaze_infection_title_ctrl, 0, wx.ALL, 3)
 
-        self.gaze_infection_slider = FloatSliderCtrl(
-            parent=self.scrolled_window,
-            value=0.5,
-            min_value=0.1,
-            max_value=1.0,
-            increment=0.01,
-            spin_increment=0.01,
-            border=3,
-            size=wx.Size(100, -1),
-            tooltip=gaze_infection_tooltip,
-        )
-        self.gaze_sizer.Add(self.gaze_infection_slider.sizer, 0, wx.ALL, 3)
+        self.gaze_infection_ctrl = WheelSpinCtrlDouble(self.scrolled_window, initial=0.5, min=0.1, max=1.0, inc=0.01, size=wx.Size(60, -1))
+        self.gaze_infection_ctrl.SetToolTip(gaze_infection_tooltip)
+        self.gaze_sizer.Add(self.gaze_infection_ctrl, 0, wx.ALL, 3)
 
+        # --------------
         gaze_ratio_x_tooltip = __("目線キーフレで設定する縦方向の値の大きさ。\n値が大きいほど、目線を大きく動かすようになります。")
 
         self.gaze_ratio_x_title_ctrl = wx.StaticText(self.scrolled_window, wx.ID_ANY, __("縦振り幅"), wx.DefaultPosition, wx.DefaultSize, 0)
         self.gaze_ratio_x_title_ctrl.SetToolTip(gaze_ratio_x_tooltip)
         self.gaze_sizer.Add(self.gaze_ratio_x_title_ctrl, 0, wx.ALL, 3)
 
-        self.gaze_ratio_x_slider = FloatSliderCtrl(
-            parent=self.scrolled_window,
-            value=0.7,
-            min_value=0.5,
-            max_value=1.5,
-            increment=0.05,
-            spin_increment=0.05,
-            border=3,
-            size=wx.Size(100, -1),
-            tooltip=gaze_ratio_x_tooltip,
-        )
-        self.gaze_sizer.Add(self.gaze_ratio_x_slider.sizer, 0, wx.ALL, 3)
+        self.gaze_ratio_x_ctrl = WheelSpinCtrlDouble(self.scrolled_window, initial=0.7, min=0.5, max=1.5, inc=0.01, size=wx.Size(60, -1))
+        self.gaze_ratio_x_ctrl.SetToolTip(gaze_ratio_x_tooltip)
+        self.gaze_sizer.Add(self.gaze_ratio_x_ctrl, 0, wx.ALL, 3)
 
+        # --------------
+        gaze_limit_upper_x_tooltip = __("目線キーフレで設定する縦方向の値の上限。\n上限を超えた回転量になった場合、上限までしか動かしません。")
+
+        self.gaze_limit_upper_x_title_ctrl = wx.StaticText(
+            self.scrolled_window, wx.ID_ANY, __("縦上限"), wx.DefaultPosition, wx.DefaultSize, 0
+        )
+        self.gaze_limit_upper_x_title_ctrl.SetToolTip(gaze_limit_upper_x_tooltip)
+        self.gaze_sizer.Add(self.gaze_limit_upper_x_title_ctrl, 0, wx.ALL, 3)
+
+        self.gaze_limit_upper_x_ctrl = WheelSpinCtrl(self.scrolled_window, initial=3, min=0, max=45, size=wx.Size(60, -1))
+        self.gaze_limit_upper_x_ctrl.SetToolTip(gaze_limit_upper_x_tooltip)
+        self.gaze_sizer.Add(self.gaze_limit_upper_x_ctrl, 0, wx.ALL, 3)
+
+        # --------------
+        gaze_limit_lower_x_tooltip = __("目線キーフレで設定する縦方向の値の下限。\n下限を超えた回転量になった場合、下限までしか動かしません。")
+
+        self.gaze_limit_lower_x_title_ctrl = wx.StaticText(
+            self.scrolled_window, wx.ID_ANY, __("縦下限"), wx.DefaultPosition, wx.DefaultSize, 0
+        )
+        self.gaze_limit_lower_x_title_ctrl.SetToolTip(gaze_limit_lower_x_tooltip)
+        self.gaze_sizer.Add(self.gaze_limit_lower_x_title_ctrl, 0, wx.ALL, 3)
+
+        self.gaze_limit_lower_x_ctrl = WheelSpinCtrl(self.scrolled_window, initial=-8, min=-45, max=0, size=wx.Size(60, -1))
+        self.gaze_limit_lower_x_ctrl.SetToolTip(gaze_limit_lower_x_tooltip)
+        self.gaze_sizer.Add(self.gaze_limit_lower_x_ctrl, 0, wx.ALL, 3)
+
+        # --------------
         gaze_ratio_y_tooltip = __("目線キーフレで設定する横方向の値の大きさ。\n値が大きいほど、目線を大きく動かすようになります。")
 
         self.gaze_ratio_y_title_ctrl = wx.StaticText(self.scrolled_window, wx.ID_ANY, __("横振り幅"), wx.DefaultPosition, wx.DefaultSize, 0)
         self.gaze_ratio_y_title_ctrl.SetToolTip(gaze_ratio_y_tooltip)
         self.gaze_sizer.Add(self.gaze_ratio_y_title_ctrl, 0, wx.ALL, 3)
 
-        self.gaze_ratio_y_slider = FloatSliderCtrl(
-            parent=self.scrolled_window,
-            value=0.7,
-            min_value=0.5,
-            max_value=1.5,
-            increment=0.05,
-            spin_increment=0.05,
-            border=3,
-            size=wx.Size(100, -1),
-            tooltip=gaze_ratio_y_tooltip,
-        )
-        self.gaze_sizer.Add(self.gaze_ratio_y_slider.sizer, 0, wx.ALL, 3)
+        self.gaze_ratio_y_ctrl = WheelSpinCtrlDouble(self.scrolled_window, initial=0.7, min=0.5, max=1.5, inc=0.01, size=wx.Size(60, -1))
+        self.gaze_ratio_y_ctrl.SetToolTip(gaze_ratio_y_tooltip)
+        self.gaze_sizer.Add(self.gaze_ratio_y_ctrl, 0, wx.ALL, 3)
 
+        # --------------
+        gaze_limit_upper_y_tooltip = __("目線キーフレで設定する横方向の値の上限（向かって左側）。\n上限を超えた回転量になった場合、上限までしか動かしません。")
+
+        self.gaze_limit_upper_y_title_ctrl = wx.StaticText(
+            self.scrolled_window, wx.ID_ANY, __("横上限"), wx.DefaultPosition, wx.DefaultSize, 0
+        )
+        self.gaze_limit_upper_y_title_ctrl.SetToolTip(gaze_limit_upper_y_tooltip)
+        self.gaze_sizer.Add(self.gaze_limit_upper_y_title_ctrl, 0, wx.ALL, 3)
+
+        self.gaze_limit_upper_y_ctrl = WheelSpinCtrl(self.scrolled_window, initial=13, min=0, max=45, size=wx.Size(60, -1))
+        self.gaze_limit_upper_y_ctrl.SetToolTip(gaze_limit_upper_y_tooltip)
+        self.gaze_sizer.Add(self.gaze_limit_upper_y_ctrl, 0, wx.ALL, 3)
+
+        # --------------
+        gaze_limit_lower_y_tooltip = __("目線キーフレで設定する横方向の値の下限（向かって右側）。\n下限を超えた回転量になった場合、下限までしか動かしません。")
+
+        self.gaze_limit_lower_y_title_ctrl = wx.StaticText(
+            self.scrolled_window, wx.ID_ANY, __("横下限"), wx.DefaultPosition, wx.DefaultSize, 0
+        )
+        self.gaze_limit_lower_y_title_ctrl.SetToolTip(gaze_limit_lower_y_tooltip)
+        self.gaze_sizer.Add(self.gaze_limit_lower_y_title_ctrl, 0, wx.ALL, 3)
+
+        self.gaze_limit_lower_y_ctrl = WheelSpinCtrl(self.scrolled_window, initial=-13, min=-45, max=0, size=wx.Size(60, -1))
+        self.gaze_limit_lower_y_ctrl.SetToolTip(gaze_limit_lower_y_tooltip)
+        self.gaze_sizer.Add(self.gaze_limit_lower_y_ctrl, 0, wx.ALL, 3)
+
+        # --------------
         gaze_reset_tooltip = __("目線をリセットするキーフレ間隔\n値が小さいほど、目線を細かくリセットします")
 
         self.gaze_reset_title_ctrl = wx.StaticText(self.scrolled_window, wx.ID_ANY, __("リセット"), wx.DefaultPosition, wx.DefaultSize, 0)
         self.gaze_reset_title_ctrl.SetToolTip(gaze_reset_tooltip)
         self.gaze_sizer.Add(self.gaze_reset_title_ctrl, 0, wx.ALL, 3)
 
-        self.gaze_reset_slider = FloatSliderCtrl(
-            parent=self.scrolled_window,
-            value=7,
-            min_value=5,
-            max_value=15,
-            increment=1,
-            spin_increment=1,
-            border=3,
-            size=wx.Size(100, -1),
-            tooltip=gaze_reset_tooltip,
-        )
-        self.gaze_sizer.Add(self.gaze_reset_slider.sizer, 0, wx.ALL, 3)
+        self.gaze_reset_ctrl = WheelSpinCtrl(self.scrolled_window, initial=7, min=5, max=15, size=wx.Size(60, -1))
+        self.gaze_reset_ctrl.SetToolTip(gaze_reset_tooltip)
+        self.gaze_sizer.Add(self.gaze_reset_ctrl, 0, wx.ALL, 3)
 
         self.window_sizer.Add(self.gaze_sizer, 0, wx.ALL, 3)
 
@@ -232,10 +252,14 @@ class ConfigPanel(CanvasPanel):
         self.frame_slider.Enable(enable)
         self.play_ctrl.Enable(enable)
         self.create_gaze_ctrl.Enable(enable)
-        self.gaze_infection_slider.Enable(enable)
-        self.gaze_ratio_x_slider.Enable(enable)
-        self.gaze_ratio_y_slider.Enable(enable)
-        self.gaze_reset_slider.Enable(enable)
+        self.gaze_infection_ctrl.Enable(enable)
+        self.gaze_ratio_x_ctrl.Enable(enable)
+        self.gaze_limit_upper_x_ctrl.Enable(enable)
+        self.gaze_limit_lower_x_ctrl.Enable(enable)
+        self.gaze_ratio_y_ctrl.Enable(enable)
+        self.gaze_limit_upper_y_ctrl.Enable(enable)
+        self.gaze_limit_lower_y_ctrl.Enable(enable)
+        self.gaze_reset_ctrl.Enable(enable)
         self.create_blink_ctrl.Enable(enable)
         self.blink_set.Enable(enable)
 
