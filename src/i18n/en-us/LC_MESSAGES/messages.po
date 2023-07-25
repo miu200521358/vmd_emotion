@@ -459,3 +459,6 @@ msgstr "Depth of Linkage"
 
 msgid "まばたきの間隔\n値が小さいほど、細かくまばたきをします"
 msgstr "The smaller the blink interval ⱖn value, the finer the blink"
+
+msgid "キックの着地後"
+msgstr "After the kick lands"

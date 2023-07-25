@@ -38,20 +38,42 @@ class BlinkUsecase:
         del motion.morphs[eyebrow_below_name]
 
         # まばたきをする可能性があるキーフレ一覧
-        eye_fnos = sorted(set([bf.index for bone_name in model.bone_trees["両目"].names for bf in motion.bones[bone_name]]))
+        # 手足の動きもキーフレを取る
+        eye_fnos = sorted(
+            set([bf.index for bone_name in model.bone_trees["両目"].names for bf in motion.bones[bone_name]])
+            | set([bf.index for bone_name in model.bone_trees["左手首"].names for bf in motion.bones[bone_name]])
+            | set([bf.index for bone_name in model.bone_trees["右手首"].names for bf in motion.bones[bone_name]])
+            | set([bf.index for bone_name in model.bone_trees["左足首"].names for bf in motion.bones[bone_name]])
+            | set([bf.index for bone_name in model.bone_trees["右足首"].names for bf in motion.bones[bone_name]])
+            | {motion.bones.max_fno}
+        )
 
         logger.info("目線変動量取得", decoration=MLogger.Decoration.LINE)
-        eye_matrixes = motion.animate_bone(eye_fnos, model, ["両目"], out_fno_log=True)
+        eye_matrixes = motion.animate_bone(eye_fnos, model, ["両目", "左手首", "右手首", "左足首", "右足首"], out_fno_log=True)
 
         prev_blink = None
         blink_vectors: list[MVector3D] = []
         blink_dots: list[float] = []
         upper_ratio_ys: list[float] = []
+        left_ankle_ys: list[float] = []
+        right_ankle_ys: list[float] = []
+        left_wrist_distance_ratios: list[float] = []
+        right_wrist_distance_ratios: list[float] = []
         for fidx, fno in enumerate(eye_fnos):
             logger.count("目線変動量取得", index=fidx, total_index_count=len(eye_fnos), display_block=100)
             eye_global_direction_vector = eye_matrixes[fno, "両目"].global_matrix * MVector3D(0, 0, -1)
             eye_vector = (eye_global_direction_vector - eye_matrixes[fno, "両目"].position).normalized() * -1
             upper_ratio_ys.append(eye_matrixes[fno, "上半身"].position.y / model.bones["上半身"].position.y)
+            left_ankle_ys.append(eye_matrixes[fno, "左足首"].position.y / model.bones["左ひざ"].position.y)
+            right_ankle_ys.append(eye_matrixes[fno, "右足首"].position.y / model.bones["右ひざ"].position.y)
+            left_wrist_distance_ratios.append(
+                eye_matrixes[fno, "左手首"].position.distance(eye_matrixes[fno, "両目"].position)
+                / model.bones["左手首"].position.distance(model.bones["左ひじ"].position)
+            )
+            right_wrist_distance_ratios.append(
+                eye_matrixes[fno, "右手首"].position.distance(eye_matrixes[fno, "両目"].position)
+                / model.bones["右手首"].position.distance(model.bones["右ひじ"].position)
+            )
 
             if not prev_blink:
                 # 初回はスルー
@@ -98,14 +120,14 @@ class BlinkUsecase:
             start_fno = eye_fnos[infection_fnos[0]]
             if 30 * 5 < start_fno and rnd <= opening_probability:
                 logger.debug(f"まばたきポイント[開始] [{start_fno}][r={rnd:.3f}][l={opening_probability:.3f}]")
-                blink_fnos[start_fno] = 0.7
+                blink_fnos[start_fno] = 0.6
 
             # 最後の変曲点までのキーフレ間が一定区間ある場合、登録対象
             rnd = np.random.rand()
             end_fno = motion.max_fno - eye_fnos[infection_fnos[-1]]
             if 30 * 5 < end_fno and rnd <= ending_probability:
                 logger.debug(f"まばたきポイント[終了] [{end_fno}][r={rnd:.3f}][l={ending_probability:.3f}]")
-                blink_fnos[end_fno] = 0.7
+                blink_fnos[end_fno] = 0.6
 
         jump_probability = condition_probabilities[BlinkConditions.AFTER_JUMP.value.name] * 0.01
         if 0 < opening_probability or 0 < jump_probability:
@@ -119,7 +141,42 @@ class BlinkUsecase:
                     # ジャンプの次の変曲点（着地とおぼしき場所）でまばたきを入れる
                     fno = eye_fnos[fidx + 1]
                     logger.debug(f"まばたきポイント[ジャンプ] [{fno}][r={rnd:.3f}][l={jump_probability:.3f}]")
-                    blink_fnos[fno] = 0.8
+                    blink_fnos[fno] = 0.7
+
+        kick_probability = condition_probabilities[BlinkConditions.AFTER_KICK.value.name] * 0.01
+        if 0 < opening_probability or 0 < kick_probability:
+            logger.info("まばたきポイント検出 [キック]", decoration=MLogger.Decoration.LINE)
+
+            # ジャンプ（足首の動き）の箇所を抽出する
+            logger.info("変曲点抽出")
+            kick_fidxs = sorted(
+                set(np.where(np.array(left_ankle_ys) > 1.3)[0].tolist()) | set(np.where(np.array(right_ankle_ys) > 1.3)[0].tolist())
+            )
+            for fidx in kick_fidxs:
+                rnd = np.random.rand()
+                if rnd <= kick_probability and fidx < len(eye_fnos) - 2:
+                    # ジャンプの次の変曲点（着地とおぼしき場所）でまばたきを入れる
+                    fno = eye_fnos[fidx + 1]
+                    logger.debug(f"まばたきポイント[キック] [{fno}][r={rnd:.3f}][l={kick_probability:.3f}]")
+                    blink_fnos[fno] = 0.7
+
+        wrist_probability = condition_probabilities[BlinkConditions.WRIST_CROSS.value.name] * 0.01
+        if 0 < opening_probability or 0 < wrist_probability:
+            logger.info("まばたきポイント検出 [手首]", decoration=MLogger.Decoration.LINE)
+
+            # ジャンプ（足首の動き）の箇所を抽出する
+            logger.info("変曲点抽出")
+            wrist_fidxs = sorted(
+                set(np.where(np.array(left_wrist_distance_ratios) < 0.2)[0].tolist())
+                | set(np.where(np.array(right_wrist_distance_ratios) < 0.2)[0].tolist())
+            )
+            for fidx in wrist_fidxs:
+                rnd = np.random.rand()
+                if rnd <= wrist_probability and fidx < len(eye_fnos) - 2:
+                    # 手首の次の変曲点（離れたとおぼしき場所）でまばたきを入れる
+                    fno = eye_fnos[fidx + 1]
+                    logger.debug(f"まばたきポイント[手首] [{fno}][r={rnd:.3f}][l={wrist_probability:.3f}]")
+                    blink_fnos[fno] = 0.7
 
         turn_probability = condition_probabilities[BlinkConditions.TURN.value.name] * 0.01
         if 0 < opening_probability or 0 < turn_probability:
@@ -332,8 +389,9 @@ class BlinkConditions(Enum):
     OPENING = BlinkCondition(name="モーションの開始", probability=100)
     ENDING = BlinkCondition(name="モーションの終了", probability=100)
     TURN = BlinkCondition(name="ターンの開始時", probability=100)
-    AFTER_JUMP = BlinkCondition(name="キックやジャンプの着地後", probability=100)
-    ARM_CROSS = BlinkCondition(name="腕が顔の前を横切った時", probability=80)
+    AFTER_JUMP = BlinkCondition(name="ジャンプの着地後", probability=100)
+    AFTER_KICK = BlinkCondition(name="キックの着地後", probability=90)
+    WRIST_CROSS = BlinkCondition(name="腕が顔の前を横切った時", probability=80)
     NORMAL = BlinkCondition(name="前のまばたきから一定時間経過した時", probability=50)
 
 

@@ -188,6 +188,7 @@ class ConfigPanel(CanvasPanel):
         self.gaze_reset_ctrl.SetToolTip(gaze_reset_tooltip)
         self.gaze_sizer.Add(self.gaze_reset_ctrl, 0, wx.ALL, 3)
 
+        # --------------
         self.window_sizer.Add(self.gaze_sizer, 0, wx.ALL, 3)
 
         # --------------
@@ -260,6 +261,7 @@ class ConfigPanel(CanvasPanel):
         self.gaze_limit_upper_y_ctrl.Enable(enable)
         self.gaze_limit_lower_y_ctrl.Enable(enable)
         self.gaze_reset_ctrl.Enable(enable)
+
         self.create_blink_ctrl.Enable(enable)
         self.blink_set.Enable(enable)
 
@@ -277,6 +279,8 @@ class ConfigPanel(CanvasPanel):
         self.blink_worker.start()
 
     def on_config_result(self, result: bool, data: tuple[VmdMotion, VmdMotion], elapsed_time: str):
+        self.console_ctrl.write(f"\n----------------\n{elapsed_time}")
+
         # モーションデータを上書きして再読み込み
         motion, output_motion = data
         self.frame.file_panel.motion_ctrl.data = motion

@@ -607,3 +607,15 @@ msgstr ""
 msgid "まばたきの間隔\n値が小さいほど、細かくまばたきをします"
 msgstr ""
 
+
+msgid "キックの着地後"
+msgstr ""
+
+
+msgid "まばたきポイント検出 [キック]"
+msgstr ""
+
+
+msgid "まばたきポイント検出 [手首]"
+msgstr ""
+
