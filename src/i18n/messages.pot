@@ -479,3 +479,71 @@ msgstr ""
 msgid "表情モーション出力停止"
 msgstr ""
 
+
+msgid "何もない時"
+msgstr ""
+
+
+msgid "目線キーフレを作成する頻度。\n値が大きいほど、小さな動きでも目線が動くようになります。"
+msgstr ""
+
+
+msgid "まばたき生成開始"
+msgstr ""
+
+
+msgid "まばたきポイント検出 [イントロ]"
+msgstr ""
+
+
+msgid "イントロ変曲点抽出"
+msgstr ""
+
+
+msgid "まばたきポイント検出 [通常]"
+msgstr ""
+
+
+msgid "通常変曲点抽出"
+msgstr ""
+
+
+msgid "-- まばたき生成 [{i} ({p:.2f}%)]"
+msgstr ""
+
+
+msgid "まばたき生成完了"
+msgstr ""
+
+
+msgid "前のまばたきから一定時間経過した時"
+msgstr ""
+
+
+msgid "-- まばたき生成 [{n}]"
+msgstr ""
+
+
+msgid "モーションの開始"
+msgstr ""
+
+
+msgid "モーションの終了"
+msgstr ""
+
+
+msgid "まばたきポイント検出 [時間経過]"
+msgstr ""
+
+
+msgid "まばたきポイント検出 [開始・終了]"
+msgstr ""
+
+
+msgid "まばたきポイント検出 [ジャンプ]"
+msgstr ""
+
+
+msgid "まばたきポイント検出 [ターン]"
+msgstr ""
+

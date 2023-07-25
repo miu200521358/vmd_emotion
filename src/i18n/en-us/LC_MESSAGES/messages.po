@@ -363,3 +363,54 @@ msgstr "Expression motion output"
 
 msgid "表情モーション出力停止"
 msgstr "Stop expression motion output"
+
+msgid "何もない時"
+msgstr "When there is nothing"
+
+msgid "目線キーフレを作成する頻度。\n値が大きいほど、小さな動きでも目線が動くようになります。"
+msgstr "The frequency with which the eye keyfre is created. \The higher the ↪Lo_N09↩n value, the more eye movement will occur even with small movements"
+
+msgid "まばたき生成開始"
+msgstr "Blink generation initiated"
+
+msgid "まばたきポイント検出 [イントロ]"
+msgstr "Blink point detection [intro]"
+
+msgid "イントロ変曲点抽出"
+msgstr "Intro inflection point extraction"
+
+msgid "まばたきポイント検出 [通常]"
+msgstr "Blink point detection [normal]"
+
+msgid "通常変曲点抽出"
+msgstr "Normal inflection point extraction"
+
+msgid "-- まばたき生成 [{i} ({p:.2f}%)]"
+msgstr "-- Blink generation [{i} ({p:.2f}%)]"
+
+msgid "まばたき生成完了"
+msgstr "Blink generation complete"
+
+msgid "前のまばたきから一定時間経過した時"
+msgstr "When a certain amount of time has elapsed since the previous blink"
+
+msgid "-- まばたき生成 [{n}]"
+msgstr "-- Blink generation [{n}]"
+
+msgid "モーションの開始"
+msgstr "Start of motion"
+
+msgid "モーションの終了"
+msgstr "End of motion"
+
+msgid "まばたきポイント検出 [時間経過]"
+msgstr "Blink point detection [over time]"
+
+msgid "まばたきポイント検出 [開始・終了]"
+msgstr "Blink point detection [start/end]"
+
+msgid "まばたきポイント検出 [ジャンプ]"
+msgstr "Blink point detection [jump]"
+
+msgid "まばたきポイント検出 [ターン]"
+msgstr "Blink point detection [turns]"

@@ -1,16 +1,26 @@
 from enum import Enum
 import os
 
+import numpy as np
+
 from mlib.base.logger import MLogger
 from mlib.pmx.pmx_collection import PmxModel
 from mlib.vmd.vmd_collection import VmdMotion
 from mlib.base.math import MVector3D
 from mlib.vmd.vmd_part import VmdBoneFrame
 from mlib.base.interpolation import get_infections
+from mlib.vmd.vmd_part import VmdMorphFrame
 from mlib.base.math import MQuaternion
+from mlib.base.interpolation import Interpolation
+from mlib.base.math import MVector2D
 
 logger = MLogger(os.path.basename(__file__), level=1)
 __ = logger.get_text
+
+CLOSE_QQ = MQuaternion.from_euler_degrees(-5, 0, 0)
+CLOSE_INTERPOLATION = Interpolation()
+CLOSE_INTERPOLATION.start = MVector2D(60, 10)
+CLOSE_INTERPOLATION.end = MVector2D(70, 120)
 
 
 class BlinkUsecase:
@@ -20,20 +30,15 @@ class BlinkUsecase:
         motion: VmdMotion,
         output_motion: VmdMotion,
         condition_probabilities: dict[str, float],
+        below_eyebrow_name: str = "下",
     ) -> None:
         """まばたき生成"""
 
-        if "右目" in motion.bones.names:
-            # 既存の両目キーフレは削除
-            del motion.bones["右目"]
-
-        if "左目" in motion.bones.names:
-            # 既存の両目キーフレは削除
-            del motion.bones["左目"]
-
-        if "まばたき" in motion.morphs.names:
-            # 既存の両目キーフレは削除
-            del motion.morphs["まばたき"]
+        # 既存キーフレ削除
+        del motion.bones["右目"]
+        del motion.bones["左目"]
+        del motion.morphs["まばたき"]
+        del motion.morphs[below_eyebrow_name]
 
         # まばたきをする可能性があるキーフレ一覧
         eye_fnos = sorted(set([bf.index for bone_name in model.bone_trees["両目"].names for bf in motion.bones[bone_name]]))
@@ -44,10 +49,12 @@ class BlinkUsecase:
         prev_blink = None
         blink_vectors: list[MVector3D] = []
         blink_dots: list[float] = []
+        upper_ratio_ys: list[float] = []
         for fidx, fno in enumerate(eye_fnos):
             logger.count("目線変動量取得", index=fidx, total_index_count=len(eye_fnos), display_block=100)
             eye_global_direction_vector = eye_matrixes[fno, "両目"].global_matrix * MVector3D(0, 0, -1)
             eye_vector = (eye_global_direction_vector - eye_matrixes[fno, "両目"].position).normalized() * -1
+            upper_ratio_ys.append(eye_matrixes[fno, "上半身"].position.y / model.bones["上半身"].position.y)
 
             if not prev_blink:
                 # 初回はスルー
@@ -57,112 +64,223 @@ class BlinkUsecase:
 
             # 両目の向き
             blink_dot = eye_vector.dot(prev_blink)
-            logger.debug(f"fno[{fno:04d}], eye[{eye_global_direction_vector}], blink[{eye_vector}], dot[{blink_dot:.3f}]")
+            # logger.debug(f"fno[{fno:04d}], eye[{eye_global_direction_vector}], blink[{eye_vector}], dot[{blink_dot:.3f}]")
 
             blink_dots.append(blink_dot)
             blink_vectors.append(eye_vector)
             prev_blink = eye_vector
 
-        if 0 < condition_probabilities[BlinkConditions.INTRO.name]:
-            logger.info("イントロ抽出", decoration=MLogger.Decoration.LINE)
+        blink_fnos: dict[int, float] = {}
 
-        # logger.info("まばたき変曲点抽出", decoration=MLogger.Decoration.LINE)
-        # # logger.debug(blink_dots)
+        normal_probability = condition_probabilities[BlinkConditions.NORMAL.value.name] * 0.01
+        if 0 < normal_probability:
+            logger.info("まばたきポイント検出 [時間経過]", decoration=MLogger.Decoration.LINE)
 
-        # infection_eyes = get_infections(blink_dots, blink_infection * 0.1)
-        # # logger.debug(infection_eyes)
+            logger.info("変曲点抽出")
+            for fidx in get_infections(blink_dots, 0.02):
+                # 動きがある箇所で、乱数条件を満たしている場合、登録対象
+                rnd = np.random.rand()
+                if rnd <= normal_probability:
+                    fno = eye_fnos[fidx]
+                    gaze_degrees = motion.bones["両目"][fno].rotation.to_euler_degrees()
+                    if gaze_degrees.x < 1:
+                        # 目線が上に向かってたらスルー
+                        logger.debug(f"まばたきポイント[時間経過] [{eye_fnos[fidx]}][r={rnd:.3f}][l={normal_probability:.3f}]")
+                        blink_fnos[fno] = 0.5
 
-        # logger.info("まばたき生成", decoration=MLogger.Decoration.LINE)
+        opening_probability = condition_probabilities[BlinkConditions.OPENING.value.name] * 0.01
+        ending_probability = condition_probabilities[BlinkConditions.ENDING.value.name] * 0.01
+        if 0 < opening_probability or 0 < ending_probability:
+            logger.info("まばたきポイント検出 [開始・終了]", decoration=MLogger.Decoration.LINE)
 
-        # # 最初は静止
-        # start_bf = VmdBoneFrame(eye_fnos[0], "両目")
-        # motion.bones["両目"].append(start_bf)
-        # output_motion.bones["両目"].append(start_bf.copy())
+            logger.info("変曲点抽出")
+            infection_fnos = get_infections(blink_dots, 0.2)
 
-        # # 最後は静止
-        # end_bf = VmdBoneFrame(eye_fnos[-1], "両目")
-        # motion.bones["両目"].append(end_bf)
-        # output_motion.bones["両目"].append(end_bf.copy())
+            # 最初の変曲点までのキーフレ間が一定区間ある場合、登録対象
+            rnd = np.random.rand()
+            start_fno = eye_fnos[infection_fnos[0]]
+            if 30 * 5 < start_fno and rnd <= opening_probability:
+                logger.debug(f"まばたきポイント[開始] [{start_fno}][r={rnd:.3f}][l={opening_probability:.3f}]")
+                blink_fnos[start_fno] = 0.7
 
-        # for i, iidx in enumerate(infection_eyes):
-        #     logger.count("まばたき生成", index=i, total_index_count=len(infection_eyes), display_block=1000)
+            # 最後の変曲点までのキーフレ間が一定区間ある場合、登録対象
+            rnd = np.random.rand()
+            end_fno = motion.max_fno - eye_fnos[infection_fnos[-1]]
+            if 30 * 5 < end_fno and rnd <= ending_probability:
+                logger.debug(f"まばたきポイント[終了] [{end_fno}][r={rnd:.3f}][l={ending_probability:.3f}]")
+                blink_fnos[end_fno] = 0.7
 
-        #     if 1 > i:
-        #         continue
+        jump_probability = condition_probabilities[BlinkConditions.AFTER_JUMP.value.name] * 0.01
+        if 0 < opening_probability or 0 < jump_probability:
+            logger.info("まばたきポイント検出 [ジャンプ]", decoration=MLogger.Decoration.LINE)
 
-        #     fno = eye_fnos[iidx - 1]
-        #     blink_vector = blink_vectors[iidx - 1]
-        #     infection_blink_vector = blink_vectors[iidx]
+            # ジャンプ（上半身のY位置が高い）の箇所を抽出する
+            logger.info("変曲点抽出")
+            for fidx in np.where(np.array(upper_ratio_ys) > 1.1)[0]:
+                rnd = np.random.rand()
+                if rnd <= jump_probability and fidx < len(eye_fnos) - 2:
+                    # ジャンプの次の変曲点（着地とおぼしき場所）でまばたきを入れる
+                    fno = eye_fnos[fidx + 1]
+                    logger.debug(f"まばたきポイント[ジャンプ] [{fno}][r={rnd:.3f}][l={jump_probability:.3f}]")
+                    blink_fnos[fno] = 0.8
 
-        #     # まばたきの変動が一定以上であればまばたきを動かす
-        #     blink_full_qq = MQuaternion.rotate(blink_vector, infection_blink_vector)
-        #     # Zは前向きの捩れになるので捨てる
-        #     blink_original_x_qq, blink_original_y_qq, blink_z_qq, _ = blink_full_qq.separate_by_axis(MVector3D(1, 0, 0))
+        turn_probability = condition_probabilities[BlinkConditions.TURN.value.name] * 0.01
+        if 0 < opening_probability or 0 < turn_probability:
+            logger.info("まばたきポイント検出 [ターン]", decoration=MLogger.Decoration.LINE)
 
-        #     # まばたきの上下運動
-        #     x = blink_original_x_qq.to_signed_degrees(MVector3D(0, 0, -1))
-        #     # 補正値を求める(初期で少し下げ目にしておく)
-        #     correct_x = fitted_x_function(x) * blink_ratio_x - 2
-        #     blink_x_qq = MQuaternion.from_axis_angles(blink_original_x_qq.xyz, correct_x)
+            logger.info("変曲点抽出")
+            for fidx in get_infections(blink_dots, 0.6):
+                rnd = np.random.rand()
+                if rnd <= turn_probability:
+                    fno = eye_fnos[fidx]
+                    logger.debug(f"まばたきポイント[ターン] [{fno}][r={rnd:.3f}][l={turn_probability:.3f}]")
+                    blink_fnos[fno] = 0.8
 
-        #     # まばたきの左右運動
-        #     y = blink_original_y_qq.to_signed_degrees(MVector3D(0, 0, -1))
-        #     # 補正値を求める
-        #     correct_y = fitted_y_function(y) * blink_ratio_y
-        #     blink_y_qq = MQuaternion.from_axis_angles(blink_original_y_qq.xyz, correct_y)
+        logger.info("まばたき生成", decoration=MLogger.Decoration.LINE)
 
-        #     blink_qq = blink_x_qq * blink_y_qq
+        nums = 0
+        # 最初のまばたきを対象とする
+        fno = sorted(blink_fnos.keys())[0]
+        is_double = False
+        prev_fno = 0
+        range_fnos: dict[int, float] = {}
+        while prev_fno < eye_fnos[-1]:
+            if 0 < nums and 0 == nums % 20:
+                logger.info("-- まばたき生成 [{n}]", n=nums)
 
-        #     bf = VmdBoneFrame(fno, "両目")
-        #     bf.rotation = blink_qq
-        #     motion.bones["両目"].append(bf)
-        #     output_motion.bones["両目"].append(bf.copy())
+            # 重み付けをしたまばたき -----------
+            weight = blink_fnos.get(fno, 0.3)
+            weight_blink = round(2 * weight)
 
-        #     logger.debug("まばたき生成[{f}] 向き[{d}] 回転[{r}]", f=fno, d=infection_blink_vector, r=blink_qq.to_euler_degrees_mmd())
+            # 最初は静止
+            start_fno = fno - weight_blink - 4 + np.random.randint(-1, 1)
+            mf1 = VmdMorphFrame(start_fno, "まばたき")
+            mf1.ratio = 0.0
+            motion.morphs["まばたき"].append(mf1)
+            output_motion.morphs["まばたき"].append(mf1.copy())
 
-        # for i, (iidx, next_iidx) in enumerate(zip(infection_eyes[:-1], infection_eyes[1:])):
-        #     logger.count("まばたきクリア", index=i, total_index_count=len(infection_eyes), display_block=100)
+            # 閉じる
+            close_fno = fno - weight_blink - 1 + np.random.randint(-1, 0)
+            mf2 = VmdMorphFrame(close_fno, "まばたき")
+            mf2.ratio = 1.0
+            motion.morphs["まばたき"].append(mf2)
+            output_motion.morphs["まばたき"].append(mf2.copy())
 
-        #     fno = eye_fnos[iidx]
-        #     next_fno = eye_fnos[next_iidx]
+            # 停止
+            weight_fno = fno
+            mf3 = VmdMorphFrame(weight_fno, "まばたき")
+            mf3.ratio = 1.0
+            motion.morphs["まばたき"].append(mf3)
+            output_motion.morphs["まばたき"].append(mf3.copy())
 
-        #     # 前のまばたきとの間に静止期間を設ける
-        #     if blink_reset_num * 3 > next_fno - fno:
-        #         continue
+            # 開く
+            open_fno = fno + weight_blink + 2 + np.random.randint(-1, 1)
+            mf4 = VmdMorphFrame(open_fno, "まばたき")
+            mf4.ratio = 0.5
+            motion.morphs["まばたき"].append(mf4)
+            output_motion.morphs["まばたき"].append(mf4.copy())
 
-        #     # 前側の元に戻るキーフレ
-        #     bf = VmdBoneFrame(fno + blink_reset_num, "両目")
-        #     motion.bones["両目"].append(bf)
-        #     output_motion.bones["両目"].append(bf.copy())
+            # 開く
+            end_fno = fno + weight_blink + 6 + np.random.randint(-1, 1)
+            mf5 = VmdMorphFrame(end_fno, "まばたき")
+            mf5.ratio = 0.0
+            motion.morphs["まばたき"].append(mf5)
+            output_motion.morphs["まばたき"].append(mf5.copy())
 
-        #     # 後側の元に戻るキーフレ
-        #     next_bf = VmdBoneFrame(next_fno - blink_reset_num, "両目")
-        #     motion.bones["両目"].append(next_bf)
-        #     output_motion.bones["両目"].append(next_bf.copy())
+            # 眉を下げる -------
+            # TODO 眉モーフの名前を可変に、下げる割合も可変に
 
-        #     logger.debug("まばたきクリア 始[{d}] 終[{r}]", d=bf.index, r=next_bf.index)
+            bmf1 = VmdMorphFrame(start_fno - 1, below_eyebrow_name)
+            bmf1.ratio = 0.0
+            motion.morphs[below_eyebrow_name].append(bmf1)
+            output_motion.morphs[below_eyebrow_name].append(bmf1.copy())
 
+            bmf2 = VmdMorphFrame(close_fno - 1, below_eyebrow_name)
+            bmf2.ratio = 0.2
+            motion.morphs[below_eyebrow_name].append(bmf2)
+            output_motion.morphs[below_eyebrow_name].append(bmf2.copy())
 
-def fitted_x_function(x: float):
-    y = (
-        3.87509926e-08 * abs(x) ** 5
-        - 9.78877468e-06 * abs(x) ** 4
-        + 9.11972307e-04 * abs(x) ** 3
-        - 3.94872605e-02 * abs(x) ** 2
-        + 9.13973880e-01 * abs(x)
-    )
-    return y if x >= 0 else -y
+            bmf3 = VmdMorphFrame(open_fno + 1, below_eyebrow_name)
+            bmf3.ratio = 0.2
+            motion.morphs[below_eyebrow_name].append(bmf3)
+            output_motion.morphs[below_eyebrow_name].append(bmf3.copy())
 
+            bmf4 = VmdMorphFrame(end_fno + 1, below_eyebrow_name)
+            bmf4.ratio = 0.0
+            motion.morphs[below_eyebrow_name].append(bmf4)
+            output_motion.morphs[below_eyebrow_name].append(bmf4.copy())
 
-def fitted_y_function(x: float):
-    y = (
-        1.47534033e-09 * abs(x) ** 5
-        - 1.19583063e-06 * abs(x) ** 4
-        + 2.32587413e-04 * abs(x) ** 3
-        - 1.93864420e-02 * abs(x) ** 2
-        + 8.94363417e-01 * abs(x)
-    )
-    return y if x >= 0 else -y
+            # 閉じるのに合わせて目線を下に ---------
+
+            # 最初は静止
+            start_left_bf = VmdBoneFrame(start_fno + 1, "左目")
+            start_left_bf.interpolations.rotation = CLOSE_INTERPOLATION.copy()
+            motion.bones["左目"].append(start_left_bf)
+            output_motion.bones["左目"].append(start_left_bf.copy())
+
+            start_right_bf = VmdBoneFrame(start_fno + 1, "右目")
+            start_right_bf.interpolations.rotation = CLOSE_INTERPOLATION.copy()
+            motion.bones["右目"].append(start_right_bf)
+            output_motion.bones["右目"].append(start_right_bf.copy())
+
+            # 閉じるよりも少し早めに目を下に
+            close_left_bf = VmdBoneFrame(close_fno + 1, "左目")
+            close_left_bf.rotation = CLOSE_QQ.copy()
+            motion.bones["左目"].append(close_left_bf)
+            output_motion.bones["左目"].append(close_left_bf.copy())
+
+            close_right_bf = VmdBoneFrame(close_fno + 1, "右目")
+            close_right_bf.rotation = CLOSE_QQ.copy()
+            motion.bones["右目"].append(close_right_bf)
+            output_motion.bones["右目"].append(close_right_bf.copy())
+
+            # 開くのより少し後まで目を下に
+            weight_left_bf = VmdBoneFrame(weight_fno + 2, "左目")
+            weight_left_bf.rotation = CLOSE_QQ.copy()
+            motion.bones["左目"].append(weight_left_bf)
+            output_motion.bones["左目"].append(weight_left_bf.copy())
+
+            weight_right_bf = VmdBoneFrame(weight_fno + 2, "右目")
+            weight_right_bf.rotation = CLOSE_QQ.copy()
+            motion.bones["右目"].append(weight_right_bf)
+            output_motion.bones["右目"].append(weight_right_bf.copy())
+
+            # 最後は元に戻す
+            end_left_bf = VmdBoneFrame(end_fno - 2, "左目")
+            end_left_bf.interpolations.rotation = CLOSE_INTERPOLATION.copy()
+            motion.bones["左目"].append(end_left_bf)
+            output_motion.bones["左目"].append(end_left_bf.copy())
+
+            end_right_bf = VmdBoneFrame(end_fno - 2, "右目")
+            end_right_bf.interpolations.rotation = CLOSE_INTERPOLATION.copy()
+            motion.bones["右目"].append(end_right_bf)
+            output_motion.bones["右目"].append(end_right_bf.copy())
+
+            logger.debug(f"まばたき[{weight}] start[{start_fno}], close[{close_fno}], weight[{weight_fno}], open[{open_fno}], end[{end_fno}]")
+
+            prev_fno = fno
+            nums += 1
+
+            # 前のキーフレから100F (3秒近く)分を抽出
+            range_fnos = {}
+            n = 1
+            while not range_fnos:
+                range_fnos = dict([(f, blink_fnos[f]) for f in sorted(blink_fnos.keys()) if prev_fno + 60 < f < prev_fno + (160 * n)])
+                n += 1
+                if n > 5:
+                    prev_fno = eye_fnos[-1]
+                    break
+
+            if prev_fno < eye_fnos[-1]:
+                # 範囲の中で最も重いまばたきを抽出する（同じのがある場合は前のを優先）
+                # ランダムで二回連続の瞬きをする
+                rnd = np.random.rand()
+                if not is_double and rnd < 0.2:
+                    fno = end_fno + 3
+                    is_double = True
+                else:
+                    fno = list(range_fnos.keys())[int(np.argmax(list(range_fnos.values())))]
+                    is_double = False
 
 
 class BlinkCondition:
@@ -183,12 +301,12 @@ class BlinkCondition:
 class BlinkConditions(Enum):
     """まばたき条件リスト"""
 
-    INTRO = BlinkCondition(name="イントロ", probability=100)
-    ENDING = BlinkCondition(name="エンディング", probability=100)
-    START_TURN = BlinkCondition(name="ターンの開始時", probability=100)
+    OPENING = BlinkCondition(name="モーションの開始", probability=100)
+    ENDING = BlinkCondition(name="モーションの終了", probability=100)
+    TURN = BlinkCondition(name="ターンの開始時", probability=100)
     AFTER_JUMP = BlinkCondition(name="キックやジャンプの着地後", probability=100)
     ARM_CROSS = BlinkCondition(name="腕が顔の前を横切った時", probability=80)
-    LOOK_OVER = BlinkCondition(name="振り向いた時", probability=60)
+    NORMAL = BlinkCondition(name="前のまばたきから一定時間経過した時", probability=50)
 
 
 BLINK_CONDITIONS: dict[str, float] = dict([(bs.value.name, bs.value.probability) for bs in BlinkConditions])

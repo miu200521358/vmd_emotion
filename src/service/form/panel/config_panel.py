@@ -11,6 +11,7 @@ from service.worker.config.gaze_worker import GazeWorker
 from mlib.service.form.widgets.float_slider_ctrl import FloatSliderCtrl
 from mlib.service.form.widgets.frame_slider_ctrl import FrameSliderCtrl
 from service.form.widgets.blink_ctrl_set import BlinkCtrlSet
+from service.worker.config.blink_worker import BlinkWorker
 
 logger = MLogger(os.path.basename(__file__))
 __ = logger.get_text
@@ -20,6 +21,7 @@ class ConfigPanel(CanvasPanel):
     def __init__(self, frame: BaseFrame, tab_idx: int, *args, **kw) -> None:
         super().__init__(frame, tab_idx, 1.0, 0.4, *args, **kw)
         self.gaze_worker = GazeWorker(self.frame, self.on_config_result)
+        self.blink_worker = BlinkWorker(self.frame, self.on_config_result)
 
         self._initialize_ui()
         self._initialize_event()
@@ -196,6 +198,7 @@ class ConfigPanel(CanvasPanel):
     def _initialize_event(self) -> None:
         self.play_ctrl.Bind(wx.EVT_BUTTON, self.on_play)
         self.create_gaze_ctrl.Bind(wx.EVT_BUTTON, self.on_create_gaze)
+        self.create_blink_ctrl.Bind(wx.EVT_BUTTON, self.on_create_blink)
 
     def on_play(self, event: wx.Event) -> None:
         if self.canvas.playing:
@@ -244,6 +247,10 @@ class ConfigPanel(CanvasPanel):
     def on_create_gaze(self, event: wx.Event) -> None:
         self.Enable(False)
         self.gaze_worker.start()
+
+    def on_create_blink(self, event: wx.Event) -> None:
+        self.Enable(False)
+        self.blink_worker.start()
 
     def on_config_result(self, result: bool, data: tuple[VmdMotion, VmdMotion], elapsed_time: str):
         # モーションデータを上書きして再読み込み

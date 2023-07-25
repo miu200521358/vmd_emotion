@@ -59,7 +59,7 @@ class GazeUsecase:
 
             # 目線の向き
             gaze_dot = gaze_vector.dot(prev_gaze)
-            logger.debug(f"fno[{fno:04d}], eye[{eye_global_direction_vector}], gaze[{gaze_vector}], dot[{gaze_dot:.3f}]")
+            # logger.debug(f"fno[{fno:04d}], eye[{eye_global_direction_vector}], gaze[{gaze_vector}], dot[{gaze_dot:.3f}]")
 
             gaze_dots.append(gaze_dot)
             gaze_vectors.append(gaze_vector)
@@ -96,7 +96,7 @@ class GazeUsecase:
             # 目線の変動が一定以上であれば目線を動かす
             gaze_full_qq = MQuaternion.rotate(gaze_vector, infection_gaze_vector)
             # Zは前向きの捩れになるので捨てる
-            gaze_original_x_qq, gaze_original_y_qq, gaze_z_qq, _ = gaze_full_qq.separate_by_axis(X_AXIS)
+            gaze_original_x_qq, gaze_original_y_qq, _, _ = gaze_full_qq.separate_by_axis(X_AXIS)
 
             # 目線の上下運動
             x = gaze_original_x_qq.to_signed_degrees(Z_AXIS)
@@ -111,9 +111,12 @@ class GazeUsecase:
             gaze_y_qq = MQuaternion.from_axis_angles(gaze_original_y_qq.xyz, correct_y)
 
             gaze_qq = gaze_x_qq * gaze_y_qq
+            gaze_degrees = gaze_qq.to_euler_degrees()
+            # Z回転を殺す
+            gaze_xy_qq = MQuaternion.from_euler_degrees(gaze_degrees.x, gaze_degrees.y, 0)
 
             bf = VmdBoneFrame(fno, "両目")
-            bf.rotation = gaze_qq
+            bf.rotation = gaze_xy_qq
             motion.bones["両目"].append(bf)
             output_motion.bones["両目"].append(bf.copy())
 
