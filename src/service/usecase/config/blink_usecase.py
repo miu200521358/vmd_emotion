@@ -40,12 +40,7 @@ class BlinkUsecase:
         # まばたきをする可能性があるキーフレ一覧
         # 手足の動きもキーフレを取る
         eye_fnos = sorted(
-            set([bf.index for bone_name in model.bone_trees["両目"].names for bf in motion.bones[bone_name]])
-            | set([bf.index for bone_name in model.bone_trees["左手首"].names for bf in motion.bones[bone_name]])
-            | set([bf.index for bone_name in model.bone_trees["右手首"].names for bf in motion.bones[bone_name]])
-            | set([bf.index for bone_name in model.bone_trees["左足首"].names for bf in motion.bones[bone_name]])
-            | set([bf.index for bone_name in model.bone_trees["右足首"].names for bf in motion.bones[bone_name]])
-            | {motion.bones.max_fno}
+            set([bf.index for bone_name in model.bone_trees["両目"].names for bf in motion.bones[bone_name]]) | {motion.bones.max_fno}
         )
 
         logger.info("目線変動量取得", decoration=MLogger.Decoration.LINE)

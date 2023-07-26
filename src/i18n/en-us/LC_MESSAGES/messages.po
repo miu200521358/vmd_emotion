@@ -462,3 +462,9 @@ msgstr "The smaller the blink interval ⱖn value, the finer the blink"
 
 msgid "キックの着地後"
 msgstr "After the kick lands"
+
+msgid "まばたきポイント検出 [キック]"
+msgstr "Blink point detection [kick]"
+
+msgid "まばたきポイント検出 [手首]"
+msgstr "Blink point detection [wrist]"
