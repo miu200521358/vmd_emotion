@@ -12,6 +12,7 @@ from mlib.vmd.vmd_collection import VmdMotion
 from service.form.widgets.blink_ctrl_set import BlinkCtrlSet
 from service.worker.config.blink_worker import BlinkWorker
 from service.worker.config.gaze_worker import GazeWorker
+from mlib.vmd.vmd_tree import VmdBoneFrameTrees
 
 logger = MLogger(os.path.basename(__file__))
 __ = logger.get_text
@@ -22,6 +23,7 @@ class ConfigPanel(CanvasPanel):
         super().__init__(frame, tab_idx, 1.0, 0.4, *args, **kw)
         self.gaze_worker = GazeWorker(self.frame, self.on_config_result)
         self.blink_worker = BlinkWorker(self.frame, self.on_config_result)
+        self.bone_matrixes = VmdBoneFrameTrees()
 
         self._initialize_ui()
         self._initialize_event()
@@ -34,7 +36,7 @@ class ConfigPanel(CanvasPanel):
 
     def _initialize_ui(self) -> None:
         self.canvas_sizer = wx.BoxSizer(wx.VERTICAL)
-        # 左にビューワー
+        # 上にビューワー
         self.canvas_sizer.Add(self.canvas, 1, wx.EXPAND | wx.ALL, 0)
 
         # --------------

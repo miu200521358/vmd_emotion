@@ -507,3 +507,6 @@ msgstr "If the probability is greater than zero, generate a blink with a keyfre 
 
 msgid "まばたきを生成する条件の選択肢\n選択肢ごとに発生確率を設定できます"
 msgstr "You can set the probability of occurrence for each of the options Јn options for conditions that generate a blink"
+
+msgid "ブレンド"
+msgstr "Blending"

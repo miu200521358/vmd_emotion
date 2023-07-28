@@ -4,8 +4,7 @@ import wx
 
 from mlib.base.logger import MLogger
 from mlib.service.form.base_panel import BasePanel
-from mlib.service.form.widgets.spin_ctrl import WheelSpinCtrl
-from mlib.service.form.widgets.spin_ctrl import WheelSpinCtrlDouble
+from mlib.service.form.widgets.spin_ctrl import WheelSpinCtrl, WheelSpinCtrlDouble
 
 logger = MLogger(os.path.basename(__file__))
 __ = logger.get_text

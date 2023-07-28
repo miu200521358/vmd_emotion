@@ -12,6 +12,8 @@ from service.form.panel.config_panel import ConfigPanel
 from service.form.panel.file_panel import FilePanel
 from service.worker.load_worker import LoadWorker
 from service.worker.save_worker import SaveWorker
+from mlib.vmd.vmd_tree import VmdBoneFrameTrees
+from mlib.base.math import MVector3D
 
 logger = MLogger(os.path.basename(__file__))
 __ = logger.get_text
@@ -25,6 +27,7 @@ class MainFrame(BaseFrame):
             title=title,
             size=size,
         )
+        self.selected_tab_idx = 0
 
         # ファイルタブ
         self.file_panel = FilePanel(self, 0)
@@ -33,6 +36,9 @@ class MainFrame(BaseFrame):
         # 設定タブ
         self.config_panel = ConfigPanel(self, 1)
         self.notebook.AddPage(self.config_panel, __("設定"), False)
+
+        # ブレンドタブ（設定パネルはそのまま）
+        self.notebook.AddPage(self.config_panel, __("ブレンド"), False)
 
         self.load_worker = LoadWorker(self, self.on_result)
         self.save_worker = SaveWorker(self, self.on_save_result)
@@ -43,7 +49,8 @@ class MainFrame(BaseFrame):
         MLogger.console_handler2 = ConsoleHandler(self.config_panel.console_ctrl.text_ctrl)
 
     def on_change_tab(self, event: wx.Event) -> None:
-        if self.notebook.GetSelection() == self.config_panel.tab_idx:
+        self.selected_tab_idx = self.notebook.GetSelection()
+        if self.selected_tab_idx in [self.config_panel.tab_idx, self.config_panel.tab_idx + 1]:
             self.notebook.ChangeSelection(self.file_panel.tab_idx)
             if not self.load_worker.started:
                 if not self.file_panel.model_ctrl.valid():
@@ -64,7 +71,34 @@ class MainFrame(BaseFrame):
                     self.load_worker.start()
                 else:
                     # 既に読み取りが完了していたらそのまま表示
-                    self.notebook.ChangeSelection(self.config_panel.tab_idx)
+                    if self.selected_tab_idx == self.config_panel.tab_idx:
+                        self.config_panel.canvas.model_sets[0].motion = self.file_panel.motion_ctrl.data
+                        self.config_panel.canvas.shader.look_at_center = (
+                            self.config_panel.canvas.shader.INITIAL_LOOK_AT_CENTER_POSITION.copy()
+                        )
+                        self.config_panel.canvas.shader.vertical_degrees = self.config_panel.canvas.shader.INITIAL_VERTICAL_DEGREES
+                        self.config_panel.canvas.change_motion(event, model_index=0)
+                        self.config_panel.canvas.Refresh()
+
+                        self.notebook.ChangeSelection(self.config_panel.tab_idx)
+                    else:
+                        self.config_panel.canvas.model_sets[0].motion = VmdMotion()
+                        self.config_panel.canvas.shader.look_at_center = MVector3D(
+                            0,
+                            (
+                                (self.config_panel.bone_matrixes[0, "両目"].position.y + self.config_panel.bone_matrixes[0, "頭"].position.y)
+                                / 2
+                            ),
+                            0,
+                        )
+                        self.config_panel.canvas.shader.vertical_degrees = 6
+                        self.config_panel.canvas.change_motion(event, model_index=0)
+                        self.config_panel.canvas.Refresh()
+
+                        self.notebook.ChangeSelection(self.config_panel.tab_idx + 1)
+        else:
+            self.selected_tab_idx = self.file_panel.tab_idx
+            self.notebook.ChangeSelection(self.file_panel.tab_idx)
 
     def save_histories(self) -> None:
         self.file_panel.model_ctrl.save_path()
@@ -75,7 +109,7 @@ class MainFrame(BaseFrame):
     def on_result(
         self,
         result: bool,
-        data: Optional[tuple[PmxModel, PmxModel, VmdMotion, VmdMotion, dict[str, float]]],
+        data: Optional[tuple[PmxModel, PmxModel, VmdMotion, VmdMotion, dict[str, float], VmdBoneFrameTrees]],
         elapsed_time: str,
     ) -> None:
         self.file_panel.console_ctrl.write(f"\n----------------\n{elapsed_time}")
@@ -88,7 +122,7 @@ class MainFrame(BaseFrame):
 
         logger.info("描画準備開始", decoration=MLogger.Decoration.BOX)
 
-        original_model, model, original_motion, motion, blink_conditions = data
+        original_model, model, original_motion, motion, blink_conditions, bone_matrixes = data
 
         self.file_panel.model_ctrl.original_data = original_model
         self.file_panel.model_ctrl.data = model
@@ -105,12 +139,23 @@ class MainFrame(BaseFrame):
         # まばたき条件の初期化
         self.config_panel.blink_set.initialize(blink_conditions)
         self.config_panel.frame_slider.SetMaxFrameNo(motion.max_fno)
+        self.config_panel.bone_matrixes = bone_matrixes
 
         try:
             logger.info("モデル描画準備")
-            self.config_panel.canvas.append_model_set(self.file_panel.model_ctrl.data, self.file_panel.motion_ctrl.data, bone_alpha=0.0)
-            self.config_panel.canvas.Refresh()
-            self.notebook.ChangeSelection(self.config_panel.tab_idx)
+
+            if self.selected_tab_idx == self.config_panel.tab_idx:
+                self.config_panel.canvas.append_model_set(self.file_panel.model_ctrl.data, self.file_panel.motion_ctrl.data, bone_alpha=0.0)
+                self.config_panel.canvas.Refresh()
+                self.notebook.ChangeSelection(self.config_panel.tab_idx)
+            else:
+                self.config_panel.canvas.append_model_set(self.file_panel.model_ctrl.data, VmdMotion(), bone_alpha=0.0)
+                self.config_panel.canvas.shader.look_at_center = MVector3D(
+                    0, ((bone_matrixes[0, "両目"].position.y + bone_matrixes[0, "頭"].position.y) / 2), 0
+                )
+                self.config_panel.canvas.shader.vertical_degrees = 6
+                self.config_panel.canvas.Refresh()
+                self.notebook.ChangeSelection(self.config_panel.tab_idx + 1)
         except:
             logger.critical("モデル描画初期化処理失敗")
 
