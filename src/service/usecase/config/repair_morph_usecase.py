@@ -18,8 +18,8 @@ CLOSE_INTERPOLATION.start = MVector2D(60, 10)
 CLOSE_INTERPOLATION.end = MVector2D(70, 120)
 
 
-class BlinkUsecase:
-    def create_blink(
+class RepairMorphUsecase:
+    def repair_morph(
         self,
         model: PmxModel,
         motion: VmdMotion,
@@ -28,15 +28,13 @@ class BlinkUsecase:
         linkage_depth: float,
         blink_span: int,
         eyebrow_below_name: str,
-        blink_name: str,
-        laugh_name: str,
     ) -> None:
         """まばたき生成"""
 
         # 既存キーフレ削除
         del motion.bones["右目"]
         del motion.bones["左目"]
-        del motion.morphs[blink_name]
+        del motion.morphs["まばたき"]
         del motion.morphs[eyebrow_below_name]
 
         # まばたきをする可能性があるキーフレ一覧
@@ -238,39 +236,39 @@ class BlinkUsecase:
 
             # 最初は静止 (二重まばたきの場合は半開き)
             start_fno = fno - weight_blink - 4 + np.random.randint(-1, 1)
-            mf1 = VmdMorphFrame(start_fno, blink_name)
+            mf1 = VmdMorphFrame(start_fno, "まばたき")
             mf1.ratio = 0.2 if is_double_after else 0.0
-            motion.morphs[blink_name].append(mf1)
-            output_motion.morphs[blink_name].append(mf1.copy())
+            motion.morphs["まばたき"].append(mf1)
+            output_motion.morphs["まばたき"].append(mf1.copy())
 
             # 閉じる
             close_fno = fno - weight_blink - 1
-            mf2 = VmdMorphFrame(close_fno, blink_name)
+            mf2 = VmdMorphFrame(close_fno, "まばたき")
             mf2.ratio = 1.0
-            motion.morphs[blink_name].append(mf2)
-            output_motion.morphs[blink_name].append(mf2.copy())
+            motion.morphs["まばたき"].append(mf2)
+            output_motion.morphs["まばたき"].append(mf2.copy())
 
             # 停止
             weight_fno = fno
-            mf3 = VmdMorphFrame(weight_fno, blink_name)
+            mf3 = VmdMorphFrame(weight_fno, "まばたき")
             mf3.ratio = 1.0
-            motion.morphs[blink_name].append(mf3)
-            output_motion.morphs[blink_name].append(mf3.copy())
+            motion.morphs["まばたき"].append(mf3)
+            output_motion.morphs["まばたき"].append(mf3.copy())
 
             if not is_double_before:
                 # 半開き
                 open_fno = fno + weight_blink + 2 + np.random.randint(-1, 1)
-                mf4 = VmdMorphFrame(open_fno, blink_name)
+                mf4 = VmdMorphFrame(open_fno, "まばたき")
                 mf4.ratio = 0.5
-                motion.morphs[blink_name].append(mf4)
-                output_motion.morphs[blink_name].append(mf4.copy())
+                motion.morphs["まばたき"].append(mf4)
+                output_motion.morphs["まばたき"].append(mf4.copy())
 
                 # 開く (二重まばたきの場合はスルー)
                 end_fno = fno + weight_blink + 6 + np.random.randint(-1, 1)
-                mf5 = VmdMorphFrame(end_fno, blink_name)
+                mf5 = VmdMorphFrame(end_fno, "まばたき")
                 mf5.ratio = 0.0
-                motion.morphs[blink_name].append(mf5)
-                output_motion.morphs[blink_name].append(mf5.copy())
+                motion.morphs["まばたき"].append(mf5)
+                output_motion.morphs["まばたき"].append(mf5.copy())
 
             # 眉を下げる -------
 

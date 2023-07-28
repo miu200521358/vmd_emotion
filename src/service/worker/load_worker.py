@@ -60,8 +60,6 @@ class LoadWorker(BaseWorker):
 
         bone_matrixes = usecase.get_bone_matrixes(model)
 
-        morph_duplicate_choices = usecase.check_blend(model)
-
         self.result_data = (
             original_model,
             model,
@@ -69,7 +67,6 @@ class LoadWorker(BaseWorker):
             motion,
             blink_conditions,
             bone_matrixes,
-            morph_duplicate_choices,
         )
 
     def output_log(self):

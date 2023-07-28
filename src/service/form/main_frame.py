@@ -14,7 +14,6 @@ from service.worker.load_worker import LoadWorker
 from service.worker.save_worker import SaveWorker
 from mlib.vmd.vmd_tree import VmdBoneFrameTrees
 from mlib.base.math import MVector3D
-from service.usecase.load_usecase import DuplicateMorph
 
 logger = MLogger(os.path.basename(__file__))
 __ = logger.get_text
@@ -51,7 +50,6 @@ class MainFrame(BaseFrame):
 
     def on_change_tab(self, event: wx.Event) -> None:
         self.selected_tab_idx = self.notebook.GetSelection()
-        self.config_panel.morph_set.bone_weight_check_ctrl.SetValue(0)
 
         if self.selected_tab_idx in [self.config_panel.tab_idx, self.config_panel.tab_idx + 1]:
             self.notebook.ChangeSelection(self.file_panel.tab_idx)
@@ -124,7 +122,6 @@ class MainFrame(BaseFrame):
                 VmdMotion,
                 dict[str, float],
                 VmdBoneFrameTrees,
-                dict[tuple[int, int], DuplicateMorph],
             ]
         ],
         elapsed_time: str,
@@ -139,7 +136,7 @@ class MainFrame(BaseFrame):
 
         logger.info("描画準備開始", decoration=MLogger.Decoration.BOX)
 
-        original_model, model, original_motion, motion, blink_conditions, bone_matrixes, morph_duplicate_choices = data
+        original_model, model, original_motion, motion, blink_conditions, bone_matrixes = data
 
         self.file_panel.model_ctrl.original_data = original_model
         self.file_panel.model_ctrl.data = model
@@ -182,7 +179,7 @@ class MainFrame(BaseFrame):
         except:
             logger.critical("モデル描画初期化処理失敗")
 
-        self.config_panel.morph_set.initialize(morph_duplicate_choices)
+        self.config_panel.morph_set.initialize(model.morphs)
 
         self.file_panel.Enable(True)
         self.on_sound()

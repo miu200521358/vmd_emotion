@@ -70,9 +70,6 @@ class ConfigPanel(CanvasPanel):
 
         self.morph_window_sizer = wx.BoxSizer(wx.VERTICAL)
 
-        self.morph_title_ctrl = wx.StaticText(self.morph_scrolled_window, wx.ID_ANY, __("モーフ"), wx.DefaultPosition, wx.DefaultSize, 0)
-        self.morph_window_sizer.Add(self.morph_title_ctrl, 0, wx.ALL, 3)
-
         self.morph_set = MorphCtrlSet(self, self.morph_scrolled_window)
         self.morph_window_sizer.Add(self.morph_set.sizer, 0, wx.ALL, 3)
 

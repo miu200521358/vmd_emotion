@@ -15,7 +15,7 @@ logger = MLogger(os.path.basename(__file__), level=1)
 __ = logger.get_text
 
 
-class BlinkWorker(BaseWorker):
+class RepairMorphWorker(BaseWorker):
     def __init__(self, frame: BaseFrame, result_event: wx.Event) -> None:
         super().__init__(frame, result_event)
 
@@ -25,7 +25,7 @@ class BlinkWorker(BaseWorker):
         motion: VmdMotion = file_panel.motion_ctrl.data
         output_motion: VmdMotion = file_panel.output_motion_ctrl.data
 
-        logger.info("まばたき生成開始", decoration=MLogger.Decoration.BOX)
+        logger.info("モーフ破綻補正開始", decoration=MLogger.Decoration.BOX)
 
         BlinkUsecase().create_blink(
             model,
@@ -34,9 +34,7 @@ class BlinkWorker(BaseWorker):
             self.frame.config_panel.blink_set.condition_probabilities,
             self.frame.config_panel.blink_set.linkage_depth_ctrl.GetValue(),
             self.frame.config_panel.blink_set.blink_span_ctrl.GetValue(),
-            self.frame.config_panel.morph_set.below_eyebrow_morph_ctrl.GetValue(),
-            self.frame.config_panel.morph_set.blink_morph_ctrl.GetValue(),
-            self.frame.config_panel.morph_set.laugh_morph_ctrl.GetValue(),
+            "下",
         )
 
         self.result_data = motion, output_motion

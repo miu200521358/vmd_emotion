@@ -739,3 +739,39 @@ msgstr ""
 msgid "変化量組み合わせプルダウンの選択肢を上方向に移動できます。"
 msgstr ""
 
+
+msgid "ツールで生成するモーフ名をモデルに合わせて変更できます"
+msgstr ""
+
+
+msgid "ツール側で生成するモーフ名"
+msgstr ""
+
+
+msgid "生成モーフの内容"
+msgstr ""
+
+
+msgid "モーフの選択肢を上方向に移動できます。"
+msgstr ""
+
+
+msgid "置き換えモーフの選択肢"
+msgstr ""
+
+
+msgid "モーフの値を変更できます"
+msgstr ""
+
+
+msgid "眉を下に動かす"
+msgstr ""
+
+
+msgid "まばたきをする"
+msgstr ""
+
+
+msgid "笑ったまま目を閉じる"
+msgstr ""
+
