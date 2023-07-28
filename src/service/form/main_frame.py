@@ -80,6 +80,8 @@ class MainFrame(BaseFrame):
                         self.config_panel.canvas.change_motion(event, model_index=0)
                         self.config_panel.canvas.Refresh()
 
+                        self.config_panel.show_config = True
+                        self.config_panel.change_window()
                         self.notebook.ChangeSelection(self.config_panel.tab_idx)
                     else:
                         self.config_panel.canvas.model_sets[0].motion = VmdMotion()
@@ -95,6 +97,8 @@ class MainFrame(BaseFrame):
                         self.config_panel.canvas.change_motion(event, model_index=0)
                         self.config_panel.canvas.Refresh()
 
+                        self.config_panel.show_config = False
+                        self.config_panel.change_window()
                         self.notebook.ChangeSelection(self.config_panel.tab_idx + 1)
         else:
             self.selected_tab_idx = self.file_panel.tab_idx
@@ -147,6 +151,9 @@ class MainFrame(BaseFrame):
             if self.selected_tab_idx == self.config_panel.tab_idx:
                 self.config_panel.canvas.append_model_set(self.file_panel.model_ctrl.data, self.file_panel.motion_ctrl.data, bone_alpha=0.0)
                 self.config_panel.canvas.Refresh()
+
+                self.config_panel.show_config = True
+                self.config_panel.change_window()
                 self.notebook.ChangeSelection(self.config_panel.tab_idx)
             else:
                 self.config_panel.canvas.append_model_set(self.file_panel.model_ctrl.data, VmdMotion(), bone_alpha=0.0)
@@ -155,6 +162,9 @@ class MainFrame(BaseFrame):
                 )
                 self.config_panel.canvas.shader.vertical_degrees = 6
                 self.config_panel.canvas.Refresh()
+
+                self.config_panel.show_config = False
+                self.config_panel.change_window()
                 self.notebook.ChangeSelection(self.config_panel.tab_idx + 1)
         except:
             logger.critical("モデル描画初期化処理失敗")
