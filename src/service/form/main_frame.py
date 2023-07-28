@@ -14,6 +14,7 @@ from service.worker.load_worker import LoadWorker
 from service.worker.save_worker import SaveWorker
 from mlib.vmd.vmd_tree import VmdBoneFrameTrees
 from mlib.base.math import MVector3D
+from service.usecase.load_usecase import DuplicateMorph
 
 logger = MLogger(os.path.basename(__file__))
 __ = logger.get_text
@@ -38,7 +39,7 @@ class MainFrame(BaseFrame):
         self.notebook.AddPage(self.config_panel, __("設定"), False)
 
         # ブレンドタブ（設定パネルはそのまま）
-        self.notebook.AddPage(self.config_panel, __("ブレンド"), False)
+        self.notebook.AddPage(self.config_panel, __("モーフ"), False)
 
         self.load_worker = LoadWorker(self, self.on_result)
         self.save_worker = SaveWorker(self, self.on_save_result)
@@ -50,6 +51,8 @@ class MainFrame(BaseFrame):
 
     def on_change_tab(self, event: wx.Event) -> None:
         self.selected_tab_idx = self.notebook.GetSelection()
+        self.config_panel.morph_set.bone_weight_check_ctrl.SetValue(0)
+
         if self.selected_tab_idx in [self.config_panel.tab_idx, self.config_panel.tab_idx + 1]:
             self.notebook.ChangeSelection(self.file_panel.tab_idx)
             if not self.load_worker.started:
@@ -113,7 +116,17 @@ class MainFrame(BaseFrame):
     def on_result(
         self,
         result: bool,
-        data: Optional[tuple[PmxModel, PmxModel, VmdMotion, VmdMotion, dict[str, float], VmdBoneFrameTrees]],
+        data: Optional[
+            tuple[
+                PmxModel,
+                PmxModel,
+                VmdMotion,
+                VmdMotion,
+                dict[str, float],
+                VmdBoneFrameTrees,
+                dict[tuple[int, int], DuplicateMorph],
+            ]
+        ],
         elapsed_time: str,
     ) -> None:
         self.file_panel.console_ctrl.write(f"\n----------------\n{elapsed_time}")
@@ -126,7 +139,7 @@ class MainFrame(BaseFrame):
 
         logger.info("描画準備開始", decoration=MLogger.Decoration.BOX)
 
-        original_model, model, original_motion, motion, blink_conditions, bone_matrixes = data
+        original_model, model, original_motion, motion, blink_conditions, bone_matrixes, morph_duplicate_choices = data
 
         self.file_panel.model_ctrl.original_data = original_model
         self.file_panel.model_ctrl.data = model
@@ -169,6 +182,8 @@ class MainFrame(BaseFrame):
         except:
             logger.critical("モデル描画初期化処理失敗")
 
+        self.config_panel.morph_set.initialize(morph_duplicate_choices)
+
         self.file_panel.Enable(True)
         self.on_sound()
 
@@ -178,3 +193,7 @@ class MainFrame(BaseFrame):
     def on_save_result(self, result: bool, data: Optional[Any], elapsed_time: str) -> None:
         self.file_panel.Enable(True)
         self.on_sound()
+
+    def show_bone_weight(self, is_show_bone_weight: bool) -> None:
+        self.config_panel.canvas.animations[0].is_show_bone_weight = is_show_bone_weight
+        self.config_panel.canvas.Refresh()

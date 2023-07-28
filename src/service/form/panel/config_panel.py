@@ -13,6 +13,7 @@ from service.form.widgets.blink_ctrl_set import BlinkCtrlSet
 from service.worker.config.blink_worker import BlinkWorker
 from service.worker.config.gaze_worker import GazeWorker
 from mlib.vmd.vmd_tree import VmdBoneFrameTrees
+from service.form.widgets.morph_ctrl_set import MorphCtrlSet
 
 logger = MLogger(os.path.basename(__file__))
 __ = logger.get_text
@@ -38,7 +39,7 @@ class ConfigPanel(CanvasPanel):
         # -------------------
 
         self._initialize_ui_config()
-        self._initialize_ui_blend()
+        self._initialize_ui_morph()
 
         # -------------------
 
@@ -56,24 +57,27 @@ class ConfigPanel(CanvasPanel):
 
         self.on_resize(wx.EVT_SIZE)
 
-    def _initialize_ui_blend(self) -> None:
+    def _initialize_ui_morph(self) -> None:
         # --------------
-        self.blend_scrolled_window = wx.ScrolledWindow(
+        self.morph_scrolled_window = wx.ScrolledWindow(
             self,
             wx.ID_ANY,
             wx.DefaultPosition,
             wx.Size(-1, -1),
             wx.FULL_REPAINT_ON_RESIZE | wx.VSCROLL | wx.HSCROLL,
         )
-        self.blend_scrolled_window.SetScrollRate(5, 5)
+        self.morph_scrolled_window.SetScrollRate(5, 5)
 
-        self.blend_window_sizer = wx.BoxSizer(wx.VERTICAL)
+        self.morph_window_sizer = wx.BoxSizer(wx.VERTICAL)
 
-        self.morph_title_ctrl = wx.StaticText(self.blend_scrolled_window, wx.ID_ANY, __("モーフ"), wx.DefaultPosition, wx.DefaultSize, 0)
+        self.morph_title_ctrl = wx.StaticText(self.morph_scrolled_window, wx.ID_ANY, __("モーフ"), wx.DefaultPosition, wx.DefaultSize, 0)
+        self.morph_window_sizer.Add(self.morph_title_ctrl, 0, wx.ALL, 3)
 
-        self.blend_window_sizer.Add(self.morph_title_ctrl, 0, wx.ALL, 3)
-        self.blend_scrolled_window.SetSizer(self.blend_window_sizer)
-        self.sizer.Add(self.blend_scrolled_window, 1, wx.ALL | wx.EXPAND | wx.FIXED_MINSIZE, 3)
+        self.morph_set = MorphCtrlSet(self, self.morph_scrolled_window)
+        self.morph_window_sizer.Add(self.morph_set.sizer, 0, wx.ALL, 3)
+
+        self.morph_scrolled_window.SetSizer(self.morph_window_sizer)
+        self.sizer.Add(self.morph_scrolled_window, 1, wx.ALL | wx.EXPAND | wx.FIXED_MINSIZE, 3)
 
     def _initialize_ui_config(self) -> None:
         self.config_scrolled_window = wx.ScrolledWindow(
@@ -261,11 +265,11 @@ class ConfigPanel(CanvasPanel):
 
     def change_window(self):
         if self.show_config:
-            self.blend_scrolled_window.Hide()
+            self.morph_scrolled_window.Hide()
             self.config_scrolled_window.Show()
         else:
             self.config_scrolled_window.Hide()
-            self.blend_scrolled_window.Show()
+            self.morph_scrolled_window.Show()
         self.sizer.Layout()
 
     def fit_window(self):
@@ -273,8 +277,8 @@ class ConfigPanel(CanvasPanel):
             self.config_scrolled_window.Layout()
             self.config_scrolled_window.Fit()
         else:
-            self.blend_scrolled_window.Layout()
-            self.blend_scrolled_window.Fit()
+            self.morph_scrolled_window.Layout()
+            self.morph_scrolled_window.Fit()
         self.Layout()
 
     def on_play(self, event: wx.Event) -> None:
@@ -352,3 +356,6 @@ class ConfigPanel(CanvasPanel):
 
         self.Enable(True)
         self.frame.on_sound()
+
+    def show_bone_weight(self, is_show_bone_weight: bool) -> None:
+        self.frame.show_bone_weight(is_show_bone_weight)
