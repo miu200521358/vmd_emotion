@@ -126,7 +126,7 @@ class ConfigPanel(CanvasPanel):
         self.gaze_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
         self.create_gaze_ctrl = wx.Button(self.config_scrolled_window, wx.ID_ANY, __("目線生成"), wx.DefaultPosition, wx.Size(120, -1))
-        self.create_gaze_ctrl.SetToolTip(__("頭などの動きに合わせて目線を生成します"))
+        self.create_gaze_ctrl.SetToolTip(__("頭などの動きに合わせて目線を生成します\n両目ボーンを使用します"))
         self.create_gaze_ctrl.Bind(wx.EVT_BUTTON, self.on_create_gaze)
         self.gaze_sizer.Add(self.create_gaze_ctrl, 0, wx.ALL, 3)
 
@@ -249,7 +249,14 @@ class ConfigPanel(CanvasPanel):
         self.blink_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
         self.create_blink_ctrl = wx.Button(self.config_scrolled_window, wx.ID_ANY, __("まばたき生成"), wx.DefaultPosition, wx.Size(120, -1))
-        self.create_blink_ctrl.SetToolTip(__("頭などの動きに合わせてをまばたきを生成します。"))
+        self.create_blink_ctrl.SetToolTip(
+            "\n".join(
+                [
+                    __("頭などの動きに合わせてをまばたきを生成します"),
+                    __("まばたき・下モーフを使用しますが、モデルに該当モーフがなく他で代用できる場合はモーフタブで置き換えてください"),
+                ]
+            )
+        )
         self.create_blink_ctrl.Bind(wx.EVT_BUTTON, self.on_create_blink)
         self.blink_sizer.Add(self.create_blink_ctrl, 0, wx.ALL, 3)
 
