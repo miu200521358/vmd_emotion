@@ -90,6 +90,13 @@ class GazeUsecase:
                 continue
 
             fno = eye_fnos[iidx - 1]
+
+            if 1 < i:
+                prev_fno = eye_fnos[iidx - 2]
+                if 5 > fno - prev_fno:
+                    # 前の目線からあまりにも近い場合スルー
+                    continue
+
             gaze_vector = gaze_vectors[iidx - 1]
             infection_gaze_vector = gaze_vectors[iidx]
 

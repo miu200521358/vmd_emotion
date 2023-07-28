@@ -38,7 +38,14 @@ class BlinkCtrlSet:
             wx.Size(300, -1),
             choices=[],
         )
-        self.condition_choice_ctrl.SetToolTip(__("まばたきを生成する条件の選択肢"))
+        self.condition_choice_ctrl.SetToolTip(
+            "\n".join(
+                [
+                    __("まばたきを生成する条件の選択肢\n選択肢ごとに発生確率を設定できます"),
+                    __("確率が0より大きい場合、該当条件に合致するキーフレでまばたきを生成します。"),
+                ]
+            )
+        )
         self.condition_choice_ctrl.Bind(wx.EVT_CHOICE, self.on_change_condition)
         self.sizer.Add(self.condition_choice_ctrl, 0, wx.ALL, 3)
 

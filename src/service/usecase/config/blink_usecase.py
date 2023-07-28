@@ -44,6 +44,8 @@ class BlinkUsecase:
         )
 
         logger.info("目線変動量取得", decoration=MLogger.Decoration.LINE)
+
+        logger.info("両目変動量")
         eye_matrixes = motion.animate_bone(eye_fnos, model, ["両目", "左手首", "右手首", "左足首", "右足首"], out_fno_log=True)
 
         prev_blink = None
@@ -84,14 +86,17 @@ class BlinkUsecase:
             blink_vectors.append(eye_vector)
             prev_blink = eye_vector
 
-        blink_fnos: dict[int, float] = {}
+        blink_weight_fnos: dict[int, float] = {}
+        blink_type_fnos: dict[int, str] = {}
 
         normal_probability = condition_probabilities[BlinkConditions.NORMAL.value.name] * 0.01
         if 0 < normal_probability:
-            logger.info("まばたきポイント検出 [時間経過]", decoration=MLogger.Decoration.LINE)
+            logger.info("まばたきポイント検出 [前のまばたきから一定時間経過した時]", decoration=MLogger.Decoration.LINE)
 
-            logger.info("変曲点抽出")
-            for fidx in get_infections(blink_dots, 0.02):
+            normal_dots = get_infections(blink_dots, 0.02)
+            logger.info("変曲点抽出 候補キーフレ[{d}件]", d=len(normal_dots))
+
+            for fidx in normal_dots:
                 # 動きがある箇所で、乱数条件を満たしている場合、登録対象
                 rnd = np.random.rand()
                 if rnd <= normal_probability:
@@ -99,91 +104,109 @@ class BlinkUsecase:
                     gaze_degrees = motion.bones["両目"][fno].rotation.to_euler_degrees()
                     if gaze_degrees.x < 1:
                         # 目線が上に向かってたらスルー
-                        logger.debug(f"まばたきポイント[時間経過] [{eye_fnos[fidx]}][r={rnd:.3f}][l={normal_probability:.3f}]")
-                        blink_fnos[fno] = 0.5
-
-        opening_probability = condition_probabilities[BlinkConditions.OPENING.value.name] * 0.01
-        ending_probability = condition_probabilities[BlinkConditions.ENDING.value.name] * 0.01
-        if 0 < opening_probability or 0 < ending_probability:
-            logger.info("まばたきポイント検出 [開始・終了]", decoration=MLogger.Decoration.LINE)
-
-            logger.info("変曲点抽出")
-            infection_fnos = get_infections(blink_dots, 0.2)
-
-            # 最初の変曲点までのキーフレ間が一定区間ある場合、登録対象
-            rnd = np.random.rand()
-            start_fno = eye_fnos[infection_fnos[0]]
-            if 30 * 5 < start_fno and rnd <= opening_probability:
-                logger.debug(f"まばたきポイント[開始] [{start_fno}][r={rnd:.3f}][l={opening_probability:.3f}]")
-                blink_fnos[start_fno] = 0.6
-
-            # 最後の変曲点までのキーフレ間が一定区間ある場合、登録対象
-            rnd = np.random.rand()
-            end_fno = motion.max_fno - eye_fnos[infection_fnos[-1]]
-            if 30 * 5 < end_fno and rnd <= ending_probability:
-                logger.debug(f"まばたきポイント[終了] [{end_fno}][r={rnd:.3f}][l={ending_probability:.3f}]")
-                blink_fnos[end_fno] = 0.6
-
-        jump_probability = condition_probabilities[BlinkConditions.AFTER_JUMP.value.name] * 0.01
-        if 0 < opening_probability or 0 < jump_probability:
-            logger.info("まばたきポイント検出 [ジャンプ]", decoration=MLogger.Decoration.LINE)
-
-            # ジャンプ（上半身のY位置が高い）の箇所を抽出する
-            logger.info("変曲点抽出")
-            for fidx in np.where(np.array(upper_ratio_ys) > 1.1)[0]:
-                rnd = np.random.rand()
-                if rnd <= jump_probability and fidx < len(eye_fnos) - 2:
-                    # ジャンプの次の変曲点（着地とおぼしき場所）でまばたきを入れる
-                    fno = eye_fnos[fidx + 1]
-                    logger.debug(f"まばたきポイント[ジャンプ] [{fno}][r={rnd:.3f}][l={jump_probability:.3f}]")
-                    blink_fnos[fno] = 0.7
+                        logger.debug(f"まばたきポイント[時間経過] [{eye_fnos[fidx]}][d={blink_dots[fidx]:.3f}][p={normal_probability:.3f}]")
+                        blink_weight_fnos[fno] = 0.5
+                        blink_type_fnos[fno] = __("前のまばたきから一定時間経過した時")
 
         kick_probability = condition_probabilities[BlinkConditions.AFTER_KICK.value.name] * 0.01
-        if 0 < opening_probability or 0 < kick_probability:
-            logger.info("まばたきポイント検出 [キック]", decoration=MLogger.Decoration.LINE)
+        if 0 < kick_probability:
+            logger.info("まばたきポイント検出 [キックの着地後]", decoration=MLogger.Decoration.LINE)
 
             # ジャンプ（足首の動き）の箇所を抽出する
-            logger.info("変曲点抽出")
             kick_fidxs = sorted(
-                set(np.where(np.array(left_ankle_ys) > 1.3)[0].tolist()) | set(np.where(np.array(right_ankle_ys) > 1.3)[0].tolist())
+                set(np.where(np.array(left_ankle_ys) > 1.2)[0].tolist()) | set(np.where(np.array(right_ankle_ys) > 1.2)[0].tolist())
             )
+            logger.info("変曲点抽出 候補キーフレ[{d}件]", d=len(kick_fidxs))
+
             for fidx in kick_fidxs:
                 rnd = np.random.rand()
                 if rnd <= kick_probability and fidx < len(eye_fnos) - 2:
                     # ジャンプの次の変曲点（着地とおぼしき場所）でまばたきを入れる
                     fno = eye_fnos[fidx + 1]
-                    logger.debug(f"まばたきポイント[キック] [{fno}][r={rnd:.3f}][l={kick_probability:.3f}]")
-                    blink_fnos[fno] = 0.7
+                    logger.debug(
+                        f"まばたきポイント[キック] [{fno}][l={left_ankle_ys[fidx]:.3f}][r={right_ankle_ys[fidx]:.3f}][p={kick_probability:.3f}]"
+                    )
+                    blink_weight_fnos[fno] = 0.6
+                    blink_type_fnos[fno] = __("キックの着地後")
 
         wrist_probability = condition_probabilities[BlinkConditions.WRIST_CROSS.value.name] * 0.01
-        if 0 < opening_probability or 0 < wrist_probability:
-            logger.info("まばたきポイント検出 [手首]", decoration=MLogger.Decoration.LINE)
+        if 0 < wrist_probability:
+            logger.info("まばたきポイント検出 [腕が顔の前を横切った時]", decoration=MLogger.Decoration.LINE)
 
             # ジャンプ（足首の動き）の箇所を抽出する
-            logger.info("変曲点抽出")
             wrist_fidxs = sorted(
-                set(np.where(np.array(left_wrist_distance_ratios) < 0.2)[0].tolist())
-                | set(np.where(np.array(right_wrist_distance_ratios) < 0.2)[0].tolist())
+                set(np.where(np.array(left_wrist_distance_ratios) < 0.6)[0].tolist())
+                | set(np.where(np.array(right_wrist_distance_ratios) < 0.6)[0].tolist())
             )
+            logger.info("変曲点抽出 候補キーフレ[{d}件]", d=len(wrist_fidxs))
+
             for fidx in wrist_fidxs:
                 rnd = np.random.rand()
-                if rnd <= wrist_probability and fidx < len(eye_fnos) - 2:
-                    # 手首の次の変曲点（離れたとおぼしき場所）でまばたきを入れる
+                if rnd <= wrist_probability and fidx < len(eye_fnos) - 1:
+                    # 手首の変曲点（近付いたとおぼしき場所）でまばたきを入れる
+                    fno = eye_fnos[fidx]
+                    logger.debug(
+                        f"まばたきポイント[手首] [{fno}][l={left_wrist_distance_ratios[fidx]:.3f}]"
+                        + f"[r={right_wrist_distance_ratios[fidx]:.3f}][l={wrist_probability:.3f}]"
+                    )
+                    blink_weight_fnos[fno] = 0.6
+                    blink_type_fnos[fno] = __("腕が顔の前を横切った時")
+
+        jump_probability = condition_probabilities[BlinkConditions.AFTER_JUMP.value.name] * 0.01
+        if 0 < jump_probability:
+            logger.info("まばたきポイント検出 [ジャンプの着地後]", decoration=MLogger.Decoration.LINE)
+
+            jump_fidxs = np.where(np.array(upper_ratio_ys) > 1.1)[0]
+            logger.info("変曲点抽出 候補キーフレ[{d}件]", d=len(jump_fidxs))
+
+            # ジャンプ（上半身のY位置が高い）の箇所を抽出する
+            for fidx in jump_fidxs:
+                rnd = np.random.rand()
+                if rnd <= jump_probability and fidx < len(eye_fnos) - 2:
+                    # ジャンプの次の変曲点（着地とおぼしき場所）でまばたきを入れる
                     fno = eye_fnos[fidx + 1]
-                    logger.debug(f"まばたきポイント[手首] [{fno}][r={rnd:.3f}][l={wrist_probability:.3f}]")
-                    blink_fnos[fno] = 0.7
+                    logger.debug(f"まばたきポイント[ジャンプ] [{fno}][u={upper_ratio_ys[fidx]:.3f}][p={jump_probability:.3f}]")
+                    blink_weight_fnos[fno] = 0.7
+                    blink_type_fnos[fno] = __("ジャンプの着地後")
 
         turn_probability = condition_probabilities[BlinkConditions.TURN.value.name] * 0.01
-        if 0 < opening_probability or 0 < turn_probability:
-            logger.info("まばたきポイント検出 [ターン]", decoration=MLogger.Decoration.LINE)
+        if 0 < turn_probability:
+            logger.info("まばたきポイント検出 [ターンの開始時]", decoration=MLogger.Decoration.LINE)
 
-            logger.info("変曲点抽出")
-            for fidx in get_infections(blink_dots, 0.6):
+            turn_fidxs = get_infections(blink_dots, 0.6)
+            logger.info("変曲点抽出 候補キーフレ[{d}件]", d=len(turn_fidxs))
+
+            for fidx in turn_fidxs:
                 rnd = np.random.rand()
                 if rnd <= turn_probability:
                     fno = eye_fnos[fidx]
-                    logger.debug(f"まばたきポイント[ターン] [{fno}][r={rnd:.3f}][l={turn_probability:.3f}]")
-                    blink_fnos[fno] = 0.8
+                    logger.debug(f"まばたきポイント[ターン] [{fno}][d={blink_dots[fidx]:.3f}][p={turn_probability:.3f}]")
+                    blink_weight_fnos[fno] = 0.8
+                    blink_type_fnos[fno] = __("ターンの開始時")
+
+        opening_probability = condition_probabilities[BlinkConditions.OPENING.value.name] * 0.01
+        ending_probability = condition_probabilities[BlinkConditions.ENDING.value.name] * 0.01
+        if 0 < opening_probability or 0 < ending_probability:
+            logger.info("まばたきポイント検出 [モーションの開始・終了]", decoration=MLogger.Decoration.LINE)
+
+            infection_fnos = get_infections(blink_dots, 0.2)
+            logger.info("変曲点抽出 候補キーフレ[{d}件]", d=2)
+
+            # 最初の変曲点までのキーフレ間が一定区間ある場合、登録対象
+            rnd = np.random.rand()
+            start_fno = eye_fnos[infection_fnos[0]]
+            if 30 * 5 < start_fno and rnd <= opening_probability:
+                logger.debug(f"まばたきポイント[開始] [{start_fno}][d={blink_dots[fidx]:.3f}][p={opening_probability:.3f}]")
+                blink_weight_fnos[start_fno] = 0.9
+                blink_type_fnos[fno] = __("モーションの開始")
+
+            # 最後の変曲点までのキーフレ間が一定区間ある場合、登録対象
+            rnd = np.random.rand()
+            end_fno = motion.max_fno - eye_fnos[infection_fnos[-1]]
+            if 30 * 5 < end_fno and rnd <= ending_probability:
+                logger.debug(f"まばたきポイント[終了] [{end_fno}][d={blink_dots[fidx]:.3f}][p={ending_probability:.3f}]")
+                blink_weight_fnos[end_fno] = 0.9
+                blink_type_fnos[fno] = __("モーションの終了")
 
         logger.info("まばたき生成", decoration=MLogger.Decoration.LINE)
 
@@ -193,17 +216,15 @@ class BlinkUsecase:
 
         nums = 0
         # 最初のまばたきを対象とする
-        fno = sorted(blink_fnos.keys())[0]
+        fno = sorted(blink_weight_fnos.keys())[0]
         is_double_before = False
         is_double_after = False
         prev_fno = start_fno = close_fno = weight_fno = open_fno = end_fno = 0
         range_fnos: dict[int, float] = {}
         while prev_fno < eye_fnos[-1]:
-            if 0 < nums and 0 == nums % 20:
-                logger.info("-- まばたき生成 [{n}]", n=nums)
-
             # 重み付けをしたまばたき -----------
-            weight = blink_fnos.get(fno, 0.3)
+            weight = blink_weight_fnos.get(fno, 0.3)
+            blink_type = blink_type_fnos.get(fno, __("連続"))
             weight_blink = round(1.5 * weight)
 
             # ランダムで二回連続の瞬きをする
@@ -329,6 +350,7 @@ class BlinkUsecase:
                 f"まばたき[{weight}(DB:{is_double_before}, DA:{is_double_after})] start[{start_fno}], close[{close_fno}], "
                 + f"weight[{weight_fno}], open[{open_fno}], end[{end_fno}]"
             )
+            logger.info("-- まばたき生成 [キーフレ: {f}][種類: {t}]", f=weight_fno, t=blink_type)
 
             prev_fno = fno
             nums += 1
@@ -339,8 +361,8 @@ class BlinkUsecase:
             while not range_fnos:
                 range_fnos = dict(
                     [
-                        (f, blink_fnos[f])
-                        for f in sorted(blink_fnos.keys())
+                        (f, blink_weight_fnos[f])
+                        for f in sorted(blink_weight_fnos.keys())
                         if prev_fno + blink_span < f < prev_fno + ((blink_span + 100) * n)
                     ]
                 )
