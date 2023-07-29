@@ -9,11 +9,12 @@ from mlib.service.form.widgets.console_ctrl import ConsoleCtrl
 from mlib.service.form.widgets.frame_slider_ctrl import FrameSliderCtrl
 from mlib.service.form.widgets.spin_ctrl import WheelSpinCtrl, WheelSpinCtrlDouble
 from mlib.vmd.vmd_collection import VmdMotion
+from mlib.vmd.vmd_tree import VmdBoneFrameTrees
 from service.form.widgets.blink_ctrl_set import BlinkCtrlSet
+from service.form.widgets.morph_ctrl_set import MorphCtrlSet
 from service.worker.config.blink_worker import BlinkWorker
 from service.worker.config.gaze_worker import GazeWorker
-from mlib.vmd.vmd_tree import VmdBoneFrameTrees
-from service.form.widgets.morph_ctrl_set import MorphCtrlSet
+from service.worker.config.repair_morph_worker import RepairMorphWorker
 
 logger = MLogger(os.path.basename(__file__))
 __ = logger.get_text
@@ -24,6 +25,7 @@ class ConfigPanel(CanvasPanel):
         super().__init__(frame, tab_idx, 1.0, 0.4, *args, **kw)
         self.gaze_worker = GazeWorker(self.frame, self.on_config_result)
         self.blink_worker = BlinkWorker(self.frame, self.on_config_result)
+        self.repair_worker = RepairMorphWorker(self.frame, self.on_config_result)
         self.bone_matrixes = VmdBoneFrameTrees()
         self.show_config = True
 
@@ -125,10 +127,10 @@ class ConfigPanel(CanvasPanel):
 
         self.gaze_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
-        self.create_gaze_ctrl = wx.Button(self.config_scrolled_window, wx.ID_ANY, __("目線生成"), wx.DefaultPosition, wx.Size(120, -1))
-        self.create_gaze_ctrl.SetToolTip(__("頭などの動きに合わせて目線を生成します\n両目ボーンを使用します"))
-        self.create_gaze_ctrl.Bind(wx.EVT_BUTTON, self.on_create_gaze)
-        self.gaze_sizer.Add(self.create_gaze_ctrl, 0, wx.ALL, 3)
+        self.create_gaze_btn_ctrl = wx.Button(self.config_scrolled_window, wx.ID_ANY, __("目線生成"), wx.DefaultPosition, wx.Size(140, -1))
+        self.create_gaze_btn_ctrl.SetToolTip(__("頭などの動きに合わせて目線を生成します\n両目ボーンを使用します"))
+        self.create_gaze_btn_ctrl.Bind(wx.EVT_BUTTON, self.on_create_gaze)
+        self.gaze_sizer.Add(self.create_gaze_btn_ctrl, 0, wx.ALL, 3)
 
         # --------------
         gaze_infection_tooltip = __("目線キーフレを作成する頻度。\n値が大きいほど、小さな動きでも目線が動くようになります。")
@@ -248,8 +250,8 @@ class ConfigPanel(CanvasPanel):
 
         self.blink_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
-        self.create_blink_ctrl = wx.Button(self.config_scrolled_window, wx.ID_ANY, __("まばたき生成"), wx.DefaultPosition, wx.Size(120, -1))
-        self.create_blink_ctrl.SetToolTip(
+        self.create_blink_btn_ctrl = wx.Button(self.config_scrolled_window, wx.ID_ANY, __("まばたき生成"), wx.DefaultPosition, wx.Size(140, -1))
+        self.create_blink_btn_ctrl.SetToolTip(
             "\n".join(
                 [
                     __("頭などの動きに合わせてをまばたきを生成します"),
@@ -257,13 +259,63 @@ class ConfigPanel(CanvasPanel):
                 ]
             )
         )
-        self.create_blink_ctrl.Bind(wx.EVT_BUTTON, self.on_create_blink)
-        self.blink_sizer.Add(self.create_blink_ctrl, 0, wx.ALL, 3)
+        self.create_blink_btn_ctrl.Bind(wx.EVT_BUTTON, self.on_create_blink)
+        self.blink_sizer.Add(self.create_blink_btn_ctrl, 0, wx.ALL, 3)
 
         self.blink_set = BlinkCtrlSet(self, self.config_scrolled_window)
         self.blink_sizer.Add(self.blink_set.sizer, 0, wx.ALL, 3)
 
         self.config_window_sizer.Add(self.blink_sizer, 0, wx.ALL, 3)
+
+        # --------------
+        # モーフ破綻軽減
+
+        self.repair_sizer = wx.BoxSizer(wx.HORIZONTAL)
+
+        self.repair_morph_btn_ctrl = wx.Button(self.config_scrolled_window, wx.ID_ANY, __("モーフ破綻補正"), wx.DefaultPosition, wx.Size(140, -1))
+        self.repair_morph_btn_ctrl.SetToolTip(
+            "\n".join(
+                [
+                    __("モデルとモーフの組み合わせによって破綻している箇所がある場合、補正します"),
+                ]
+            )
+        )
+        self.repair_morph_btn_ctrl.Bind(wx.EVT_BUTTON, self.on_repair_morph)
+        self.repair_sizer.Add(self.repair_morph_btn_ctrl, 0, wx.ALL, 3)
+
+        # --------------
+        check_morph_tooltip = __("チェック対象となるモーフの合計変形量\n値が小さいほど、少しのモーフ変形量でもチェックを行います")
+
+        self.check_morph_title_ctrl = wx.StaticText(
+            self.config_scrolled_window, wx.ID_ANY, __("チェック対象変形量"), wx.DefaultPosition, wx.DefaultSize, 0
+        )
+        self.check_morph_title_ctrl.SetToolTip(check_morph_tooltip)
+        self.repair_sizer.Add(self.check_morph_title_ctrl, 0, wx.ALL, 3)
+
+        self.check_morph_threshold_ctrl = WheelSpinCtrlDouble(
+            self.config_scrolled_window, initial=0.8, min=0.0, max=2.0, inc=0.01, size=wx.Size(60, -1)
+        )
+        self.check_morph_threshold_ctrl.SetToolTip(check_morph_tooltip)
+        self.repair_sizer.Add(self.check_morph_threshold_ctrl, 0, wx.ALL, 3)
+
+        # --------------
+        repair_morph_tooltip = __("モーフが破綻している場合の補正係数\n値が小さいほど、補正が強くかかります")
+
+        self.repair_morph_title_ctrl = wx.StaticText(
+            self.config_scrolled_window, wx.ID_ANY, __("補正係数"), wx.DefaultPosition, wx.DefaultSize, 0
+        )
+        self.repair_morph_title_ctrl.SetToolTip(repair_morph_tooltip)
+        self.repair_sizer.Add(self.repair_morph_title_ctrl, 0, wx.ALL, 3)
+
+        self.repair_morph_factor_ctrl = WheelSpinCtrlDouble(
+            self.config_scrolled_window, initial=1.2, min=1.0, max=2.0, inc=0.01, size=wx.Size(60, -1)
+        )
+        self.repair_morph_factor_ctrl.SetToolTip(repair_morph_tooltip)
+        self.repair_sizer.Add(self.repair_morph_factor_ctrl, 0, wx.ALL, 3)
+
+        self.config_window_sizer.Add(self.repair_sizer, 0, wx.ALL, 3)
+
+        # --------------
         self.config_scrolled_window.SetSizer(self.config_window_sizer)
         self.sizer.Add(self.config_scrolled_window, 1, wx.ALL | wx.EXPAND | wx.FIXED_MINSIZE, 3)
 
@@ -316,7 +368,8 @@ class ConfigPanel(CanvasPanel):
     def Enable(self, enable: bool):
         self.frame_slider.Enable(enable)
         self.play_ctrl.Enable(enable)
-        self.create_gaze_ctrl.Enable(enable)
+
+        self.create_gaze_btn_ctrl.Enable(enable)
         self.gaze_infection_ctrl.Enable(enable)
         self.gaze_ratio_x_ctrl.Enable(enable)
         self.gaze_limit_upper_x_ctrl.Enable(enable)
@@ -326,8 +379,12 @@ class ConfigPanel(CanvasPanel):
         self.gaze_limit_lower_y_ctrl.Enable(enable)
         self.gaze_reset_ctrl.Enable(enable)
 
-        self.create_blink_ctrl.Enable(enable)
+        self.create_blink_btn_ctrl.Enable(enable)
         self.blink_set.Enable(enable)
+
+        self.repair_morph_btn_ctrl.Enable(enable)
+        self.check_morph_threshold_ctrl.Enable(enable)
+        self.repair_morph_factor_ctrl.Enable(enable)
 
     def on_frame_change(self, event: wx.Event):
         self.Enable(False)
@@ -341,6 +398,10 @@ class ConfigPanel(CanvasPanel):
     def on_create_blink(self, event: wx.Event) -> None:
         self.Enable(False)
         self.blink_worker.start()
+
+    def on_repair_morph(self, event: wx.Event) -> None:
+        self.Enable(False)
+        self.repair_worker.start()
 
     def on_config_result(self, result: bool, data: tuple[VmdMotion, VmdMotion], elapsed_time: str):
         self.console_ctrl.write(f"\n----------------\n{elapsed_time}")

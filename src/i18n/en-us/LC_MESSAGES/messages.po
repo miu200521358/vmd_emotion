@@ -591,3 +591,39 @@ msgstr "Generate eye line as the head and other parts of the body move.
 
 msgid "まばたき・下モーフを使用しますが、モデルに該当モーフがなく他で代用できる場合はモーフタブで置き換えてください"
 msgstr "Use the blink and lower morph, but if the model does not have the corresponding morph and you can substitute it elsewhere, please use the morph tab to replace it"
+
+msgid "モーフ破綻補正"
+msgstr "Morph collapse correction"
+
+msgid "モデルとモーフの組み合わせによって破綻している箇所がある場合、補正します"
+msgstr "Corrects any areas that are broken by the combination of model and morph"
+
+msgid "モーフが破綻している場合の補正係数\n値が小さいほど、補正が強くかかります"
+msgstr "The smaller the correction coefficient \n value, the stronger the correction is applied when the morph is out of order"
+
+msgid "チェック対象となるモーフの合計変形量\n値が小さいほど、少しのモーフ変形量でもチェックを行います"
+msgstr "The smaller the total deformation value\n of the morphs to be checked, the more the morphs will be checked even with a small amount of morph deformation"
+
+msgid "チェック対象変形量"
+msgstr "Deformation amount to be checked"
+
+msgid "モーフ破綻補正開始"
+msgstr "Morph failure correction initiated"
+
+msgid "チェック対象モーフ抽出"
+msgstr "Morph extraction to be checked
+
+msgid "モーフ最大変動量チェック"
+msgstr "Maximum Morph Variation Check"
+
+msgid "破綻補正[{f}][{m}]"
+msgstr "Failure correction [{f}][{m}]"
+
+msgid "モーフ破綻補正[{f}][{m}]"
+msgstr "Morph collapse correction [{f}][{m}]"
+
+msgid "モーフ破綻補正[{f}][{m}][{m1}:{f1} ({r1:.3f} -> {r2:.3f})]"
+msgstr "Morph collapse correction [{f}][{m}][{m1}:{f1} ({r1:.3f} -> {r2:.3f})]"
+
+msgid "モーフ破綻補正完了"
+msgstr "Morph failure correction complete"

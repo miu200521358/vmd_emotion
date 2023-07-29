@@ -9,7 +9,7 @@ from mlib.service.form.base_frame import BaseFrame
 from mlib.utils.file_utils import get_root_dir
 from mlib.vmd.vmd_collection import VmdMotion
 from service.form.panel.file_panel import FilePanel
-from service.usecase.config.blink_usecase import BlinkUsecase
+from service.usecase.config.repair_morph_usecase import RepairMorphUsecase
 
 logger = MLogger(os.path.basename(__file__), level=1)
 __ = logger.get_text
@@ -27,19 +27,17 @@ class RepairMorphWorker(BaseWorker):
 
         logger.info("モーフ破綻補正開始", decoration=MLogger.Decoration.BOX)
 
-        BlinkUsecase().create_blink(
+        RepairMorphUsecase().repair_morph(
             model,
             motion,
             output_motion,
-            self.frame.config_panel.blink_set.condition_probabilities,
-            self.frame.config_panel.blink_set.linkage_depth_ctrl.GetValue(),
-            self.frame.config_panel.blink_set.blink_span_ctrl.GetValue(),
-            "下",
+            self.frame.config_panel.check_morph_threshold_ctrl.GetValue(),
+            self.frame.config_panel.repair_morph_factor_ctrl.GetValue(),
         )
 
         self.result_data = motion, output_motion
 
-        logger.info("まばたき生成完了", decoration=MLogger.Decoration.BOX)
+        logger.info("モーフ破綻補正完了", decoration=MLogger.Decoration.BOX)
 
     def output_log(self):
         file_panel: FilePanel = self.frame.file_panel

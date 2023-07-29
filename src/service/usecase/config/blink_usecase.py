@@ -245,6 +245,8 @@ class BlinkUsecase:
             else:
                 is_double_before = False
 
+            # TODO 時々笑いを混ぜる
+
             # 最初は静止 (二重まばたきの場合は半開き)
             start_fno = fno - weight_blink - 4 + np.random.randint(-1, 1)
             mf1 = VmdMorphFrame(start_fno, blink_name)

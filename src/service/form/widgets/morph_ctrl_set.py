@@ -3,13 +3,12 @@ import os
 import wx
 
 from mlib.base.logger import MLogger
+from mlib.pmx.pmx_collection import Morphs
+from mlib.pmx.pmx_part import Morph, MorphPanel
 from mlib.service.form.base_panel import BasePanel
 from mlib.service.form.widgets.float_slider_ctrl import FloatSliderCtrl
 from mlib.vmd.vmd_collection import VmdMotion
 from mlib.vmd.vmd_part import VmdMorphFrame
-from mlib.pmx.pmx_collection import Morphs
-from mlib.pmx.pmx_part import MorphPanel
-from mlib.pmx.pmx_part import Morph
 
 logger = MLogger(os.path.basename(__file__))
 __ = logger.get_text
