@@ -47,8 +47,17 @@ class BlinkUsecase:
 
         logger.info("目線変動量取得", decoration=MLogger.Decoration.LINE)
 
+        kick_probability = condition_probabilities[BlinkConditions.AFTER_KICK.value.name] * 0.01
+        wrist_probability = condition_probabilities[BlinkConditions.WRIST_CROSS.value.name] * 0.01
+
+        target_bone_names = ["両目"]
+        if 0 < kick_probability:
+            target_bone_names.extend(["左足首", "右足首"])
+        if 0 < wrist_probability:
+            target_bone_names.extend(["左手首", "右手首"])
+
         logger.info("両目変動量")
-        eye_matrixes = motion.animate_bone(eye_fnos, model, ["両目", "左手首", "右手首", "左足首", "右足首"], out_fno_log=True)
+        eye_matrixes = motion.animate_bone(eye_fnos, model, target_bone_names, out_fno_log=True)
 
         prev_blink = None
         blink_vectors: list[MVector3D] = []
@@ -63,16 +72,18 @@ class BlinkUsecase:
             eye_global_direction_vector = eye_matrixes[fno, "両目"].global_matrix * MVector3D(0, 0, -1)
             eye_vector = (eye_global_direction_vector - eye_matrixes[fno, "両目"].position).normalized() * -1
             upper_ratio_ys.append(eye_matrixes[fno, "上半身"].position.y / model.bones["上半身"].position.y)
-            left_ankle_ys.append(eye_matrixes[fno, "左足首"].position.y / model.bones["左ひざ"].position.y)
-            right_ankle_ys.append(eye_matrixes[fno, "右足首"].position.y / model.bones["右ひざ"].position.y)
-            left_wrist_distance_ratios.append(
-                eye_matrixes[fno, "左手首"].position.distance(eye_matrixes[fno, "両目"].position)
-                / model.bones["左手首"].position.distance(model.bones["左ひじ"].position)
-            )
-            right_wrist_distance_ratios.append(
-                eye_matrixes[fno, "右手首"].position.distance(eye_matrixes[fno, "両目"].position)
-                / model.bones["右手首"].position.distance(model.bones["右ひじ"].position)
-            )
+            if 0 < kick_probability:
+                left_ankle_ys.append(eye_matrixes[fno, "左足首"].position.y / model.bones["左ひざ"].position.y)
+                right_ankle_ys.append(eye_matrixes[fno, "右足首"].position.y / model.bones["右ひざ"].position.y)
+            if 0 < wrist_probability:
+                left_wrist_distance_ratios.append(
+                    eye_matrixes[fno, "左手首"].position.distance(eye_matrixes[fno, "両目"].position)
+                    / model.bones["左手首"].position.distance(model.bones["左ひじ"].position)
+                )
+                right_wrist_distance_ratios.append(
+                    eye_matrixes[fno, "右手首"].position.distance(eye_matrixes[fno, "両目"].position)
+                    / model.bones["右手首"].position.distance(model.bones["右ひじ"].position)
+                )
 
             if not prev_blink:
                 # 初回はスルー
@@ -110,7 +121,6 @@ class BlinkUsecase:
                         blink_weight_fnos[fno] = 0.5
                         blink_type_fnos[fno] = __("前のまばたきから一定時間経過した時")
 
-        kick_probability = condition_probabilities[BlinkConditions.AFTER_KICK.value.name] * 0.01
         if 0 < kick_probability:
             logger.info("まばたきポイント検出 [キックの着地後]", decoration=MLogger.Decoration.LINE)
 
@@ -131,7 +141,6 @@ class BlinkUsecase:
                     blink_weight_fnos[fno] = 0.6
                     blink_type_fnos[fno] = __("キックの着地後")
 
-        wrist_probability = condition_probabilities[BlinkConditions.WRIST_CROSS.value.name] * 0.01
         if 0 < wrist_probability:
             logger.info("まばたきポイント検出 [腕が顔の前を横切った時]", decoration=MLogger.Decoration.LINE)
 
