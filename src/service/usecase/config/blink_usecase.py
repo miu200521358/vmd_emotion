@@ -418,7 +418,7 @@ class BlinkConditions(Enum):
     ENDING = BlinkCondition(name="モーションの終了", probability=100)
     TURN = BlinkCondition(name="ターンの開始時", probability=100)
     AFTER_JUMP = BlinkCondition(name="ジャンプの着地後", probability=100)
-    AFTER_KICK = BlinkCondition(name="キックの着地後", probability=90)
+    AFTER_KICK = BlinkCondition(name="キックの着地後", probability=0)
     WRIST_CROSS = BlinkCondition(name="腕が顔の前を横切った時", probability=80)
     NORMAL = BlinkCondition(name="前のまばたきから一定時間経過した時", probability=50)
 
