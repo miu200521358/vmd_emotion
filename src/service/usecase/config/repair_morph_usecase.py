@@ -72,8 +72,7 @@ class RepairMorphUsecase:
         for midx, morph_name in enumerate(target_morph_names):
             morph_max_vertices[midx] = self.get_vertex_positions(model, morph_name, 1.0)
 
-        max_morph_vertex_positions = np.max(morph_max_vertices, axis=0)
-        min_morph_vertex_positions = np.min(morph_max_vertices, axis=0)
+        max_morph_vertex_positions = np.max(np.abs(morph_max_vertices), axis=0)
 
         logger.info("モーフ破綻チェック", decoration=MLogger.Decoration.LINE)
 
@@ -102,14 +101,14 @@ class RepairMorphUsecase:
                     morph = model.morphs[morph_name]
                     morph_vertices[midx] = self.get_vertex_positions(model, morph_name, ratio)
 
-                max_broken_vertices = np.where(np.sum(morph_vertices, axis=0) > max_morph_vertex_positions * repair_factor)
-                min_broken_vertices = np.where(np.sum(morph_vertices, axis=0) < min_morph_vertex_positions * repair_factor)
-                broken_vertex_indexes = np.unique(np.hstack((min_broken_vertices[0], max_broken_vertices[0])))
+                broken_vertex_indexes = np.unique(np.where(
+                    np.logical_and(
+                        np.sum(np.abs(morph_vertices), axis=0) > max_morph_vertex_positions * repair_factor,
+                        ~np.isclose(max_morph_vertex_positions * repair_factor, 0.0),
+                    )
+                )[0])
 
-                if (
-                    len(min_broken_vertices[0]) + len(max_broken_vertices[0])
-                    < len(np.unique(np.where(np.sum(morph_vertices, axis=0) != 0.0)[0])) * 0.1
-                ):
+                if len(broken_vertex_indexes) < len(np.unique(np.where(~np.isclose(np.sum(morph_vertices, axis=0), 0.0))[0])) * 0.1:
                     # 破綻頂点が見つからなかった場合、終了
                     break
 
@@ -139,6 +138,16 @@ class RepairMorphUsecase:
                 target_ratio_morph_ratios = [
                     r for m, r in key_morph_ratios.items() if not np.isclose(r, 0.0) and m not in IGNORE_MORPH_NAMES
                 ]
+
+                if not target_ratio_morph_names or not target_ratio_morph_ratios:
+                    # 見つからなかった場合、まばたき等を含めてチェックする
+                    target_ratio_morph_names = [m for m, r in key_morph_ratios.items() if not np.isclose(r, 0.0)]
+                    target_ratio_morph_ratios = [r for r in key_morph_ratios.values() if not np.isclose(r, 0.0)]
+
+                if not target_ratio_morph_names or not target_ratio_morph_ratios:
+                    # それでも見つからなかった場合、スルー
+                    continue
+
                 max_ratio_morph_name = target_ratio_morph_names[np.argmax(np.abs(target_ratio_morph_ratios))]
                 target_fno = key_morph_fnos[max_ratio_morph_name]
                 target_morph_original_ratio = motion.morphs[max_ratio_morph_name][target_fno].ratio
