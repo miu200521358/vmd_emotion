@@ -1,4 +1,4 @@
-# PmxDressup 64bit版
+# VmdEmotion 64bit版
 
 import sys
 
