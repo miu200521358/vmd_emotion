@@ -633,3 +633,6 @@ msgstr "Include laughter in the blink of an eye"
 
 msgid "(笑い)"
 msgstr "(Laughter)"
+
+msgid "モーフの値を変更して、プレビューで動作を確認出来ます。"
+msgstr "You can change the morph value and see how it works in the preview"

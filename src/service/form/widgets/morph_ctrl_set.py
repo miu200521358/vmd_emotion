@@ -125,7 +125,7 @@ class MorphReplaceSet:
             border=3,
             size=wx.Size(300, -1),
             change_event=self.on_change_morph_ratio,
-            tooltip=__("モーフの値を変更できます"),
+            tooltip=__("モーフの値を変更して、プレビューで動作を確認出来ます。"),
         )
         self.sizer.Add(self.ratio_slider.sizer, 0, wx.ALL, 3)
 

@@ -839,3 +839,7 @@ msgstr ""
 msgid "(笑い)"
 msgstr ""
 
+
+msgid "モーフの値を変更して、プレビューで動作を確認出来ます。"
+msgstr ""
+
