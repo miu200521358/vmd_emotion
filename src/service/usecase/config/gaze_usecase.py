@@ -2,9 +2,9 @@ import os
 
 from numpy.linalg import solve
 
-from mlib.base.interpolation import IP_MAX, create_interpolation, get_infections
-from mlib.base.logger import MLogger
-from mlib.base.math import MQuaternion, MVector2D, MVector3D
+from mlib.core.interpolation import IP_MAX, create_interpolation, get_infections
+from mlib.core.logger import MLogger
+from mlib.core.math import MQuaternion, MVector2D, MVector3D
 from mlib.pmx.pmx_collection import PmxModel
 from mlib.vmd.vmd_collection import VmdMotion
 from mlib.vmd.vmd_part import VmdBoneFrame

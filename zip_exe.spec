@@ -6,7 +6,13 @@ sys.path.append("src")
 from executor import APP_NAME, VERSION_NAME
 
 file_name = f"{APP_NAME}_{VERSION_NAME}"
-binary_keys = []
+binary_keys = [
+    ('mmd_base/mlib/core/*.pyd', 'mlib/core'),
+    ('mmd_base/mlib/pmx/*.pyd', 'mlib/pmx'),
+    ('mmd_base/mlib/service/*.pyd', 'mlib/service'),
+    ('mmd_base/mlib/utils/*.pyd', 'mlib/utils'),
+    ('mmd_base/mlib/vmd/*.pyd', 'mlib/vmd'),
+]
 data_keys = [
     ('src/resources/logo.ico', 'resources'),
     ('src/i18n/en-us/LC_MESSAGES/messages.mo', 'i18n/en-us/LC_MESSAGES'),
@@ -20,9 +26,12 @@ exclude_dlls = ['numpy\random\_bounded_integers.cp311-win_amd64.pyd', 'numpy\ran
                 'numpy\random\_generator.cp311-win_amd64.pyd', 'numpy\random\_mt19937.cp311-win_amd64.pyd', 'numpy\random\_pcg64.cp311-win_amd64.pyd',
                 'numpy\random\_philox.cp311-win_amd64.pyd', 'numpy\random\_sfc64.cp311-win_amd64.pyd', 'numpy\random\bit_generator.cp311-win_amd64.pyd',
                 'numpy\random\mtrand.cp311-win_amd64.pyd', 'libssl-3-x64.dll', 'libcrypto-3-x64.dll',
-                'PIL\_webp.cp311-win_amd64.pyd', 'PIL\_imagingtk.cp311-win_amd64.pyd', 'PIL\_imagingcms.cp311-win_amd64.pyd', '_ssl.pyd', '_asyncio.pyd']
+                'PIL\_webp.cp311-win_amd64.pyd', '_ssl.pyd', '_asyncio.pyd']
 
 import os
+
+from glob import glob
+exclude_scripts = glob('mmd_base\mlib\**\*.py', recursive=True)
 
 def remove_from_list(input):
     outlist = []
@@ -31,16 +40,18 @@ def remove_from_list(input):
         flag = 0
         if name in exclude_dlls:
             flag = 1
+        if name in exclude_scripts:
+            flag = 1
         print(f"{' OK ' if not flag else '*NG*'} [{name}] = {flag} ({os.path.getsize(path)})")
         if flag != 1:
             outlist.append(item)
     return outlist
 
 a = Analysis(['src/executor.py'],
-            pathex=['src', 'mmd_base/mlib'],
+            pathex=['src'],
             binaries=binary_keys,
             datas=data_keys,
-            hiddenimports=[],
+            hiddenimports=['quaternion', 'OpenGL', 'mlib.service.form.base_notebook', 'bezier', 'wx.glcanvas', 'PIL.Image', 'PIL.ImageOps'],
             hookspath=[],
             runtime_hooks=[],
             excludes=exclude_dlls,

@@ -627,3 +627,9 @@ msgstr "Morph collapse correction [{f}][{m}][{m1}:{f1} ({r1:.3f} -> {r2:.3f})]"
 
 msgid "モーフ破綻補正完了"
 msgstr "Morph failure correction complete"
+
+msgid "まばたきに笑いを含める"
+msgstr "Include laughter in the blink of an eye"
+
+msgid "(笑い)"
+msgstr "(Laughter)"

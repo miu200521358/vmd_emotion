@@ -2,7 +2,7 @@ import os
 
 import wx
 
-from mlib.base.logger import MLogger
+from mlib.core.logger import MLogger
 from mlib.pmx.pmx_collection import Morphs
 from mlib.pmx.pmx_part import Morph, MorphPanel
 from mlib.service.form.base_panel import BasePanel
@@ -38,14 +38,14 @@ class MorphCtrlSet:
         self.blink_morph_ctrl = MorphReplaceSet(self.parent, self.window)
         self.sizer.Add(self.blink_morph_ctrl.sizer, 0, wx.ALL, 3)
 
-        self.laugh_morph_ctrl = MorphReplaceSet(self.parent, self.window)
-        self.sizer.Add(self.laugh_morph_ctrl.sizer, 0, wx.ALL, 3)
+        self.smile_morph_ctrl = MorphReplaceSet(self.parent, self.window)
+        self.sizer.Add(self.smile_morph_ctrl.sizer, 0, wx.ALL, 3)
 
     def initialize(self, morphs: Morphs) -> None:
         self.morphs = morphs
         self.below_eyebrow_morph_ctrl.initialize("下", __("眉を下に動かす"), morphs.filter_by_panel(MorphPanel.EYEBROW_LOWER_LEFT))
         self.blink_morph_ctrl.initialize("まばたき", __("まばたきをする"), morphs.filter_by_panel(MorphPanel.EYE_UPPER_LEFT))
-        self.laugh_morph_ctrl.initialize("笑い", __("笑ったまま目を閉じる"), morphs.filter_by_panel(MorphPanel.EYE_UPPER_LEFT))
+        self.smile_morph_ctrl.initialize("笑い", __("笑ったまま目を閉じる"), morphs.filter_by_panel(MorphPanel.EYE_UPPER_LEFT))
 
     def Enable(self, enable: bool) -> None:
         self.below_eyebrow_morph_ctrl.Enable(enable)

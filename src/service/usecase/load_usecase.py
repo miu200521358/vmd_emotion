@@ -1,7 +1,7 @@
 import os
 
-from mlib.base.exception import MApplicationException
-from mlib.base.logger import MLogger
+from mlib.core.exception import MApplicationException
+from mlib.core.logger import MLogger
 from mlib.pmx.pmx_collection import PmxModel
 from mlib.vmd.vmd_collection import VmdMotion
 from mlib.vmd.vmd_tree import VmdBoneFrameTrees

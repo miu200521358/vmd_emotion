@@ -3,9 +3,9 @@ from enum import Enum
 
 import numpy as np
 
-from mlib.base.interpolation import Interpolation, get_infections
-from mlib.base.logger import MLogger
-from mlib.base.math import MQuaternion, MVector2D, MVector3D
+from mlib.core.interpolation import Interpolation, get_infections
+from mlib.core.logger import MLogger
+from mlib.core.math import MQuaternion, MVector2D, MVector3D
 from mlib.pmx.pmx_collection import PmxModel
 from mlib.vmd.vmd_collection import VmdMotion
 from mlib.vmd.vmd_part import VmdBoneFrame, VmdMorphFrame
@@ -29,7 +29,7 @@ class BlinkUsecase:
         blink_span: int,
         eyebrow_below_name: str,
         blink_name: str,
-        laugh_name: str,
+        smile_name: str,
     ) -> None:
         """まばたき生成"""
 
@@ -101,6 +101,7 @@ class BlinkUsecase:
 
         blink_weight_fnos: dict[int, float] = {}
         blink_type_fnos: dict[int, str] = {}
+        blink_double_fnos: dict[int, bool] = {}
 
         normal_probability = condition_probabilities[BlinkConditions.NORMAL.value.name] * 0.01
         if 0 < normal_probability:
@@ -120,6 +121,7 @@ class BlinkUsecase:
                         logger.debug(f"まばたきポイント[時間経過] [{eye_fnos[fidx]}][d={blink_dots[fidx]:.3f}][p={normal_probability:.3f}]")
                         blink_weight_fnos[fno] = 0.5
                         blink_type_fnos[fno] = __("前のまばたきから一定時間経過した時")
+                        blink_double_fnos[fno] = True
 
         if 0 < kick_probability:
             logger.info("まばたきポイント検出 [キックの着地後]", decoration=MLogger.Decoration.LINE)
@@ -140,6 +142,7 @@ class BlinkUsecase:
                     )
                     blink_weight_fnos[fno] = 0.6
                     blink_type_fnos[fno] = __("キックの着地後")
+                    blink_double_fnos[fno] = False
 
         if 0 < wrist_probability:
             logger.info("まばたきポイント検出 [腕が顔の前を横切った時]", decoration=MLogger.Decoration.LINE)
@@ -162,6 +165,7 @@ class BlinkUsecase:
                     )
                     blink_weight_fnos[fno] = 0.6
                     blink_type_fnos[fno] = __("腕が顔の前を横切った時")
+                    blink_double_fnos[fno] = False
 
         jump_probability = condition_probabilities[BlinkConditions.AFTER_JUMP.value.name] * 0.01
         if 0 < jump_probability:
@@ -179,6 +183,7 @@ class BlinkUsecase:
                     logger.debug(f"まばたきポイント[ジャンプ] [{fno}][u={upper_ratio_ys[fidx]:.3f}][p={jump_probability:.3f}]")
                     blink_weight_fnos[fno] = 0.7
                     blink_type_fnos[fno] = __("ジャンプの着地後")
+                    blink_double_fnos[fno] = False
 
         turn_probability = condition_probabilities[BlinkConditions.TURN.value.name] * 0.01
         if 0 < turn_probability:
@@ -194,6 +199,7 @@ class BlinkUsecase:
                     logger.debug(f"まばたきポイント[ターン] [{fno}][d={blink_dots[fidx]:.3f}][p={turn_probability:.3f}]")
                     blink_weight_fnos[fno] = 0.8
                     blink_type_fnos[fno] = __("ターンの開始時")
+                    blink_double_fnos[fno] = False
 
         opening_probability = condition_probabilities[BlinkConditions.OPENING.value.name] * 0.01
         ending_probability = condition_probabilities[BlinkConditions.ENDING.value.name] * 0.01
@@ -210,6 +216,7 @@ class BlinkUsecase:
                 logger.debug(f"まばたきポイント[開始] [{start_fno}][d={blink_dots[fidx]:.3f}][p={opening_probability:.3f}]")
                 blink_weight_fnos[start_fno] = 0.9
                 blink_type_fnos[fno] = __("モーションの開始")
+                blink_double_fnos[fno] = True
 
             # 最後の変曲点までのキーフレ間が一定区間ある場合、登録対象
             rnd = np.random.rand()
@@ -218,12 +225,15 @@ class BlinkUsecase:
                 logger.debug(f"まばたきポイント[終了] [{end_fno}][d={blink_dots[fidx]:.3f}][p={ending_probability:.3f}]")
                 blink_weight_fnos[end_fno] = 0.9
                 blink_type_fnos[fno] = __("モーションの終了")
+                blink_double_fnos[fno] = True
 
         logger.info("まばたき生成", decoration=MLogger.Decoration.LINE)
 
         eyebrow_below_ratio = linkage_depth * 0.5
         close_qq = MQuaternion.from_euler_degrees(linkage_depth * -10, 0, 0)
         start_double_qq = MQuaternion.from_euler_degrees(linkage_depth * -5, 0, 0)
+
+        smile_probability = condition_probabilities[BlinkConditions.SMILE.value.name] * 0.01
 
         nums = 0
         # 最初のまばたきを対象とする
@@ -236,16 +246,20 @@ class BlinkUsecase:
             # 重み付けをしたまばたき -----------
             weight = blink_weight_fnos.get(fno, 0.3)
             blink_type = blink_type_fnos.get(fno, __("連続"))
+            is_double = blink_double_fnos.get(fno, True)
             weight_blink = round(1.5 * weight)
+            # 笑いを含めるか否か
+            is_smile = np.random.rand() <= smile_probability and fno in blink_weight_fnos
+
+            if is_smile:
+                blink_type += __("(笑い)")
 
             # ランダムで二回連続の瞬きをする
-            if not is_double_before and not is_double_after and np.random.rand() < 0.2:
+            if is_double and not is_double_before and not is_double_after and np.random.rand() < 0.2:
                 is_double_before = True
                 is_double_after = False
             else:
                 is_double_before = False
-
-            # TODO 時々笑いを混ぜる
 
             # 最初は静止 (二重まばたきの場合は半開き)
             start_fno = fno - weight_blink - 4 + np.random.randint(-1, 1)
@@ -282,6 +296,40 @@ class BlinkUsecase:
                 mf5.ratio = 0.0
                 motion.morphs[blink_name].append(mf5)
                 output_motion.morphs[blink_name].append(mf5.copy())
+
+            if is_smile:
+                # 笑い（一定確率） -------
+
+                smf1 = VmdMorphFrame(start_fno - 2, smile_name)
+                smf1.ratio = 0.2 if is_double_after else 0.0
+                motion.morphs[smile_name].append(smf1)
+                output_motion.morphs[smile_name].append(smf1.copy())
+
+                smf2 = VmdMorphFrame(int((start_fno + close_fno) / 2), smile_name)
+                smf2.ratio = 0.3
+                motion.morphs[smile_name].append(smf2)
+                output_motion.morphs[smile_name].append(smf2.copy())
+
+                smf3 = VmdMorphFrame(close_fno, smile_name)
+                smf3.ratio = 0.0
+                motion.morphs[smile_name].append(smf3)
+                output_motion.morphs[smile_name].append(smf3.copy())
+
+                smf4 = VmdMorphFrame(weight_fno, smile_name)
+                smf4.ratio = 0.0
+                motion.morphs[smile_name].append(smf4)
+                output_motion.morphs[smile_name].append(smf4.copy())
+
+                if not is_double_before:
+                    smf5 = VmdMorphFrame(open_fno, smile_name)
+                    smf5.ratio = 0.3
+                    motion.morphs[smile_name].append(smf5)
+                    output_motion.morphs[smile_name].append(smf5.copy())
+
+                    smf6 = VmdMorphFrame(end_fno + 2, smile_name)
+                    smf6.ratio = 0.0
+                    motion.morphs[smile_name].append(smf6)
+                    output_motion.morphs[smile_name].append(smf6.copy())
 
             # 眉を下げる -------
 
@@ -423,6 +471,7 @@ class BlinkConditions(Enum):
     AFTER_KICK = BlinkCondition(name="キックの着地後", probability=0)
     WRIST_CROSS = BlinkCondition(name="腕が顔の前を横切った時", probability=80)
     NORMAL = BlinkCondition(name="前のまばたきから一定時間経過した時", probability=50)
+    SMILE = BlinkCondition(name="まばたきに笑いを含める", probability=20)
 
 
 BLINK_CONDITIONS: dict[str, float] = dict([(bs.value.name, bs.value.probability) for bs in BlinkConditions])

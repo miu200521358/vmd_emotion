@@ -831,3 +831,11 @@ msgstr ""
 msgid "モーフ破綻補正完了"
 msgstr ""
 
+
+msgid "まばたきに笑いを含める"
+msgstr ""
+
+
+msgid "(笑い)"
+msgstr ""
+

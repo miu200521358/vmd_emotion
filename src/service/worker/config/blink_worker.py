@@ -2,7 +2,7 @@ import os
 
 import wx
 
-from mlib.base.logger import MLogger
+from mlib.core.logger import MLogger
 from mlib.pmx.pmx_collection import PmxModel
 from mlib.service.base_worker import BaseWorker
 from mlib.service.form.base_frame import BaseFrame
@@ -36,7 +36,7 @@ class BlinkWorker(BaseWorker):
             self.frame.config_panel.blink_set.blink_span_ctrl.GetValue(),
             self.frame.config_panel.morph_set.below_eyebrow_morph_ctrl.GetValue(),
             self.frame.config_panel.morph_set.blink_morph_ctrl.GetValue(),
-            self.frame.config_panel.morph_set.laugh_morph_ctrl.GetValue(),
+            self.frame.config_panel.morph_set.smile_morph_ctrl.GetValue(),
         )
 
         self.result_data = motion, output_motion

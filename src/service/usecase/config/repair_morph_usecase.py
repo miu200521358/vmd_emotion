@@ -2,8 +2,8 @@ import os
 
 import numpy as np
 
-from mlib.base.logger import MLogger
-from mlib.base.math import MMatrix4x4, MVector3D
+from mlib.core.logger import MLogger
+from mlib.core.math import MMatrix4x4, MVector3D
 from mlib.pmx.pmx_collection import PmxModel
 from mlib.pmx.pmx_part import BoneMorphOffset, GroupMorphOffset, MorphType, VertexMorphOffset
 from mlib.vmd.vmd_collection import VmdMotion

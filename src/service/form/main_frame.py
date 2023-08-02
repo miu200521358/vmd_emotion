@@ -3,8 +3,8 @@ from typing import Any, Optional
 
 import wx
 
-from mlib.base.logger import ConsoleHandler, MLogger
-from mlib.base.math import MVector3D
+from mlib.core.logger import ConsoleHandler, MLogger
+from mlib.core.math import MVector3D
 from mlib.pmx.pmx_collection import PmxModel
 from mlib.service.form.base_frame import BaseFrame
 from mlib.utils.file_utils import save_histories
@@ -15,7 +15,7 @@ from service.form.panel.file_panel import FilePanel
 from service.worker.load_worker import LoadWorker
 from service.worker.save_worker import SaveWorker
 
-logger = MLogger(os.path.basename(__file__))
+logger = MLogger(os.path.basename(__file__), level=1)
 __ = logger.get_text
 
 
@@ -138,22 +138,37 @@ class MainFrame(BaseFrame):
 
         original_model, model, original_motion, motion, blink_conditions, bone_matrixes = data
 
+        logger.debug("結果展開")
+
         self.file_panel.model_ctrl.original_data = original_model
         self.file_panel.model_ctrl.data = model
+
+        logger.debug("モデルデータ設定")
+
         self.file_panel.motion_ctrl.original_data = original_motion
         self.file_panel.motion_ctrl.data = motion
+
+        logger.debug("モーション設定")
+
         self.file_panel.exec_btn_ctrl.Enable(True)
         self.file_panel.output_motion_ctrl.data = VmdMotion(self.file_panel.output_motion_ctrl.path)
 
+        logger.debug("出力モーション生成")
+
         if not (self.file_panel.model_ctrl.data and self.file_panel.motion_ctrl.data):
+            logger.warning("モデルデータもしくはモーションデータが正常に配置できませんでした", decoration=MLogger.Decoration.BOX)
             return
 
-        # キーフレを戻す
-        self.config_panel.fno = 0
         # まばたき条件の初期化
+        logger.debug("まばたき条件の初期化 開始")
         self.config_panel.blink_set.initialize(blink_conditions)
+        logger.debug("まばたき条件の初期化")
+
         self.config_panel.frame_slider.SetMaxFrameNo(motion.max_fno)
+        logger.debug("SetMaxFrameNo")
+
         self.config_panel.bone_matrixes = bone_matrixes
+        logger.debug("bone_matrixes")
 
         try:
             logger.info("モデル描画準備")

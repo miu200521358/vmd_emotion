@@ -2,11 +2,11 @@ import os
 
 import wx
 
-from mlib.base.logger import MLogger
+from mlib.core.logger import MLogger
 from mlib.service.form.base_panel import BasePanel
 from mlib.service.form.widgets.spin_ctrl import WheelSpinCtrl, WheelSpinCtrlDouble
 
-logger = MLogger(os.path.basename(__file__))
+logger = MLogger(os.path.basename(__file__), level=1)
 __ = logger.get_text
 
 
@@ -147,11 +147,15 @@ class BlinkCtrlSet:
         self.sizer.Add(self.blink_span_ctrl, 0, wx.ALL, 3)
 
     def initialize(self, blink_conditions: dict[str, float]) -> None:
+        logger.debug("self.condition_choice_ctrl.Clear()")
         self.condition_choice_ctrl.Clear()
-        for condition_name, condition_probability in blink_conditions.items():
-            self.condition_choice_ctrl.Append(condition_name)
-            self.condition_probabilities[condition_name] = condition_probability
+        logger.debug("AppendItems")
+        self.condition_choice_ctrl.AppendItems(list(blink_conditions.keys()))
+        logger.debug("blink_conditions")
+        self.condition_probabilities = blink_conditions
+        logger.debug("SetSelection")
         self.condition_choice_ctrl.SetSelection(0)
+        logger.debug("SetValue")
         self.condition_probability_ctrl.SetValue(100)
 
     def on_change_condition(self, event: wx.Event) -> None:

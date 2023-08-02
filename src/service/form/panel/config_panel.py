@@ -2,7 +2,7 @@ import os
 
 import wx
 
-from mlib.base.logger import MLogger
+from mlib.core.logger import MLogger
 from mlib.pmx.canvas import CanvasPanel
 from mlib.service.form.base_frame import BaseFrame
 from mlib.service.form.widgets.console_ctrl import ConsoleCtrl
@@ -350,7 +350,8 @@ class ConfigPanel(CanvasPanel):
 
     @fno.setter
     def fno(self, v: int) -> None:
-        self.frame_slider.SetValue(v)
+        logger.debug(f"fno setter {v}")
+        self.frame_slider.ChangeValue(v)
 
     def stop_play(self) -> None:
         self.play_ctrl.SetLabelText(__("再生"))
