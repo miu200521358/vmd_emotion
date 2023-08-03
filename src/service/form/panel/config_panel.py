@@ -184,7 +184,7 @@ class ConfigPanel(CanvasPanel):
         self.gaze_limit_lower_x_title_ctrl.SetToolTip(gaze_limit_lower_x_tooltip)
         self.gaze_sizer.Add(self.gaze_limit_lower_x_title_ctrl, 0, wx.ALL, 3)
 
-        self.gaze_limit_lower_x_ctrl = WheelSpinCtrl(self.config_scrolled_window, initial=-8, min=-45, max=0, size=wx.Size(60, -1))
+        self.gaze_limit_lower_x_ctrl = WheelSpinCtrl(self.config_scrolled_window, initial=-7, min=-45, max=0, size=wx.Size(60, -1))
         self.gaze_limit_lower_x_ctrl.SetToolTip(gaze_limit_lower_x_tooltip)
         self.gaze_sizer.Add(self.gaze_limit_lower_x_ctrl, 0, wx.ALL, 3)
 
@@ -212,7 +212,7 @@ class ConfigPanel(CanvasPanel):
         self.gaze_limit_upper_y_title_ctrl.SetToolTip(gaze_limit_upper_y_tooltip)
         self.gaze_sizer.Add(self.gaze_limit_upper_y_title_ctrl, 0, wx.ALL, 3)
 
-        self.gaze_limit_upper_y_ctrl = WheelSpinCtrl(self.config_scrolled_window, initial=13, min=0, max=45, size=wx.Size(60, -1))
+        self.gaze_limit_upper_y_ctrl = WheelSpinCtrl(self.config_scrolled_window, initial=12, min=0, max=45, size=wx.Size(60, -1))
         self.gaze_limit_upper_y_ctrl.SetToolTip(gaze_limit_upper_y_tooltip)
         self.gaze_sizer.Add(self.gaze_limit_upper_y_ctrl, 0, wx.ALL, 3)
 
@@ -225,7 +225,7 @@ class ConfigPanel(CanvasPanel):
         self.gaze_limit_lower_y_title_ctrl.SetToolTip(gaze_limit_lower_y_tooltip)
         self.gaze_sizer.Add(self.gaze_limit_lower_y_title_ctrl, 0, wx.ALL, 3)
 
-        self.gaze_limit_lower_y_ctrl = WheelSpinCtrl(self.config_scrolled_window, initial=-13, min=-45, max=0, size=wx.Size(60, -1))
+        self.gaze_limit_lower_y_ctrl = WheelSpinCtrl(self.config_scrolled_window, initial=-12, min=-45, max=0, size=wx.Size(60, -1))
         self.gaze_limit_lower_y_ctrl.SetToolTip(gaze_limit_lower_y_tooltip)
         self.gaze_sizer.Add(self.gaze_limit_lower_y_ctrl, 0, wx.ALL, 3)
 
@@ -238,7 +238,7 @@ class ConfigPanel(CanvasPanel):
         self.gaze_reset_title_ctrl.SetToolTip(gaze_reset_tooltip)
         self.gaze_sizer.Add(self.gaze_reset_title_ctrl, 0, wx.ALL, 3)
 
-        self.gaze_reset_ctrl = WheelSpinCtrl(self.config_scrolled_window, initial=7, min=5, max=15, size=wx.Size(60, -1))
+        self.gaze_reset_ctrl = WheelSpinCtrl(self.config_scrolled_window, initial=8, min=5, max=15, size=wx.Size(60, -1))
         self.gaze_reset_ctrl.SetToolTip(gaze_reset_tooltip)
         self.gaze_sizer.Add(self.gaze_reset_ctrl, 0, wx.ALL, 3)
 
