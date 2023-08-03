@@ -213,19 +213,21 @@ class BlinkUsecase:
             rnd = np.random.rand()
             start_fno = eye_fnos[infection_fnos[0]]
             if 30 * 5 < start_fno and rnd <= opening_probability:
+                start_fno -= 30 * 3
                 logger.debug(f"まばたきポイント[開始] [{start_fno}][d={blink_dots[fidx]:.3f}][p={opening_probability:.3f}]")
                 blink_weight_fnos[start_fno] = 0.9
-                blink_type_fnos[fno] = __("モーションの開始")
-                blink_double_fnos[fno] = True
+                blink_type_fnos[start_fno] = __("モーションの開始")
+                blink_double_fnos[start_fno] = True
 
             # 最後の変曲点までのキーフレ間が一定区間ある場合、登録対象
             rnd = np.random.rand()
             end_fno = motion.max_fno - eye_fnos[infection_fnos[-1]]
             if 30 * 5 < end_fno and rnd <= ending_probability:
+                end_fno += 30 * 2
                 logger.debug(f"まばたきポイント[終了] [{end_fno}][d={blink_dots[fidx]:.3f}][p={ending_probability:.3f}]")
                 blink_weight_fnos[end_fno] = 0.9
-                blink_type_fnos[fno] = __("モーションの終了")
-                blink_double_fnos[fno] = True
+                blink_type_fnos[end_fno] = __("モーションの終了")
+                blink_double_fnos[end_fno] = True
 
         logger.info("まばたき生成", decoration=MLogger.Decoration.LINE)
 

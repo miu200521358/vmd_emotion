@@ -144,16 +144,20 @@ class GazeUsecase:
                 continue
 
             # 前側の元に戻るキーフレ
-            bf = VmdBoneFrame(fno + gaze_reset_num, "両目")
-            motion.bones["両目"].append(bf)
-            output_motion.bones["両目"].append(bf.copy())
+            if not [f for f in range(-gaze_reset_num, gaze_reset_num) if (fno + f) in eye_fnos]:
+                bf = VmdBoneFrame(fno + gaze_reset_num, "両目")
+                motion.bones["両目"].append(bf)
+                output_motion.bones["両目"].append(bf.copy())
+
+                logger.debug("目線クリア 始[{d}]", d=bf.index)
 
             # 後側の元に戻るキーフレ
-            next_bf = VmdBoneFrame(next_fno - gaze_reset_num, "両目")
-            motion.bones["両目"].append(next_bf)
-            output_motion.bones["両目"].append(next_bf.copy())
+            if not [f for f in range(-gaze_reset_num, gaze_reset_num) if (next_fno + f) in eye_fnos]:
+                next_bf = VmdBoneFrame(next_fno - gaze_reset_num, "両目")
+                motion.bones["両目"].append(next_bf)
+                output_motion.bones["両目"].append(next_bf.copy())
 
-            logger.debug("目線クリア 始[{d}] 終[{r}]", d=bf.index, r=next_bf.index)
+                logger.debug("目線クリア 終[{r}]", r=next_bf.index)
 
         eye_fnos = output_motion.bones["両目"].indexes
         for fidx, (prev_fno, now_fno, next_fno) in enumerate(zip(eye_fnos[:-2:2], eye_fnos[1:-1:2], eye_fnos[2::2])):
