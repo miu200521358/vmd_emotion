@@ -66,11 +66,13 @@ class RepairMorphUsecase:
 
         logger.info("モーフ最大変動量チェック", decoration=MLogger.Decoration.LINE)
 
-        # モーフの変形量1.0の時の変形を保持
+        # モーフの変形量閾値の時の変形を保持
         morph_max_vertices: np.ndarray = np.zeros((len(target_morph_names), len(model.vertices), 3))
+        morph_vertex_indexes: dict[str, set[int]] = {}
 
         for midx, morph_name in enumerate(target_morph_names):
-            morph_max_vertices[midx] = self.get_vertex_positions(model, morph_name, 1.0)
+            vertex_indexes, morph_max_vertices[midx] = self.get_vertex_positions(model, morph_name, repair_factor)
+            morph_vertex_indexes[morph_name] = vertex_indexes
 
         max_morph_vertex_positions = np.max(np.abs(morph_max_vertices), axis=0)
 
@@ -92,32 +94,57 @@ class RepairMorphUsecase:
             if check_threshold > sum(list(fno_morph_ratios.values())):
                 continue
 
-            for _ in range(20):
-                morph_vertices: np.ndarray = np.zeros((len(target_morph_names), len(model.vertices), 3))
+            for i in range(100):
+                key_morph_vertex_positions: np.ndarray = np.zeros((len(target_morph_names), len(model.vertices), 3))
 
                 for midx, (morph_name, ratio) in enumerate(fno_morph_ratios.items()):
                     if np.isclose(ratio, 0.0):
                         continue
                     morph = model.morphs[morph_name]
-                    morph_vertices[midx] = self.get_vertex_positions(model, morph_name, ratio)
+                    _, key_morph_vertex_positions[midx] = self.get_vertex_positions(model, morph_name, ratio)
 
-                broken_vertex_indexes = np.unique(np.where(
-                    np.logical_and(
-                        np.sum(np.abs(morph_vertices), axis=0) > max_morph_vertex_positions * repair_factor,
-                        ~np.isclose(max_morph_vertex_positions * repair_factor, 0.0),
-                    )
-                )[0])
+                broken_vertex_indexes = np.unique(
+                    np.where(
+                        np.logical_and(
+                            np.sum(np.abs(key_morph_vertex_positions), axis=0) > max_morph_vertex_positions,
+                            ~np.isclose(max_morph_vertex_positions, 0.0),
+                        )
+                    )[0]
+                )
 
-                if len(broken_vertex_indexes) < len(np.unique(np.where(~np.isclose(np.sum(morph_vertices, axis=0), 0.0))[0])) * 0.1:
-                    # 破綻頂点が見つからなかった場合、終了
+                if not len(broken_vertex_indexes):
+                    break
+
+                max_factor_morph_vertex_positions = max_morph_vertex_positions[broken_vertex_indexes]
+                broken_factor_morph_vertex_positions = np.sum(key_morph_vertex_positions[:, broken_vertex_indexes], axis=0)
+                factor_broken_vertex_indexes = np.unique(
+                    np.where(
+                        np.logical_and(
+                            np.abs(broken_factor_morph_vertex_positions / max_factor_morph_vertex_positions) > repair_factor,
+                            np.abs(broken_factor_morph_vertex_positions) > 0.05,
+                        )
+                    )[0]
+                )
+
+                logger.debug(
+                    f"[{fno}({i})] broken[{np.round(np.sum(broken_factor_morph_vertex_positions, axis=0), decimals=3)}]"
+                    + f" max[{np.round(np.sum(max_factor_morph_vertex_positions, axis=0), decimals=3)}]"
+                    + f" indexes[{factor_broken_vertex_indexes}]"
+                )
+
+                if not len(factor_broken_vertex_indexes):
+                    # 指定を超えた破綻頂点がなかった場合、終了
                     break
 
                 # 最大・最小を超える頂点が一定数ある場合、破綻している可能性があるとみなす
                 key_morph_fnos: dict[str, int] = {}
-                key_morph_ratios: dict[str, float] = {}
-                key_morph_broken_vertices: dict[str, np.ndarray] = {}
+                key_morph_broken_vertex_index_counts: list[float] = []
+                key_morph_broken_vertex_positions: list[float] = []
+
                 for midx, (morph_name, ratio) in enumerate(fno_morph_ratios.items()):
                     if np.isclose(ratio, 0.0):
+                        key_morph_broken_vertex_index_counts.append(0)
+                        key_morph_broken_vertex_positions.append(0)
                         continue
                     morph_start_fno, _, morph_end_fno = motion.morphs[morph_name].range_indexes(fno)
                     # 絶対値で大きい方の変化量を採用する
@@ -125,46 +152,53 @@ class RepairMorphUsecase:
                         np.abs(motion.morphs[morph_name][morph_start_fno].ratio),
                         np.abs(motion.morphs[morph_name][morph_end_fno].ratio),
                     ]
-                    morph_ratio = np.max(abs_ratios)
                     morph_flg = np.argmax(abs_ratios)
+                    # 破綻している場合の調整キーフレ
                     key_morph_fnos[morph_name] = morph_start_fno if morph_flg == 0 else morph_end_fno
-                    key_morph_ratios[morph_name] = morph_ratio
-                    key_morph_broken_vertices[morph_name] = np.unique(np.where(morph_vertices[midx, broken_vertex_indexes] != 0.0)[0])
+                    # 破綻している頂点とモーフの変形対象頂点の重複INDEX
+                    key_morph_broken_vertex_indexes = np.array(
+                        list(morph_vertex_indexes[morph_name] & set(broken_vertex_indexes[factor_broken_vertex_indexes].tolist()))
+                    )
+                    key_morph_broken_vertex_index_counts.append(float(len(key_morph_broken_vertex_indexes)))
+                    # 破綻している頂点がモーフの変形範囲である場合、変形量の合計を取得
+                    if 0 < len(key_morph_broken_vertex_indexes):
+                        key_morph_broken_vertex_positions.append(
+                            float(np.sum(np.abs(key_morph_vertex_positions[midx, key_morph_broken_vertex_indexes])))
+                        )
+                    else:
+                        key_morph_broken_vertex_positions.append(0)
 
-                # 破綻頂点があるモーフのうち、1番目に変化量が大きいモーフ名(ただしまばたきは除く)
-                target_ratio_morph_names = [
-                    m for m, r in key_morph_ratios.items() if not np.isclose(r, 0.0) and m not in IGNORE_MORPH_NAMES
+                logger.debug(
+                    f"[{fno}({i})] key_morph_broken_vertex_indexes[{key_morph_broken_vertex_index_counts}], "
+                    + f"key_morph_broken_vertex_positions[{key_morph_broken_vertex_positions}]"
+                )
+
+                # 破綻頂点があるモーフのうち、破綻頂点INDEXと被ってるのが多いのが最優先（2番目は変動量）
+                max_ratio_morph_name = list(fno_morph_ratios.keys())[
+                    np.lexsort((key_morph_broken_vertex_positions, key_morph_broken_vertex_index_counts))[-1]
                 ]
-                target_ratio_morph_ratios = [
-                    r for m, r in key_morph_ratios.items() if not np.isclose(r, 0.0) and m not in IGNORE_MORPH_NAMES
-                ]
-
-                if not target_ratio_morph_names or not target_ratio_morph_ratios:
-                    # 見つからなかった場合、まばたき等を含めてチェックする
-                    target_ratio_morph_names = [m for m, r in key_morph_ratios.items() if not np.isclose(r, 0.0)]
-                    target_ratio_morph_ratios = [r for r in key_morph_ratios.values() if not np.isclose(r, 0.0)]
-
-                if not target_ratio_morph_names or not target_ratio_morph_ratios:
-                    # それでも見つからなかった場合、スルー
-                    continue
-
-                max_ratio_morph_name = target_ratio_morph_names[np.argmax(np.abs(target_ratio_morph_ratios))]
                 target_fno = key_morph_fnos[max_ratio_morph_name]
+
+                # 変化量を小さくする
                 target_morph_original_ratio = motion.morphs[max_ratio_morph_name][target_fno].ratio
-                motion.morphs[max_ratio_morph_name][target_fno].ratio *= 0.9
+                target_morph_repair_ratio = target_morph_original_ratio - (
+                    max(0.05, abs(target_morph_original_ratio) * 0.1) * np.sign(target_morph_original_ratio)
+                )
+                motion.morphs[max_ratio_morph_name][target_fno].ratio = target_morph_repair_ratio
                 # 出力は補正値のみ設定
                 output_motion.morphs[max_ratio_morph_name].append(
-                    VmdMorphFrame(target_fno, max_ratio_morph_name, target_morph_original_ratio * 0.9)
+                    VmdMorphFrame(target_fno, max_ratio_morph_name, target_morph_repair_ratio)
                 )
 
                 logger.info(
-                    "モーフ破綻補正[{f}][{m}][{m1}:{f1} ({r1:.3f} -> {r2:.3f})]",
+                    "モーフ破綻補正[{f}({i})][{m}][{m1}:{f1} ({r1:.3f} -> {r2:.3f})]",
                     f=fno,
+                    i=i,
                     m=", ".join([f"{m}({r:.3f})" for m, r in fno_morph_ratios.items() if not np.isclose(r, 0.0)]),
                     m1=max_ratio_morph_name,
                     f1=key_morph_fnos[max_ratio_morph_name],
                     r1=target_morph_original_ratio,
-                    r2=motion.morphs[max_ratio_morph_name][key_morph_fnos[max_ratio_morph_name]].ratio,
+                    r2=target_morph_repair_ratio,
                 )
 
                 # 再チェックのため、取り直す
@@ -178,14 +212,16 @@ class RepairMorphUsecase:
                         fno_morph_ratios[morph_name] = mf.ratio
                         fno_morph_reads[morph_name] = mf.read
 
-    def get_vertex_positions(self, model: PmxModel, morph_name: str, ratio: float) -> np.ndarray:
+    def get_vertex_positions(self, model: PmxModel, morph_name: str, ratio: float) -> tuple[set[int], np.ndarray]:
         morph = model.morphs[morph_name]
         morph_vertices: np.ndarray = np.zeros((len(model.vertices), 3))
+        vertex_indexes: set[int] = set([])
 
         if morph.morph_type == MorphType.VERTEX:
             for offset in morph.offsets:
                 vertex_offset: VertexMorphOffset = offset
                 morph_vertices[vertex_offset.vertex_index] += (vertex_offset.position * ratio).vector
+                vertex_indexes |= {vertex_offset.vertex_index}
 
         elif morph.morph_type == MorphType.BONE:
             motion = VmdMotion()
@@ -202,6 +238,7 @@ class RepairMorphUsecase:
                         mat += morph_matrixes[0, model.bones[bone_index].name].local_matrix.vector * bone_weight
                     # 変形後の頂点位置の差分を保持
                     morph_vertices[bone_vertex_index] += (MMatrix4x4(mat) * MVector3D()).vector
+                    vertex_indexes |= {bone_vertex_index}
 
         elif morph.morph_type == MorphType.GROUP:
             for offset in morph.offsets:
@@ -212,6 +249,7 @@ class RepairMorphUsecase:
                         if vertex_offset.vertex_index not in morph_vertices:
                             morph_vertices[vertex_offset.vertex_index] = np.zeros(3)
                         morph_vertices[vertex_offset.vertex_index] += vertex_offset.position.vector
+                        vertex_indexes |= {vertex_offset.vertex_index}
 
                 elif part_morph.morph_type == MorphType.BONE:
                     motion = VmdMotion()
@@ -227,24 +265,6 @@ class RepairMorphUsecase:
                                 mat += morph_matrixes[0, model.bones[bone_index].name].local_matrix.vector * bone_weight
                             # 変形後の頂点位置の差分を保持
                             morph_vertices[bone_vertex_index] += (MMatrix4x4(mat) * MVector3D()).vector
+                            vertex_indexes |= {bone_vertex_index}
 
-        return morph_vertices
-
-
-# 調整対象外モーフ
-IGNORE_MORPH_NAMES = [
-    "まばたき",
-    "笑い",
-    "ウインク",
-    "右ウインク",
-    "左ウインク",
-    "ウィンク",
-    "右ウィンク",
-    "左ウィンク",
-    "ｳｨﾝｸ",
-    "右ｳｨﾝｸ",
-    "左ｳｨﾝｸ",
-    "ｳｲﾝｸ",
-    "右ｳｲﾝｸ",
-    "左ｳｲﾝｸ",
-]
+        return vertex_indexes, morph_vertices

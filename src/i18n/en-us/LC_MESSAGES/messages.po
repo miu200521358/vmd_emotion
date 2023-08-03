@@ -636,3 +636,9 @@ msgstr "(Laughter)"
 
 msgid "モーフの値を変更して、プレビューで動作を確認出来ます。"
 msgstr "You can change the morph value and see how it works in the preview"
+
+msgid "生成モーフ置換"
+msgstr "Generated Morph Substitution"
+
+msgid "モーフ破綻補正[{f}({i})][{m}][{m1}:{f1} ({r1:.3f} -> {r2:.3f})]"
+msgstr "Morph collapse correction [{f}({i})][{m}][{m1}:{f1} ({r1:.3f} -> {r2:.3f})]"

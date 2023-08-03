@@ -37,8 +37,8 @@ class MainFrame(BaseFrame):
         self.config_panel = ConfigPanel(self, 1)
         self.notebook.AddPage(self.config_panel, __("設定"), False)
 
-        # ブレンドタブ（設定パネルはそのまま）
-        self.notebook.AddPage(self.config_panel, __("モーフ"), False)
+        # モーフ置換タブ（設定パネルはそのまま）
+        self.notebook.AddPage(self.config_panel, __("生成モーフ置換"), False)
 
         self.load_worker = LoadWorker(self, self.on_result)
         self.save_worker = SaveWorker(self, self.on_save_result)
