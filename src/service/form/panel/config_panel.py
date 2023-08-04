@@ -128,7 +128,15 @@ class ConfigPanel(CanvasPanel):
         self.gaze_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
         self.create_gaze_btn_ctrl = wx.Button(self.config_scrolled_window, wx.ID_ANY, __("目線生成"), wx.DefaultPosition, wx.Size(140, -1))
-        self.create_gaze_btn_ctrl.SetToolTip(__("頭などの動きに合わせて目線を生成します\n両目ボーンを使用します"))
+        self.create_gaze_btn_ctrl.SetToolTip(
+            "\n".join(
+                [
+                    __("頭などの動きに合わせて目線を生成します"),
+                    __("両目ボーンを使用します"),
+                    __("表情生成後、出力vmdファイル名の末尾にgazeを付けてvmd出力します"),
+                ]
+            )
+        )
         self.create_gaze_btn_ctrl.Bind(wx.EVT_BUTTON, self.on_create_gaze)
         self.gaze_sizer.Add(self.create_gaze_btn_ctrl, 0, wx.ALL, 3)
 
@@ -256,6 +264,7 @@ class ConfigPanel(CanvasPanel):
                 [
                     __("頭などの動きに合わせてをまばたきを生成します"),
                     __("まばたき・下モーフを使用しますが、モデルに該当モーフがなく他で代用できる場合はモーフタブで置き換えてください"),
+                    __("表情生成後、出力vmdファイル名の末尾にblinkを付けてvmd出力します"),
                 ]
             )
         )
@@ -277,6 +286,8 @@ class ConfigPanel(CanvasPanel):
             "\n".join(
                 [
                     __("モデルとモーフの組み合わせによって破綻している箇所がある場合、補正します"),
+                    __("表情生成後、出力vmdファイル名の末尾にrepairを付けてvmd出力します"),
+                    __("補正キーフレだけ出力するため、元となった表情モーションの後に読み込んでください"),
                 ]
             )
         )

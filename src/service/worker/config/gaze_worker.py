@@ -8,6 +8,7 @@ from mlib.service.base_worker import BaseWorker
 from mlib.service.form.base_frame import BaseFrame
 from mlib.utils.file_utils import get_root_dir
 from mlib.vmd.vmd_collection import VmdMotion
+from mlib.vmd.vmd_writer import VmdWriter
 from service.form.panel.file_panel import FilePanel
 from service.usecase.config.gaze_usecase import GazeUsecase
 
@@ -24,6 +25,8 @@ class GazeWorker(BaseWorker):
         model: PmxModel = file_panel.model_ctrl.data
         motion: VmdMotion = file_panel.motion_ctrl.data
         output_motion: VmdMotion = file_panel.output_motion_ctrl.data
+        dir_path, file_name, file_ext = file_panel.output_motion_ctrl.separated_path
+        gaze_output_motion: VmdMotion = VmdMotion(os.path.join(dir_path, f"{file_name}_gaze{file_ext}"))
 
         logger.info("目線生成開始", decoration=MLogger.Decoration.BOX)
 
@@ -31,6 +34,7 @@ class GazeWorker(BaseWorker):
             model,
             motion,
             output_motion,
+            gaze_output_motion,
             self.frame.config_panel.gaze_infection_ctrl.GetValue(),
             self.frame.config_panel.gaze_ratio_x_ctrl.GetValue(),
             self.frame.config_panel.gaze_limit_upper_x_ctrl.GetValue(),
@@ -40,6 +44,9 @@ class GazeWorker(BaseWorker):
             self.frame.config_panel.gaze_limit_lower_y_ctrl.GetValue(),
             self.frame.config_panel.gaze_reset_ctrl.GetValue(),
         )
+
+        # 目線だけのを一旦出力
+        VmdWriter(gaze_output_motion, gaze_output_motion.path, model.name).save()
 
         self.result_data = motion, output_motion
 
