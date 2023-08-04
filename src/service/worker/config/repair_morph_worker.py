@@ -8,6 +8,7 @@ from mlib.service.base_worker import BaseWorker
 from mlib.service.form.base_frame import BaseFrame
 from mlib.utils.file_utils import get_root_dir
 from mlib.vmd.vmd_collection import VmdMotion
+from mlib.vmd.vmd_writer import VmdWriter
 from service.form.panel.file_panel import FilePanel
 from service.usecase.config.repair_morph_usecase import RepairMorphUsecase
 
@@ -24,6 +25,8 @@ class RepairMorphWorker(BaseWorker):
         model: PmxModel = file_panel.model_ctrl.data
         motion: VmdMotion = file_panel.motion_ctrl.data
         output_motion: VmdMotion = file_panel.output_motion_ctrl.data
+        dir_path, file_name, file_ext = file_panel.output_motion_ctrl.separated_path
+        repair_output_motion: VmdMotion = VmdMotion(os.path.join(dir_path, f"{file_name}_repair{file_ext}"))
 
         logger.info("モーフ破綻補正開始", decoration=MLogger.Decoration.BOX)
 
@@ -31,9 +34,13 @@ class RepairMorphWorker(BaseWorker):
             model,
             motion,
             output_motion,
+            repair_output_motion,
             self.frame.config_panel.check_morph_threshold_ctrl.GetValue(),
             self.frame.config_panel.repair_morph_factor_ctrl.GetValue(),
         )
+
+        # 補正だけのを一旦出力
+        VmdWriter(repair_output_motion, repair_output_motion.path, model.name).save()
 
         self.result_data = motion, output_motion
 

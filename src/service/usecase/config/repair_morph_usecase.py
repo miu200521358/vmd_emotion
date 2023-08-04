@@ -19,6 +19,7 @@ class RepairMorphUsecase:
         model: PmxModel,
         motion: VmdMotion,
         output_motion: VmdMotion,
+        repair_output_motion: VmdMotion,
         check_threshold: float,
         repair_factor: float,
     ) -> None:
@@ -186,9 +187,9 @@ class RepairMorphUsecase:
                 )
                 motion.morphs[max_ratio_morph_name][target_fno].ratio = target_morph_repair_ratio
                 # 出力は補正値のみ設定
-                output_motion.morphs[max_ratio_morph_name].append(
-                    VmdMorphFrame(target_fno, max_ratio_morph_name, target_morph_repair_ratio)
-                )
+                rmf = VmdMorphFrame(target_fno, max_ratio_morph_name, target_morph_repair_ratio)
+                output_motion.append_morph_frame(rmf)
+                repair_output_motion.append_morph_frame(rmf.copy())
 
                 logger.info(
                     "モーフ破綻補正[{f}({i})][{m}][{m1}:{f1} ({r1:.3f} -> {r2:.3f})]",
