@@ -268,109 +268,109 @@ class BlinkUsecase:
             start_fno = fno - weight_blink - 4 + np.random.randint(-1, 1)
             mf1 = VmdMorphFrame(start_fno, blink_name)
             mf1.ratio = 0.2 if is_double_after else 0.0
-            motion.morphs[blink_name].append(mf1)
-            output_motion.morphs[blink_name].append(mf1.copy())
-            blink_output_motion.morphs[blink_name].append(mf1.copy())
+            motion.append_morph_frame(mf1)
+            output_motion.append_morph_frame(mf1.copy())
+            blink_output_motion.append_morph_frame(mf1.copy())
 
             # 閉じる
             close_fno = fno - weight_blink - 1
             mf2 = VmdMorphFrame(close_fno, blink_name)
             mf2.ratio = 1.0
-            motion.morphs[blink_name].append(mf2)
-            output_motion.morphs[blink_name].append(mf2.copy())
-            blink_output_motion.morphs[blink_name].append(mf2.copy())
+            motion.append_morph_frame(mf2)
+            output_motion.append_morph_frame(mf2.copy())
+            blink_output_motion.append_morph_frame(mf2.copy())
 
             # 停止
             weight_fno = fno
             mf3 = VmdMorphFrame(weight_fno, blink_name)
             mf3.ratio = 1.0
-            motion.morphs[blink_name].append(mf3)
-            output_motion.morphs[blink_name].append(mf3.copy())
-            blink_output_motion.morphs[blink_name].append(mf3.copy())
+            motion.append_morph_frame(mf3)
+            output_motion.append_morph_frame(mf3.copy())
+            blink_output_motion.append_morph_frame(mf3.copy())
 
             if not is_double_before:
                 # 半開き
                 open_fno = fno + weight_blink + 2 + np.random.randint(-1, 1)
                 mf4 = VmdMorphFrame(open_fno, blink_name)
                 mf4.ratio = 0.5
-                motion.morphs[blink_name].append(mf4)
-                output_motion.morphs[blink_name].append(mf4.copy())
-                blink_output_motion.morphs[blink_name].append(mf4.copy())
+                motion.append_morph_frame(mf4)
+                output_motion.append_morph_frame(mf4.copy())
+                blink_output_motion.append_morph_frame(mf4.copy())
 
                 # 開く (二重まばたきの場合はスルー)
                 end_fno = fno + weight_blink + 6 + np.random.randint(-1, 1)
                 mf5 = VmdMorphFrame(end_fno, blink_name)
                 mf5.ratio = 0.0
-                motion.morphs[blink_name].append(mf5)
-                output_motion.morphs[blink_name].append(mf5.copy())
-                blink_output_motion.morphs[blink_name].append(mf5.copy())
+                motion.append_morph_frame(mf5)
+                output_motion.append_morph_frame(mf5.copy())
+                blink_output_motion.append_morph_frame(mf5.copy())
 
             if is_smile:
                 # 笑い（一定確率） -------
 
                 smf1 = VmdMorphFrame(start_fno - 2, smile_name)
                 smf1.ratio = 0.2 if is_double_after else 0.0
-                motion.morphs[smile_name].append(smf1)
-                output_motion.morphs[smile_name].append(smf1.copy())
-                blink_output_motion.morphs[smile_name].append(smf1.copy())
+                motion.append_morph_frame(smf1)
+                output_motion.append_morph_frame(smf1.copy())
+                blink_output_motion.append_morph_frame(smf1.copy())
 
                 smf2 = VmdMorphFrame(int((start_fno + close_fno) / 2), smile_name)
                 smf2.ratio = 0.3
-                motion.morphs[smile_name].append(smf2)
-                output_motion.morphs[smile_name].append(smf2.copy())
-                blink_output_motion.morphs[smile_name].append(smf2.copy())
+                motion.append_morph_frame(smf2)
+                output_motion.append_morph_frame(smf2.copy())
+                blink_output_motion.append_morph_frame(smf2.copy())
 
                 smf3 = VmdMorphFrame(close_fno, smile_name)
                 smf3.ratio = 0.0
-                motion.morphs[smile_name].append(smf3)
-                output_motion.morphs[smile_name].append(smf3.copy())
-                blink_output_motion.morphs[smile_name].append(smf3.copy())
+                motion.append_morph_frame(smf3)
+                output_motion.append_morph_frame(smf3.copy())
+                blink_output_motion.append_morph_frame(smf3.copy())
 
                 smf4 = VmdMorphFrame(weight_fno, smile_name)
                 smf4.ratio = 0.0
-                motion.morphs[smile_name].append(smf4)
-                output_motion.morphs[smile_name].append(smf4.copy())
-                blink_output_motion.morphs[smile_name].append(smf4.copy())
+                motion.append_morph_frame(smf4)
+                output_motion.append_morph_frame(smf4.copy())
+                blink_output_motion.append_morph_frame(smf4.copy())
 
                 if not is_double_before:
                     smf5 = VmdMorphFrame(open_fno, smile_name)
                     smf5.ratio = 0.3
-                    motion.morphs[smile_name].append(smf5)
-                    output_motion.morphs[smile_name].append(smf5.copy())
-                    blink_output_motion.morphs[smile_name].append(smf5.copy())
+                    motion.append_morph_frame(smf5)
+                    output_motion.append_morph_frame(smf5.copy())
+                    blink_output_motion.append_morph_frame(smf5.copy())
 
                     smf6 = VmdMorphFrame(end_fno + 2, smile_name)
                     smf6.ratio = 0.0
-                    motion.morphs[smile_name].append(smf6)
-                    output_motion.morphs[smile_name].append(smf6.copy())
-                    blink_output_motion.morphs[smile_name].append(smf6.copy())
+                    motion.append_morph_frame(smf6)
+                    output_motion.append_morph_frame(smf6.copy())
+                    blink_output_motion.append_morph_frame(smf6.copy())
 
             # 眉を下げる -------
 
             bmf1 = VmdMorphFrame(start_fno - 1, eyebrow_below_name)
             bmf1.ratio = 0.2 if is_double_after else 0.0
-            motion.morphs[eyebrow_below_name].append(bmf1)
-            output_motion.morphs[eyebrow_below_name].append(bmf1.copy())
-            blink_output_motion.morphs[eyebrow_below_name].append(bmf1.copy())
+            motion.append_morph_frame(bmf1)
+            output_motion.append_morph_frame(bmf1.copy())
+            blink_output_motion.append_morph_frame(bmf1.copy())
 
             bmf2 = VmdMorphFrame(close_fno - 1, eyebrow_below_name)
             bmf2.ratio = eyebrow_below_ratio
-            motion.morphs[eyebrow_below_name].append(bmf2)
-            output_motion.morphs[eyebrow_below_name].append(bmf2.copy())
-            blink_output_motion.morphs[eyebrow_below_name].append(bmf2.copy())
+            motion.append_morph_frame(bmf2)
+            output_motion.append_morph_frame(bmf2.copy())
+            blink_output_motion.append_morph_frame(bmf2.copy())
 
             if not is_double_before:
                 bmf3 = VmdMorphFrame(open_fno + 1, eyebrow_below_name)
                 bmf3.ratio = eyebrow_below_ratio
-                motion.morphs[eyebrow_below_name].append(bmf3)
-                output_motion.morphs[eyebrow_below_name].append(bmf3.copy())
-                blink_output_motion.morphs[eyebrow_below_name].append(bmf3.copy())
+                motion.append_morph_frame(bmf3)
+                output_motion.append_morph_frame(bmf3.copy())
+                blink_output_motion.append_morph_frame(bmf3.copy())
 
                 bmf4 = VmdMorphFrame(end_fno + 1, eyebrow_below_name)
                 bmf4.ratio = 0.0
-                motion.morphs[eyebrow_below_name].append(bmf4)
-                output_motion.morphs[eyebrow_below_name].append(bmf4.copy())
-                blink_output_motion.morphs[eyebrow_below_name].append(bmf4.copy())
+                motion.append_morph_frame(bmf4)
+                output_motion.append_morph_frame(bmf4.copy())
+                blink_output_motion.append_morph_frame(bmf4.copy())
 
             # 閉じるのに合わせて目線を下に ---------
 
@@ -379,59 +379,59 @@ class BlinkUsecase:
             if is_double_after:
                 start_left_bf.interpolations.rotation = CLOSE_INTERPOLATION.copy()
                 start_left_bf.rotation = start_double_qq.copy()
-            motion.bones["左目"].append(start_left_bf)
-            output_motion.bones["左目"].append(start_left_bf.copy())
-            blink_output_motion.bones["左目"].append(start_left_bf.copy())
+            motion.append_bone_frame(start_left_bf)
+            output_motion.append_bone_frame(start_left_bf.copy())
+            blink_output_motion.append_bone_frame(start_left_bf.copy())
 
             start_right_bf = VmdBoneFrame(start_fno - 1, "右目")
             if is_double_after:
                 start_right_bf.interpolations.rotation = CLOSE_INTERPOLATION.copy()
                 start_right_bf.rotation = start_double_qq.copy()
-            motion.bones["右目"].append(start_right_bf)
-            output_motion.bones["右目"].append(start_right_bf.copy())
-            blink_output_motion.bones["右目"].append(start_right_bf.copy())
+            motion.append_bone_frame(start_right_bf)
+            output_motion.append_bone_frame(start_right_bf.copy())
+            blink_output_motion.append_bone_frame(start_right_bf.copy())
 
             # 閉じるよりも少し後に目を下に
             close_left_bf = VmdBoneFrame(close_fno - 1, "左目")
             close_left_bf.interpolations.rotation = CLOSE_INTERPOLATION.copy()
             close_left_bf.rotation = close_qq.copy()
-            motion.bones["左目"].append(close_left_bf)
-            output_motion.bones["左目"].append(close_left_bf.copy())
-            blink_output_motion.bones["左目"].append(close_left_bf.copy())
+            motion.append_bone_frame(close_left_bf)
+            output_motion.append_bone_frame(close_left_bf.copy())
+            blink_output_motion.append_bone_frame(close_left_bf.copy())
 
             close_right_bf = VmdBoneFrame(close_fno - 1, "右目")
             close_right_bf.interpolations.rotation = CLOSE_INTERPOLATION.copy()
             close_right_bf.rotation = close_qq.copy()
-            motion.bones["右目"].append(close_right_bf)
-            output_motion.bones["右目"].append(close_right_bf.copy())
-            blink_output_motion.bones["右目"].append(close_right_bf.copy())
+            motion.append_bone_frame(close_right_bf)
+            output_motion.append_bone_frame(close_right_bf.copy())
+            blink_output_motion.append_bone_frame(close_right_bf.copy())
 
             # 開くのより少し後まで目を下に
             weight_left_bf = VmdBoneFrame(weight_fno + 2, "左目")
             weight_left_bf.rotation = close_qq.copy()
-            motion.bones["左目"].append(weight_left_bf)
-            output_motion.bones["左目"].append(weight_left_bf.copy())
-            blink_output_motion.bones["左目"].append(weight_left_bf.copy())
+            motion.append_bone_frame(weight_left_bf)
+            output_motion.append_bone_frame(weight_left_bf.copy())
+            blink_output_motion.append_bone_frame(weight_left_bf.copy())
 
             weight_right_bf = VmdBoneFrame(weight_fno + 2, "右目")
             weight_right_bf.rotation = close_qq.copy()
-            motion.bones["右目"].append(weight_right_bf)
-            output_motion.bones["右目"].append(weight_right_bf.copy())
-            blink_output_motion.bones["右目"].append(weight_right_bf.copy())
+            motion.append_bone_frame(weight_right_bf)
+            output_motion.append_bone_frame(weight_right_bf.copy())
+            blink_output_motion.append_bone_frame(weight_right_bf.copy())
 
             if not is_double_before:
                 # 最後は元に戻す
                 end_left_bf = VmdBoneFrame(end_fno - 2, "左目")
                 end_left_bf.interpolations.rotation = CLOSE_INTERPOLATION.copy()
-                motion.bones["左目"].append(end_left_bf)
-                output_motion.bones["左目"].append(end_left_bf.copy())
-                blink_output_motion.bones["左目"].append(end_left_bf.copy())
+                motion.append_bone_frame(end_left_bf)
+                output_motion.append_bone_frame(end_left_bf.copy())
+                blink_output_motion.append_bone_frame(end_left_bf.copy())
 
                 end_right_bf = VmdBoneFrame(end_fno - 2, "右目")
                 end_right_bf.interpolations.rotation = CLOSE_INTERPOLATION.copy()
-                motion.bones["右目"].append(end_right_bf)
-                output_motion.bones["右目"].append(end_right_bf.copy())
-                blink_output_motion.bones["右目"].append(end_right_bf.copy())
+                motion.append_bone_frame(end_right_bf)
+                output_motion.append_bone_frame(end_right_bf.copy())
+                blink_output_motion.append_bone_frame(end_right_bf.copy())
 
             logger.debug(
                 f"まばたき[{weight}(DB:{is_double_before}, DA:{is_double_after})] start[{start_fno}], close[{close_fno}], "
