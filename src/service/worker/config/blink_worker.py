@@ -8,6 +8,7 @@ from mlib.service.base_worker import BaseWorker
 from mlib.service.form.base_frame import BaseFrame
 from mlib.utils.file_utils import get_root_dir
 from mlib.vmd.vmd_collection import VmdMotion
+from mlib.vmd.vmd_writer import VmdWriter
 from service.form.panel.file_panel import FilePanel
 from service.usecase.config.blink_usecase import BlinkUsecase
 
@@ -24,6 +25,8 @@ class BlinkWorker(BaseWorker):
         model: PmxModel = file_panel.model_ctrl.data
         motion: VmdMotion = file_panel.motion_ctrl.data
         output_motion: VmdMotion = file_panel.output_motion_ctrl.data
+        dir_path, file_name, file_ext = file_panel.output_motion_ctrl.separated_path
+        blink_output_motion: VmdMotion = VmdMotion(os.path.join(dir_path, f"{file_name}_blink{file_ext}"))
 
         logger.info("まばたき生成開始", decoration=MLogger.Decoration.BOX)
 
@@ -31,6 +34,7 @@ class BlinkWorker(BaseWorker):
             model,
             motion,
             output_motion,
+            blink_output_motion,
             self.frame.config_panel.blink_set.condition_probabilities,
             self.frame.config_panel.blink_set.linkage_depth_ctrl.GetValue(),
             self.frame.config_panel.blink_set.blink_span_ctrl.GetValue(),
@@ -38,6 +42,9 @@ class BlinkWorker(BaseWorker):
             self.frame.config_panel.morph_set.blink_morph_ctrl.GetValue(),
             self.frame.config_panel.morph_set.smile_morph_ctrl.GetValue(),
         )
+
+        # まばたきだけのを一旦出力
+        VmdWriter(blink_output_motion, blink_output_motion.path, model.name).save()
 
         self.result_data = motion, output_motion
 
