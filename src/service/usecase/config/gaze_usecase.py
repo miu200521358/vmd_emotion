@@ -22,7 +22,6 @@ class GazeUsecase:
         model: PmxModel,
         motion: VmdMotion,
         output_motion: VmdMotion,
-        gaze_output_motion: VmdMotion,
         gaze_infection: float,
         gaze_ratio_x: float,
         gaze_limit_upper_x: int,
@@ -78,13 +77,11 @@ class GazeUsecase:
         start_bf = VmdBoneFrame(eye_fnos[0], "両目")
         motion.append_bone_frame(start_bf)
         output_motion.append_bone_frame(start_bf.copy())
-        gaze_output_motion.append_bone_frame(start_bf.copy())
 
         # 最後は静止
         end_bf = VmdBoneFrame(eye_fnos[-1], "両目")
         motion.append_bone_frame(end_bf)
         output_motion.append_bone_frame(end_bf.copy())
-        gaze_output_motion.append_bone_frame(end_bf.copy())
 
         for i, iidx in enumerate(infection_eyes):
             logger.count("目線生成", index=i, total_index_count=len(infection_eyes), display_block=1000)
@@ -133,7 +130,6 @@ class GazeUsecase:
             bf.rotation = gaze_xy_qq
             motion.append_bone_frame(bf)
             output_motion.append_bone_frame(bf.copy())
-            gaze_output_motion.append_bone_frame(bf.copy())
 
             logger.debug("目線生成[{f}] 向き[{d}] 回転[{r}]", f=fno, d=infection_gaze_vector, r=gaze_qq.to_euler_degrees_mmd())
 
@@ -152,7 +148,6 @@ class GazeUsecase:
                 bf = VmdBoneFrame(fno + gaze_reset_num, "両目")
                 motion.append_bone_frame(bf)
                 output_motion.append_bone_frame(bf.copy())
-                gaze_output_motion.append_bone_frame(bf.copy())
 
                 logger.debug("目線クリア 始[{d}]", d=bf.index)
 
@@ -161,7 +156,6 @@ class GazeUsecase:
                 next_bf = VmdBoneFrame(next_fno - gaze_reset_num, "両目")
                 motion.append_bone_frame(next_bf)
                 output_motion.append_bone_frame(next_bf.copy())
-                gaze_output_motion.append_bone_frame(next_bf.copy())
 
                 logger.debug("目線クリア 終[{r}]", r=next_bf.index)
 
@@ -172,10 +166,6 @@ class GazeUsecase:
             prev_bf = output_motion.bones["両目"][prev_fno]
             now_bf = output_motion.bones["両目"][now_fno]
             next_bf = output_motion.bones["両目"][next_fno]
-
-            gaze_prev_bf = gaze_output_motion.bones["両目"][prev_fno]
-            gaze_now_bf = gaze_output_motion.bones["両目"][now_fno]
-            gaze_next_bf = gaze_output_motion.bones["両目"][next_fno]
 
             prev_degree = prev_bf.rotation.to_signed_degrees(Z_AXIS)
             now_degree = now_bf.rotation.to_signed_degrees(Z_AXIS)
@@ -206,12 +196,6 @@ class GazeUsecase:
             now_bf.interpolations.rotation.end = MVector2D(IP_MAX, IP_MAX) - next_interpolation.start
             next_bf.interpolations.rotation.start = next_interpolation.start
             next_bf.interpolations.rotation.end = next_interpolation.end
-
-            gaze_prev_bf.interpolations.rotation.end = prev_bf.interpolations.rotation.end.copy()
-            gaze_now_bf.interpolations.rotation.start = now_bf.interpolations.rotation.start.copy()
-            gaze_now_bf.interpolations.rotation.end = now_bf.interpolations.rotation.end.copy()
-            gaze_next_bf.interpolations.rotation.start = next_bf.interpolations.rotation.start.copy()
-            gaze_next_bf.interpolations.rotation.end = next_bf.interpolations.rotation.end.copy()
 
             logger.debug(
                 f"目線補間曲線 係数[{a:.3f}, {b:.3f}, {c:.3f}] prev[{prev_bf.index}][{prev_bf.interpolations.rotation}] "

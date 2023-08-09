@@ -4,7 +4,7 @@ import wx
 
 from mlib.core.logger import MLogger
 from mlib.pmx.canvas import CanvasPanel
-from mlib.service.form.base_frame import BaseFrame
+from mlib.service.form.notebook_frame import NotebookFrame
 from mlib.service.form.widgets.console_ctrl import ConsoleCtrl
 from mlib.service.form.widgets.frame_slider_ctrl import FrameSliderCtrl
 from mlib.service.form.widgets.spin_ctrl import WheelSpinCtrl, WheelSpinCtrlDouble
@@ -21,7 +21,7 @@ __ = logger.get_text
 
 
 class ConfigPanel(CanvasPanel):
-    def __init__(self, frame: BaseFrame, tab_idx: int, *args, **kw) -> None:
+    def __init__(self, frame: NotebookFrame, tab_idx: int, *args, **kw) -> None:
         super().__init__(frame, tab_idx, 1.0, 0.4, *args, **kw)
         self.gaze_worker = GazeWorker(self.frame, self.on_config_result)
         self.blink_worker = BlinkWorker(self.frame, self.on_config_result)
@@ -330,7 +330,7 @@ class ConfigPanel(CanvasPanel):
         self.config_scrolled_window.SetSizer(self.config_window_sizer)
         self.sizer.Add(self.config_scrolled_window, 1, wx.ALL | wx.EXPAND | wx.FIXED_MINSIZE, 3)
 
-    def change_window(self):
+    def change_window(self) -> None:
         if self.show_config:
             self.morph_scrolled_window.Hide()
             self.config_scrolled_window.Show()
@@ -339,7 +339,7 @@ class ConfigPanel(CanvasPanel):
             self.morph_scrolled_window.Show()
         self.sizer.Layout()
 
-    def fit_window(self):
+    def fit_window(self) -> None:
         if self.show_config:
             self.config_scrolled_window.Layout()
             self.config_scrolled_window.Fit()

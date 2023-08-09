@@ -12,7 +12,7 @@ __ = logger.get_text
 
 
 class LoadUsecase:
-    def valid_model(self, model: PmxModel) -> None:
+    def valid_model(self, original_model: PmxModel) -> PmxModel:
         """モーフ生成に最低限必要なボーンで不足しているボーンリストを取得する"""
         required_bone_names = {
             "センター",
@@ -23,12 +23,14 @@ class LoadUsecase:
             "右目",
             "両目",
         }
-        missing_bone_names = sorted(list(required_bone_names - set(model.bones.names)))
+        missing_bone_names = sorted(list(required_bone_names - set(original_model.bones.names)))
         if missing_bone_names:
             raise MApplicationException(
                 "モデルの表情生成に必要なボーンが不足しています。\n不足ボーン: {b}",
                 b=", ".join(missing_bone_names),
             )
+
+        return original_model.copy()
 
     def valid_motion(self, original_motion: VmdMotion) -> VmdMotion:
         """モーフ生成にあったモーションを取得する"""
