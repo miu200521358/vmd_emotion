@@ -50,7 +50,7 @@ class MorphAdjustUsecase:
         interpolation.end.x = end_x
         interpolation.end.y = end_y
 
-        logger.info("モーフ条件調整", decoration=MLogger.Decoration.LINE)
+        logger.info("モーフ条件調整[{m}]", m=morph_name, decoration=MLogger.Decoration.LINE)
 
         for n, mf in enumerate(motion.morphs[morph_name]):
             logger.count("モーフ条件調整[{m}]", m=morph_name, index=n, total_index_count=len(motion.morphs[morph_name]), display_block=10000)

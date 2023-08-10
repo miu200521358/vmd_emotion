@@ -807,3 +807,111 @@ msgstr "After generating a blink, you can jump to the generation keyfre by movin
 
 msgid "破綻補正モーフを生成した後、スライダー上でホイールを動かすと生成キーフレにジャンプできます"
 msgstr "After generating the collapse correction morph, you can jump to the generated keyfre by moving the wheel on the slider"
+
+msgid "モーフ条件調整を付けたい人物モデルを指定してください"
+msgstr "Specify the person model to which you want to apply the morph condition adjustment"
+
+msgid "モーフ条件調整を付けたいモーションを指定してください"
+msgstr "Specify the motion to which you want to apply the morph condition adjustment"
+
+msgid "モーフ条件調整モーション出力先"
+msgstr "Morph Condition Adjustment Motion Output Destination"
+
+msgid "モーフ条件調整モーションの出力ファイルパスです\n任意の値に変更可能です"
+msgstr "Output file path for morph condition adjustment motion.
+
+msgid "モーフ条件調整を生成した後、スライダー上でホイールを動かすと生成キーフレにジャンプできます"
+msgstr "After generating the morph condition adjustment, you can jump to the generated keyfre by moving the wheel on the slider"
+
+msgid "モーフ条件調整生成"
+msgstr "Morph Condition Adjustment Generation"
+
+msgid "モーフ条件調整生成停止"
+msgstr "Morph condition adjustment generation stopped"
+
+msgid "生成したモーフ条件調整をVMDモーションデータとして出力します\nデータ読み込み後、クリックできるようになります"
+msgstr "Outputs the generated morph condition adjustment as VMD motion data,¸n which can be clicked on after the data has been loaded"
+
+msgid "モーフ条件調整モーション出力停止"
+msgstr "Morph condition adjustment motion output stopped"
+
+msgid "生成したモーフ条件調整をVMDモーションデータとして出力します\nモーフ条件調整生成実行後、クリックできるようになります"
+msgstr "Outputs the generated morph condition adjustment as VMD motion data.ЈnAfter the morph condition adjustment generation is executed, you will be able to click on it"
+
+msgid "条件追加"
+msgstr "Add condition"
+
+msgid "調整条件を追加できます"
+msgstr "You can add adjustment conditions"
+
+msgid "条件全削除"
+msgstr "Remove all conditions"
+
+msgid "全ての調整条件を削除できます"
+msgstr "All adjustment conditions can be deleted"
+
+msgid "開始X: "
+msgstr "Start X:"
+
+msgid "開始Y: "
+msgstr "Start Y:"
+
+msgid "終了X: "
+msgstr "End X:"
+
+msgid "終了Y: "
+msgstr "End Y:"
+
+msgid "下限値: "
+msgstr "Lower limit: "
+
+msgid "上限値: "
+msgstr "Upper limit: "
+
+msgid "補間曲線: "
+msgstr "Interpolation curves:"
+
+msgid "ボタンをONにすると、補間曲線の形を確認したり変更できます"
+msgstr "Turn on the button to see and change the shape of the interpolation curve"
+
+msgid "ベジェプレビュー"
+msgstr "Bezier Preview"
+
+msgid "補間曲線プレビュー"
+msgstr "Interpolation Curve Preview"
+
+msgid "補間曲線に準拠してモーフの値を調整した場合の変化をプレビューで確認出来ます\nスライダーの値が元の値でプレビューで確認できるのが補間曲線準拠の値です"
+msgstr "You can see in the preview the changes that occur when you adjust the morph values in accordance with the interpolation curve.
+
+msgid "ボタンをONにすると、補間曲線の形や補間曲線に準拠したモーフの変化をプレビューで確認できます"
+msgstr "Turn on the button to preview the shape of the interpolation curve and the morph changes that conform to the interpolation curve"
+
+msgid "ボタンをOFFにすると元々のモーフの変化量による変化に切り替えられます\nもう一度ONにすると、補間曲線に準拠した変化量になります"
+msgstr "Turning the button OFF will switch to a change by the amount of change in the original morph\nTurning it ON again will change the amount of change to conform to the interpolation curve"
+
+msgid "モーフ条件調整開始"
+msgstr "Morph Conditions Adjustment Begins"
+
+msgid "モーフ条件調整完了"
+msgstr "Morph condition adjustment complete"
+
+msgid "実行完了"
+msgstr "Execution complete"
+
+msgid "保存完了"
+msgstr "Save Complete"
+
+msgid "過去に設定したモーフ条件調整を再設定できます"
+msgstr "You can re-set morph condition adjustments that you have set in the past"
+
+msgid "条件を選んでダブルクリック、またはOKボタンをクリックしてください。"
+msgstr "Please select the condition and double click or click the OK button"
+
+msgid "モーフ条件調整選択"
+msgstr "Morph Condition Adjustment Selection"
+
+msgid "補間曲線をメイン画面に適用します"
+msgstr "Apply the interpolation curve to the main screen"
+
+msgid "補間曲線を適用せずにウィンドウを閉じます"
+msgstr "Closes the window without applying the interpolation curve"

@@ -1195,3 +1195,23 @@ msgstr ""
 msgid "保存完了"
 msgstr ""
 
+
+msgid "過去に設定したモーフ条件調整を再設定できます"
+msgstr ""
+
+
+msgid "条件を選んでダブルクリック、またはOKボタンをクリックしてください。"
+msgstr ""
+
+
+msgid "モーフ条件調整選択"
+msgstr ""
+
+
+msgid "補間曲線をメイン画面に適用します"
+msgstr ""
+
+
+msgid "補間曲線を適用せずにウィンドウを閉じます"
+msgstr ""
+
