@@ -231,8 +231,6 @@ class ServicePanel(NotebookPanel):
             self.frame.on_sound()
             return
 
-        logger.info("描画準備開始", decoration=MLogger.Decoration.BOX)
-
         original_model, model, original_motion, motion, blink_conditions, bone_matrixes = data
 
         logger.debug("結果展開")
@@ -266,6 +264,8 @@ class ServicePanel(NotebookPanel):
         self.Enable(False)
         self.EnableExec(True)
 
+        logger.info("読み込み完了", decoration=MLogger.Decoration.BOX)
+
     def exec(self, event: wx.Event) -> None:
         MLogger.console_handler = ConsoleHandler(self.console_ctrl.text_ctrl)
         self.frame.running_worker = True
@@ -287,6 +287,8 @@ class ServicePanel(NotebookPanel):
         self.Enable(True)
         self.frame.on_sound()
 
+        logger.info("実行完了", decoration=MLogger.Decoration.BOX)
+
     def save(self, event: wx.Event) -> None:
         MLogger.console_handler = ConsoleHandler(self.console_ctrl.text_ctrl)
         self.frame.running_worker = True
@@ -302,6 +304,8 @@ class ServicePanel(NotebookPanel):
         self.enabled_save = True
         self.Enable(True)
         self.frame.on_sound()
+
+        logger.info("保存完了", decoration=MLogger.Decoration.BOX)
 
     def on_change_model_pmx(self, event: wx.Event) -> None:
         self.model_ctrl.unwrap()

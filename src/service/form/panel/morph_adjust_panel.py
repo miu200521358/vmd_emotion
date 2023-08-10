@@ -80,4 +80,6 @@ class MorphAdjustPanel(ServicePanel):
         self.fit_window()
 
     def on_clear_condition(self, event: wx.Event) -> None:
-        pass
+        self.window_sizer.Hide(self.condition_sizer, recursive=True)
+        del self.conditions
+        self.conditions = []

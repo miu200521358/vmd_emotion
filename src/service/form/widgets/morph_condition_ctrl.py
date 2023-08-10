@@ -29,7 +29,7 @@ class MorphConditionCtrl:
         self.model = model
 
         self.bezier_window_size = wx.Size(300, 700)
-        self.bezier_window: Optional[BezierWindow] = None
+        self.bezier_dialog: Optional[BezierDialog] = None
 
         self.morph_name_ctrl = wx.ComboBox(
             self.window, id=wx.ID_ANY, choices=model.morphs.names, size=wx.Size(200, -1), style=wx.CB_DROPDOWN | wx.TE_PROCESS_ENTER
@@ -99,35 +99,36 @@ class MorphConditionCtrl:
         self.end_y_ctrl.Enable(enable)
         self.min_ctrl.Enable(enable)
         self.max_ctrl.Enable(enable)
+        self.bezier_view_ctrl.Enable(enable)
 
     def on_show_bezier(self, event: wx.Event) -> None:
         self.parent.Enable(False)
         self.create_bezier_window()
 
-        if self.bezier_window:
-            if not self.bezier_window.IsShown():
-                self.bezier_window.panel.bezier_ctrl.start_x_ctrl.SetValue(self.start_x_ctrl.GetValue())
-                self.bezier_window.panel.bezier_ctrl.start_y_ctrl.SetValue(self.start_y_ctrl.GetValue())
-                self.bezier_window.panel.bezier_ctrl.end_x_ctrl.SetValue(self.end_x_ctrl.GetValue())
-                self.bezier_window.panel.bezier_ctrl.end_y_ctrl.SetValue(self.end_y_ctrl.GetValue())
+        if self.bezier_dialog:
+            if not self.bezier_dialog.IsShown():
+                self.bezier_dialog.panel.bezier_ctrl.start_x_ctrl.SetValue(self.start_x_ctrl.GetValue())
+                self.bezier_dialog.panel.bezier_ctrl.start_y_ctrl.SetValue(self.start_y_ctrl.GetValue())
+                self.bezier_dialog.panel.bezier_ctrl.end_x_ctrl.SetValue(self.end_x_ctrl.GetValue())
+                self.bezier_dialog.panel.bezier_ctrl.end_y_ctrl.SetValue(self.end_y_ctrl.GetValue())
 
-                self.bezier_window.panel.canvas.append_model_set(self.model, VmdMotion(), 0.0, True)
-                self.bezier_window.panel.canvas.vertical_degrees = 5
-                self.bezier_window.panel.canvas.look_at_center = self.model.bones["頭"].position.copy()
-                self.bezier_window.panel.canvas.Refresh()
+                self.bezier_dialog.panel.canvas.append_model_set(self.model, VmdMotion(), 0.0, True)
+                self.bezier_dialog.panel.canvas.vertical_degrees = 5
+                self.bezier_dialog.panel.canvas.look_at_center = self.model.bones["頭"].position.copy()
+                self.bezier_dialog.panel.canvas.Refresh()
 
-                self.bezier_window.Show()
+                self.bezier_dialog.ShowModal()
 
-            elif self.bezier_window.IsShown():
-                self.bezier_window.Hide()
+            elif self.bezier_dialog.IsShown():
+                self.bezier_dialog.Hide()
         self.parent.Enable(True)
         event.Skip()
 
     def create_bezier_window(self) -> None:
-        if not self.bezier_window:
-            self.bezier_window = BezierWindow(self.frame, self, __("補間曲線プレビュー"), self.bezier_window_size)
+        if not self.bezier_dialog:
+            self.bezier_dialog = BezierDialog(self.frame, self, __("補間曲線プレビュー"), self.bezier_window_size)
             frame_x, frame_y = self.frame.GetPosition()
-            self.bezier_window.SetPosition(wx.Point(max(0, frame_x + self.frame.GetSize().GetWidth() + 10), max(0, frame_y + 30)))
+            self.bezier_dialog.SetPosition(wx.Point(max(0, frame_x + self.frame.GetSize().GetWidth() + 10), max(0, frame_y + 30)))
 
     def on_enter_choice(self, event: wx.Event) -> None:
         """一致している名前があれば選択"""
@@ -136,9 +137,9 @@ class MorphConditionCtrl:
             event.GetEventObject().SetSelection(idx)
 
 
-class BezierWindow(BaseFrame):
+class BezierDialog(wx.Dialog):
     def __init__(self, parent: BaseFrame, condition_ctrl: MorphConditionCtrl, title: str, size: wx.Size, *args, **kw):
-        super().__init__(parent.app, title, size, *args, parent=parent, **kw)
+        super().__init__(parent, *args, title=title, size=size, **kw)
         self.condition_ctrl = condition_ctrl
         self.panel = BezierPanel(self, condition_ctrl)
 
@@ -170,7 +171,7 @@ class BezierPanel(BasePanel):
 
         super().__init__(frame)
 
-        self.bezier_ctrl = BezierCtrl(frame, self, wx.Size(160, 160))
+        self.bezier_ctrl = BezierCtrl(frame, self, wx.Size(160, 160), change_event=self.on_change_ratio)
         self.root_sizer.Add(self.bezier_ctrl.sizer, 0, wx.ALL, 5)
 
         self.canvas = PmxCanvas(self, True)
