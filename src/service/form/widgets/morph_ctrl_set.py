@@ -43,14 +43,14 @@ class MorphCtrlSet:
         # 顔アップ
         self.preview_window_btn = wx.Button(self.window, wx.ID_ANY, __("モーフプレビュー"), wx.DefaultPosition, wx.Size(100, -1))
         self.preview_window_btn.SetToolTip(__("選択されたモーフによる変化をサブウィンドウで確認できます"))
-        self.preview_window_btn.Bind(wx.EVT_BUTTON, self.on_show_sub_window)
+        self.preview_window_btn.Bind(wx.EVT_BUTTON, self.on_show_preview_window)
         self.sizer.Add(self.preview_window_btn, 0, wx.ALL, 3)
 
         self.preview_window_size = wx.Size(300, 300)
         self.preview_window: Optional[PreviewCanvasWindow] = None
 
-    def on_show_sub_window(self, event: wx.Event) -> None:
-        self.create_sub_window()
+    def on_show_preview_window(self, event: wx.Event) -> None:
+        self.create_preview_window()
 
         if self.preview_window:
             if not self.preview_window.IsShown():
@@ -59,12 +59,14 @@ class MorphCtrlSet:
                 self.preview_window.Hide()
         event.Skip()
 
-    def create_sub_window(self) -> None:
+    def create_preview_window(self) -> None:
         model: Optional[PmxModel] = self.parent.model_ctrl.data
         if not self.preview_window and model:
             self.preview_window = PreviewCanvasWindow(
-                self.frame, self.parent.canvas, __("モーフプレビュー"), self.preview_window_size, [model.name], [model.bones.names]
+                self.frame, __("モーフプレビュー"), self.preview_window_size, [model.name], [model.bones.names]
             )
+            self.preview_window.panel.canvas.clear_model_set()
+            self.preview_window.panel.canvas.append_model_set(model, VmdMotion(), 0.0, True)
             frame_x, frame_y = self.frame.GetPosition()
             self.preview_window.SetPosition(wx.Point(max(0, frame_x - self.preview_window_size.x - 10), max(0, frame_y)))
 

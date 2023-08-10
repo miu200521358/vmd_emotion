@@ -6,20 +6,20 @@ import wx
 from mlib.core.logger import MLogger
 from mlib.service.form.notebook_frame import NotebookFrame
 from mlib.service.form.widgets.spin_ctrl import WheelSpinCtrlDouble
-from service.form.panel.service_canvas_panel import ServiceCanvasPanel
-from service.worker.config.morph_repair_worker import MorphRepairWorker
+from service.worker.config.morph_adjust_worker import MorphAdjustWorker
+from service.form.panel.service_panel import ServicePanel
 
 logger = MLogger(os.path.basename(__file__))
 __ = logger.get_text
 
 
-class RepairPanel(ServiceCanvasPanel):
+class MorphAdjustPanel(ServicePanel):
     def __init__(self, frame: NotebookFrame, tab_idx: int, *args, **kw) -> None:
-        super().__init__(frame, tab_idx, 1.0, 0.4, *args, **kw)
+        super().__init__(frame, tab_idx, *args, **kw)
 
     @property
     def emotion_type(self) -> str:
-        return "破綻補正モーフ"
+        return "モーフ条件調整"
 
     @property
     def console_rows(self) -> int:
@@ -29,8 +29,8 @@ class RepairPanel(ServiceCanvasPanel):
     def key_names(self) -> Iterable[str]:
         return []
 
-    def create_service_worker(self) -> MorphRepairWorker:
-        return MorphRepairWorker(self.frame, self, self.on_exec_result)
+    def create_service_worker(self) -> MorphAdjustWorker:
+        return MorphAdjustWorker(self.frame, self, self.on_exec_result)
 
     def _initialize_service_ui(self) -> None:
         self.repair_sizer = wx.BoxSizer(wx.HORIZONTAL)

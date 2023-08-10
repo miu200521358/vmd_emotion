@@ -5,14 +5,14 @@ from typing import Any, Iterable, Optional
 import wx
 
 from mlib.core.logger import ConsoleHandler, MLogger
-from mlib.pmx.canvas import PreviewCanvasWindow
+from mlib.pmx.canvas import CanvasPanel, SubCanvasWindow
 from mlib.pmx.pmx_collection import PmxModel
 from mlib.service.base_worker import BaseWorker
 from mlib.service.form.notebook_frame import NotebookFrame
-from mlib.service.form.notebook_panel import NotebookPanel
 from mlib.service.form.widgets.console_ctrl import ConsoleCtrl
 from mlib.service.form.widgets.exec_btn_ctrl import ExecButton
 from mlib.service.form.widgets.file_ctrl import MPmxFilePickerCtrl, MVmdFilePickerCtrl
+from mlib.service.form.widgets.frame_slider_ctrl import FrameSliderCtrl
 from mlib.utils.file_utils import save_histories, separate_path
 from mlib.vmd.vmd_collection import VmdMotion
 from mlib.vmd.vmd_tree import VmdBoneFrameTrees
@@ -23,13 +23,13 @@ logger = MLogger(os.path.basename(__file__))
 __ = logger.get_text
 
 
-class ServicePanel(NotebookPanel):
+class ServiceCanvasPanel(CanvasPanel):
     def __init__(self, frame: NotebookFrame, tab_idx: int, *args, **kw) -> None:
-        super().__init__(frame, tab_idx, *args, **kw)
+        super().__init__(frame, tab_idx, 1.0, 0.4, *args, **kw)
         self.enabled_save = False
 
-        self.preview_window_size = wx.Size(300, 300)
-        self.preview_window: Optional[PreviewCanvasWindow] = None
+        self.sub_window_size = wx.Size(300, 300)
+        self.sub_window: Optional[SubCanvasWindow] = None
 
         self.load_worker = LoadWorker(frame, self, self.on_preparer_result)
         self.load_worker.panel = self
@@ -39,9 +39,14 @@ class ServicePanel(NotebookPanel):
         self.save_worker = SaveWorker(frame, self, self.on_save_result)
         self.save_worker.panel = self
 
+        # 上にビューワー
+        self.root_sizer.Add(self.canvas, 1, wx.EXPAND | wx.ALL, 0)
+
         self._initialize_ui()
 
         self.fit_window()
+
+        self.on_resize(wx.EVT_SIZE)
 
         # 初期状態は一旦非活性
         self.Enable(False)
@@ -121,6 +126,38 @@ class ServicePanel(NotebookPanel):
         )
         self.output_motion_ctrl.set_parent_sizer(self.window_sizer)
 
+        # プレビュー ---------------------------
+        self.play_sizer = wx.BoxSizer(wx.HORIZONTAL)
+
+        frame_tooltip = "\n".join(
+            [
+                __("モーションの任意のキーフレの結果の表示や再生ができます"),
+                __(f"{self.emotion_type}を生成した後、スライダー上でホイールを動かすと生成キーフレにジャンプできます"),
+            ]
+        )
+
+        self.frame_title_ctrl = wx.StaticText(self.scrolled_window, wx.ID_ANY, __("モーション"), wx.DefaultPosition, wx.DefaultSize, 0)
+        self.frame_title_ctrl.SetToolTip(frame_tooltip)
+        self.play_sizer.Add(self.frame_title_ctrl, 0, wx.ALL, 3)
+
+        # スライダー
+        self.frame_slider = FrameSliderCtrl(
+            self.scrolled_window, border=3, size=wx.Size(860, -1), tooltip=frame_tooltip, change_event=self.on_frame_change
+        )
+        self.play_sizer.Add(self.frame_slider.sizer, 0, wx.ALL, 0)
+
+        self.play_ctrl = wx.Button(self.scrolled_window, wx.ID_ANY, __("再生"), wx.DefaultPosition, wx.Size(80, -1))
+        self.play_ctrl.SetToolTip(__("モーションを再生することができます（ただし重いです）"))
+        self.play_ctrl.Bind(wx.EVT_BUTTON, self.on_play)
+        self.play_sizer.Add(self.play_ctrl, 0, wx.ALL, 3)
+
+        self.sub_window_ctrl = wx.Button(self.scrolled_window, wx.ID_ANY, __("顔アップ"), wx.DefaultPosition, wx.Size(80, -1))
+        self.sub_window_ctrl.SetToolTip(__("顔アップ固定のプレビューをサブウィンドウで確認出来ます"))
+        self.sub_window_ctrl.Bind(wx.EVT_BUTTON, self.on_show_sub_window)
+        self.play_sizer.Add(self.sub_window_ctrl, 0, wx.ALL, 3)
+
+        self.window_sizer.Add(self.play_sizer, 0, wx.ALL, 3)
+
         # 個別サービス ---------------------------
 
         # 個別サービス用UIを追加
@@ -194,11 +231,19 @@ class ServicePanel(NotebookPanel):
 
             if not self.model_ctrl.data or not self.motion_ctrl.data:
                 # 読み込む
+                self.canvas.clear_model_set()
                 self.save_histories()
 
                 self.frame.running_worker = True
                 self.Enable(False)
                 self.load_worker.start()
+            else:
+                # 既に読み取りが完了していたらそのまま表示
+                self.canvas.model_sets[0].motion = self.motion_ctrl.data
+                self.canvas.look_at_center = self.canvas.shader.INITIAL_LOOK_AT_CENTER_POSITION.copy()
+                self.canvas.vertical_degrees = self.canvas.shader.INITIAL_VERTICAL_DEGREES
+                self.canvas.change_motion(event, model_index=0)
+                self.canvas.Refresh()
 
     def save_histories(self) -> None:
         self.model_ctrl.save_path()
@@ -257,6 +302,9 @@ class ServicePanel(NotebookPanel):
         self.blink_conditions = blink_conditions
         logger.debug("blink_conditions")
 
+        self.canvas.append_model_set(self.model_ctrl.data, self.motion_ctrl.data, bone_alpha=0.0)
+        self.canvas.Refresh()
+
         self.Enable(False)
         self.EnableExec(True)
 
@@ -274,7 +322,18 @@ class ServicePanel(NotebookPanel):
         # モーションデータを上書きして再読み込み
         motion, output_motion, fnos = data
         self.motion_ctrl.data = motion
+        self.canvas.model_sets[0].motion = motion
         self.output_motion_ctrl.data = output_motion
+        # 関連ボーン・モーフのキーがある箇所に飛ぶ
+        self.frame_slider.SetKeyFrames(list(range(motion.max_fno + 1)))
+        if 1 < len(fnos):
+            self.frame_slider.SetKeyFrames(fnos)
+        else:
+            key_fnos = [fno for bone_name in self.key_names for fno in output_motion.bones[bone_name].indexes]
+            if key_fnos:
+                self.frame_slider.SetKeyFrames(sorted(set(key_fnos)))
+
+        self.on_frame_change(wx.EVT_BUTTON)
 
         # 保存ボタンを有効にできるようにする
         self.enabled_save = True
@@ -340,28 +399,63 @@ class ServicePanel(NotebookPanel):
 
     def EnableExec(self, enable: bool) -> None:
         self.EnableLoad(enable)
+        self.frame_slider.Enable(enable)
+        self.play_ctrl.Enable(enable)
+        self.sub_window_ctrl.Enable(enable)
         self.exec_btn_ctrl.Enable(enable)
 
-    def on_show_preview_window(self, event: wx.Event) -> None:
-        self.create_preview_window()
+    def on_frame_change(self, event: wx.Event):
+        self.Enable(False)
+        self.canvas.change_motion(event, True, 0)
+        self.Enable(True)
 
-        if self.preview_window:
-            if not self.preview_window.IsShown():
-                self.preview_window.Show()
-            elif self.preview_window.IsShown():
-                self.preview_window.Hide()
+    @property
+    def fno(self) -> int:
+        return self.frame_slider.GetValue()
+
+    @fno.setter
+    def fno(self, v: int) -> None:
+        logger.debug(f"fno setter {v}")
+        self.frame_slider.ChangeValue(v)
+
+    def stop_play(self) -> None:
+        self.play_ctrl.SetLabelText(__("再生"))
+        self.Enable(True)
+
+    def start_play(self) -> None:
+        self.play_ctrl.SetLabelText(__("停止"))
+        self.Enable(False)
+        # 停止ボタンだけは有効
+        self.play_ctrl.Enable(True)
+
+    def on_resize(self, event: wx.Event):
+        self.scrolled_window.SetPosition(wx.Point(0, self.canvas.size.height))
+
+    def on_play(self, event: wx.Event) -> None:
+        if self.canvas.playing:
+            self.stop_play()
+        else:
+            self.start_play()
+        self.canvas.on_play(event)
+
+    def on_show_sub_window(self, event: wx.Event) -> None:
+        self.create_sub_window()
+
+        if self.sub_window:
+            if not self.sub_window.IsShown():
+                self.sub_window.Show()
+            elif self.sub_window.IsShown():
+                self.sub_window.Hide()
         event.Skip()
 
-    def create_preview_window(self) -> None:
-        model: Optional[PmxModel] = self.parent.model_ctrl.data
-        if not self.preview_window and model:
-            self.preview_window = PreviewCanvasWindow(
-                self.frame, __("モーフプレビュー"), self.preview_window_size, [model.name], [model.bones.names]
+    def create_sub_window(self) -> None:
+        model: Optional[PmxModel] = self.model_ctrl.data
+        if not self.sub_window and model:
+            self.sub_window = SubCanvasWindow(
+                self.frame, self.canvas, __("アッププレビュー"), self.sub_window_size, [model.name], [model.bones.names]
             )
-            self.preview_window.panel.canvas.clear_model_set()
-            self.preview_window.panel.canvas.append_model_set(model, VmdMotion(), 0.0, True)
             frame_x, frame_y = self.frame.GetPosition()
-            self.preview_window.SetPosition(wx.Point(max(0, frame_x - self.preview_window_size.x - 10), max(0, frame_y)))
+            self.sub_window.SetPosition(wx.Point(max(0, frame_x - self.sub_window_size.x - 10), max(0, frame_y)))
 
     def fit_window(self) -> None:
         self.scrolled_window.Layout()

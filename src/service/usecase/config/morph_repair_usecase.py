@@ -13,8 +13,8 @@ logger = MLogger(os.path.basename(__file__), level=1)
 __ = logger.get_text
 
 
-class RepairMorphUsecase:
-    def repair_morph(
+class MorphRepairUsecase:
+    def repair(
         self,
         model: PmxModel,
         motion: VmdMotion,

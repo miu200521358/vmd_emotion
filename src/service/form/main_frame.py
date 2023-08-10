@@ -9,6 +9,7 @@ from mlib.vmd.vmd_collection import VmdMotion
 from service.form.panel.gaze_panel import GazePanel
 from service.form.panel.blink_panel import BlinkPanel
 from service.form.panel.repair_panel import RepairPanel
+from service.form.panel.morph_adjust_panel import MorphAdjustPanel
 
 logger = MLogger(os.path.basename(__file__), level=1)
 __ = logger.get_text
@@ -36,6 +37,10 @@ class MainFrame(NotebookFrame):
         # 破綻補正
         self.repair_panel = RepairPanel(self, 2)
         self.notebook.AddPage(self.repair_panel, __("破綻補正"), False)
+
+        # モーフ条件調整
+        self.morph_adjust_panel = MorphAdjustPanel(self, 3)
+        self.notebook.AddPage(self.morph_adjust_panel, __("モーフ条件調整"), False)
 
         self.models: dict[str, PmxModel] = {}
         self.motions: dict[str, VmdMotion] = {}

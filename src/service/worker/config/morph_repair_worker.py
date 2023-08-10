@@ -9,13 +9,13 @@ from mlib.service.form.base_frame import BaseFrame
 from mlib.service.form.base_panel import BasePanel
 from mlib.utils.file_utils import get_root_dir
 from mlib.vmd.vmd_collection import VmdMotion
-from service.usecase.config.repair_morph_usecase import RepairMorphUsecase
+from service.usecase.config.morph_repair_usecase import MorphRepairUsecase
 
 logger = MLogger(os.path.basename(__file__), level=1)
 __ = logger.get_text
 
 
-class RepairMorphWorker(BaseWorker):
+class MorphRepairWorker(BaseWorker):
     def __init__(self, frame: BaseFrame, panel: BasePanel, result_event: wx.Event) -> None:
         super().__init__(frame, result_event)
         self.panel = panel
@@ -27,7 +27,7 @@ class RepairMorphWorker(BaseWorker):
 
         logger.info("モーフ破綻補正開始", decoration=MLogger.Decoration.BOX)
 
-        fnos = RepairMorphUsecase().repair_morph(
+        fnos = MorphRepairUsecase().repair(
             model,
             motion,
             output_motion,

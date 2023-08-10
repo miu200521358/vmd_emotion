@@ -7,13 +7,13 @@ from mlib.core.logger import MLogger
 from mlib.service.form.notebook_frame import NotebookFrame
 from mlib.service.form.widgets.spin_ctrl import WheelSpinCtrl, WheelSpinCtrlDouble
 from service.worker.config.gaze_worker import GazeWorker
-from service.form.panel.service_panel import ServicePanel
+from service.form.panel.service_canvas_panel import ServiceCanvasPanel
 
 logger = MLogger(os.path.basename(__file__))
 __ = logger.get_text
 
 
-class GazePanel(ServicePanel):
+class GazePanel(ServiceCanvasPanel):
     def __init__(self, frame: NotebookFrame, tab_idx: int, *args, **kw) -> None:
         super().__init__(frame, tab_idx, 1.0, 0.4, *args, **kw)
 

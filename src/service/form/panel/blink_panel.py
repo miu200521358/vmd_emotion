@@ -11,13 +11,13 @@ from mlib.vmd.vmd_tree import VmdBoneFrameTrees
 from service.form.widgets.blink_ctrl_set import BlinkCtrlSet
 from service.form.widgets.morph_ctrl_set import MorphCtrlSet
 from service.worker.config.blink_worker import BlinkWorker
-from service.form.panel.service_panel import ServicePanel
+from service.form.panel.service_canvas_panel import ServiceCanvasPanel
 
 logger = MLogger(os.path.basename(__file__))
 __ = logger.get_text
 
 
-class BlinkPanel(ServicePanel):
+class BlinkPanel(ServiceCanvasPanel):
     def __init__(self, frame: NotebookFrame, tab_idx: int, *args, **kw) -> None:
         super().__init__(frame, tab_idx, 1.0, 0.4, *args, **kw)
 
