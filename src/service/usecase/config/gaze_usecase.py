@@ -30,7 +30,7 @@ class GazeUsecase:
         gaze_limit_upper_y: int,
         gaze_limit_lower_y: int,
         gaze_reset_num: int,
-    ) -> None:
+    ) -> list[int]:
         """目線生成"""
 
         if "両目" in motion.bones.names:
@@ -42,6 +42,8 @@ class GazeUsecase:
 
         logger.info("目線変動量取得", decoration=MLogger.Decoration.LINE)
         eye_matrixes = motion.animate_bone(eye_fnos, model, ["両目"], out_fno_log=True)
+
+        gaze_fnos: set[int] = {0}
 
         prev_gaze = None
         gaze_vectors: list[MVector3D] = []
@@ -130,6 +132,7 @@ class GazeUsecase:
             bf.rotation = gaze_xy_qq
             motion.append_bone_frame(bf)
             output_motion.append_bone_frame(bf.copy())
+            gaze_fnos |= {fno}
 
             logger.debug("目線生成[{f}] 向き[{d}] 回転[{r}]", f=fno, d=infection_gaze_vector, r=gaze_qq.to_euler_degrees_mmd())
 
@@ -201,6 +204,8 @@ class GazeUsecase:
                 f"目線補間曲線 係数[{a:.3f}, {b:.3f}, {c:.3f}] prev[{prev_bf.index}][{prev_bf.interpolations.rotation}] "
                 + f"now[{now_bf.index}][{now_bf.interpolations.rotation}]"
             )
+
+        return sorted(gaze_fnos)
 
 
 def fitted_x_function(x: float):

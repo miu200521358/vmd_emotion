@@ -27,7 +27,7 @@ class BlinkWorker(BaseWorker):
 
         logger.info("まばたき生成開始", decoration=MLogger.Decoration.BOX)
 
-        BlinkUsecase().create_blink(
+        fnos = BlinkUsecase().create_blink(
             model,
             motion,
             output_motion,
@@ -39,7 +39,7 @@ class BlinkWorker(BaseWorker):
             self.panel.replace_set.smile_morph_ctrl.GetValue(),
         )
 
-        self.result_data = motion, output_motion
+        self.result_data = motion, output_motion, fnos
 
         logger.info("まばたき生成完了", decoration=MLogger.Decoration.BOX)
 

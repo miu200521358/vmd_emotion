@@ -30,7 +30,7 @@ class BlinkUsecase:
         eyebrow_below_name: str,
         blink_name: str,
         smile_name: str,
-    ) -> None:
+    ) -> list[int]:
         """まばたき生成"""
 
         # 既存キーフレ削除
@@ -45,6 +45,7 @@ class BlinkUsecase:
             set([bf.index for bone_name in model.bone_trees["両目"].names for bf in motion.bones[bone_name]]) | {motion.bones.max_fno}
         )
 
+        blink_fnos: set[int] = {0}
         logger.info("目線変動量取得", decoration=MLogger.Decoration.LINE)
 
         kick_probability = condition_probabilities[BlinkConditions.AFTER_KICK.value.name] * 0.01
@@ -269,6 +270,8 @@ class BlinkUsecase:
             mf1.ratio = 0.2 if is_double_after else 0.0
             motion.append_morph_frame(mf1)
             output_motion.append_morph_frame(mf1.copy())
+            if not is_double_after:
+                blink_fnos |= start_fno
 
             # 閉じる
             close_fno = fno - weight_blink - 1
@@ -446,6 +449,8 @@ class BlinkUsecase:
                     if is_double_after:
                         is_double_after = False
                     fno = list(range_fnos.keys())[int(np.argmax(list(range_fnos.values())))]
+
+        return sorted(blink_fnos)
 
 
 class BlinkCondition:

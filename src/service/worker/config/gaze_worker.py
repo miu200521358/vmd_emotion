@@ -27,7 +27,7 @@ class GazeWorker(BaseWorker):
 
         logger.info("目線生成開始", decoration=MLogger.Decoration.BOX)
 
-        GazeUsecase().create_gaze(
+        fnos = GazeUsecase().create_gaze(
             model,
             motion,
             output_motion,
@@ -41,7 +41,7 @@ class GazeWorker(BaseWorker):
             self.panel.gaze_reset_ctrl.GetValue(),
         )
 
-        self.result_data = motion, output_motion
+        self.result_data = motion, output_motion, fnos
 
         logger.info("目線生成完了", decoration=MLogger.Decoration.BOX)
 

@@ -8,6 +8,7 @@ from mlib.service.form.notebook_frame import NotebookFrame
 from mlib.vmd.vmd_collection import VmdMotion
 from service.form.panel.gaze_panel import GazePanel
 from service.form.panel.blink_panel import BlinkPanel
+from service.form.panel.repair_panel import RepairPanel
 
 logger = MLogger(os.path.basename(__file__), level=1)
 __ = logger.get_text
@@ -22,196 +23,29 @@ class MainFrame(NotebookFrame):
             size=size,
         )
         self.selected_tab_idx = 0
+        self.running_worker = False
 
         # 目線生成
         self.gaze_panel = GazePanel(self, 0)
-        self.notebook.AddPage(self.gaze_panel, __("目線生成"), False)
+        self.notebook.AddPage(self.gaze_panel, __("目線生成"), True)
 
-        # 目線生成
+        # まばたき生成
         self.blink_panel = BlinkPanel(self, 1)
         self.notebook.AddPage(self.blink_panel, __("まばたき生成"), False)
+
+        # 破綻補正
+        self.repair_panel = RepairPanel(self, 2)
+        self.notebook.AddPage(self.repair_panel, __("破綻補正"), False)
 
         self.models: dict[str, PmxModel] = {}
         self.motions: dict[str, VmdMotion] = {}
 
-        # # ファイルタブ
-        # self.file_panel = FilePanel(self, 1)
-        # self.notebook.AddPage(self.file_panel, __("ファイル"), False)
-
-        # # 設定タブ
-        # self.config_panel = ConfigPanel(self, 2)
-        # self.notebook.AddPage(self.config_panel, __("設定"), False)
-
-        # # モーフ置換タブ（設定パネルはそのまま）
-        # self.notebook.AddPage(self.config_panel, __("生成モーフ置換"), False)
-
-        # self.load_worker = LoadWorker(self, self.on_result)
-        # self.save_worker = SaveWorker(self, self.on_save_result)
-
-        # self.file_panel.exec_btn_ctrl.exec_worker = self.save_worker
-
-        # MLogger.console_handler = ConsoleHandler(self.file_panel.console_ctrl.text_ctrl)
-        # MLogger.console_handler2 = ConsoleHandler(self.config_panel.console_ctrl.text_ctrl)
-
     def on_change_tab(self, event: wx.Event) -> None:
-        pass
-        # self.selected_tab_idx = self.notebook.GetSelection()
+        if self.running_worker:
+            # 処理が動いている場合、動かさない
+            self.notebook.ChangeSelection(self.selected_tab_idx)
+            event.Skip()
+            return
 
-        # if self.selected_tab_idx in [self.config_panel.tab_idx, self.config_panel.tab_idx + 1]:
-        #     self.notebook.ChangeSelection(self.file_panel.tab_idx)
-        #     if not self.load_worker.started:
-        #         if not self.file_panel.model_ctrl.valid():
-        #             self.file_panel.exec_btn_ctrl.Enable(False)
-        #             logger.warning("人物モデル欄に有効なパスが設定されていない為、タブ遷移を中断します。")
-        #             return
-        #         if not self.file_panel.motion_ctrl.valid():
-        #             self.file_panel.exec_btn_ctrl.Enable(False)
-        #             logger.warning("モーション欄に有効なパスが設定されていない為、タブ遷移を中断します。")
-        #             return
-
-        #         if not self.file_panel.model_ctrl.data or not self.file_panel.motion_ctrl.data:
-        #             # 設定タブにうつった時に読み込む
-        #             self.config_panel.canvas.clear_model_set()
-        #             self.save_histories()
-
-        #             self.file_panel.Enable(False)
-        #             self.load_worker.start()
-        #         else:
-        #             # 既に読み取りが完了していたらそのまま表示
-        #             if self.selected_tab_idx == self.config_panel.tab_idx:
-        #                 self.config_panel.canvas.model_sets[0].motion = self.file_panel.motion_ctrl.data
-        #                 self.config_panel.canvas.shader.look_at_center = (
-        #                     self.config_panel.canvas.shader.INITIAL_LOOK_AT_CENTER_POSITION.copy()
-        #                 )
-        #                 self.config_panel.canvas.shader.vertical_degrees = self.config_panel.canvas.shader.INITIAL_VERTICAL_DEGREES
-        #                 self.config_panel.canvas.change_motion(event, model_index=0)
-        #                 self.config_panel.canvas.Refresh()
-
-        #                 self.config_panel.show_config = True
-        #                 self.config_panel.change_window()
-        #                 self.notebook.ChangeSelection(self.config_panel.tab_idx)
-        #             else:
-        #                 self.config_panel.canvas.model_sets[0].motion = VmdMotion()
-        #                 self.config_panel.canvas.shader.look_at_center = MVector3D(
-        #                     0,
-        #                     (
-        #                         (self.config_panel.bone_matrixes[0, "両目"].position.y + self.config_panel.bone_matrixes[0, "頭"].position.y)
-        #                         / 2
-        #                     ),
-        #                     0,
-        #                 )
-        #                 self.config_panel.canvas.shader.vertical_degrees = 6
-        #                 self.config_panel.canvas.change_motion(event, model_index=0)
-        #                 self.config_panel.canvas.Refresh()
-
-        #                 self.config_panel.show_config = False
-        #                 self.config_panel.change_window()
-        #                 self.notebook.ChangeSelection(self.config_panel.tab_idx + 1)
-        # else:
-        #     self.selected_tab_idx = self.file_panel.tab_idx
-        #     self.notebook.ChangeSelection(self.file_panel.tab_idx)
-
-    # def on_prepare(self, panel: NotebookPanel) -> None:
-    #     panel.model_ctrl.save_path()
-    #     panel.motion_ctrl.save_path()
-
-    #     save_histories(self.histories)
-
-    # def on_result(
-    #     self,
-    #     result: bool,
-    #     data: Optional[
-    #         tuple[
-    #             PmxModel,
-    #             PmxModel,
-    #             VmdMotion,
-    #             VmdMotion,
-    #             dict[str, float],
-    #             VmdBoneFrameTrees,
-    #         ]
-    #     ],
-    #     elapsed_time: str,
-    # ) -> None:
-    #     self.file_panel.console_ctrl.write(f"\n----------------\n{elapsed_time}")
-
-    #     if not (result and data):
-    #         self.file_panel.Enable(True)
-    #         self.file_panel.exec_btn_ctrl.Enable(False)
-    #         self.on_sound()
-    #         return
-
-    #     logger.info("描画準備開始", decoration=MLogger.Decoration.BOX)
-
-    #     original_model, model, original_motion, motion, blink_conditions, bone_matrixes = data
-
-    #     logger.debug("結果展開")
-
-    #     self.file_panel.model_ctrl.original_data = original_model
-    #     self.file_panel.model_ctrl.data = model
-
-    #     logger.debug("モデルデータ設定")
-
-    #     self.file_panel.motion_ctrl.original_data = original_motion
-    #     self.file_panel.motion_ctrl.data = motion
-
-    #     logger.debug("モーション設定")
-
-    #     self.file_panel.exec_btn_ctrl.Enable(True)
-    #     self.file_panel.output_motion_ctrl.data = VmdMotion(self.file_panel.output_motion_ctrl.path)
-
-    #     logger.debug("出力モーション生成")
-
-    #     if not (self.file_panel.model_ctrl.data and self.file_panel.motion_ctrl.data):
-    #         logger.warning("モデルデータもしくはモーションデータが正常に配置できませんでした", decoration=MLogger.Decoration.BOX)
-    #         return
-
-    #     # まばたき条件の初期化
-    #     logger.debug("まばたき条件の初期化 開始")
-    #     self.config_panel.blink_set.initialize(blink_conditions)
-    #     logger.debug("まばたき条件の初期化")
-
-    #     self.config_panel.frame_slider.SetMaxFrameNo(motion.max_fno)
-    #     logger.debug("SetMaxFrameNo")
-
-    #     self.config_panel.bone_matrixes = bone_matrixes
-    #     logger.debug("bone_matrixes")
-
-    #     try:
-    #         logger.info("モデル描画準備")
-
-    #         if self.selected_tab_idx == self.config_panel.tab_idx:
-    #             self.config_panel.canvas.append_model_set(self.file_panel.model_ctrl.data, self.file_panel.motion_ctrl.data, bone_alpha=0.0)
-    #             self.config_panel.canvas.Refresh()
-
-    #             self.config_panel.show_config = True
-    #             self.config_panel.change_window()
-    #             self.notebook.ChangeSelection(self.config_panel.tab_idx)
-    #         else:
-    #             self.config_panel.canvas.append_model_set(self.file_panel.model_ctrl.data, VmdMotion(), bone_alpha=0.0)
-    #             self.config_panel.canvas.shader.look_at_center = MVector3D(
-    #                 0, ((bone_matrixes[0, "両目"].position.y + bone_matrixes[0, "頭"].position.y) / 2), 0
-    #             )
-    #             self.config_panel.canvas.shader.vertical_degrees = 6
-    #             self.config_panel.canvas.Refresh()
-
-    #             self.config_panel.show_config = False
-    #             self.config_panel.change_window()
-    #             self.notebook.ChangeSelection(self.config_panel.tab_idx + 1)
-    #     except:
-    #         logger.critical("モデル描画初期化処理失敗")
-
-    #     self.config_panel.morph_set.initialize(model.morphs)
-
-    #     self.file_panel.Enable(True)
-    #     self.on_sound()
-
-    # def on_exec(self) -> None:
-    #     self.save_worker.start()
-
-    # def on_save_result(self, result: bool, data: Optional[Any], elapsed_time: str) -> None:
-    #     self.file_panel.Enable(True)
-    #     self.on_sound()
-
-    # def show_bone_weight(self, is_show_bone_weight: bool) -> None:
-    #     self.config_panel.canvas.animations[0].is_show_bone_weight = is_show_bone_weight
-    #     self.config_panel.canvas.Refresh()
+        # 処理が終わっている場合、動かしてOK
+        self.selected_tab_idx = self.notebook.GetSelection()

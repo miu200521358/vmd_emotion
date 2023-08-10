@@ -19,18 +19,18 @@ class RepairMorphUsecase:
         model: PmxModel,
         motion: VmdMotion,
         output_motion: VmdMotion,
-        repair_output_motion: VmdMotion,
         check_threshold: float,
         repair_factor: float,
-    ) -> None:
+    ) -> list[int]:
         """モーフ破綻軽減"""
         # モーフによる変形があるキーフレ
         morph_fnos = sorted(set([mf.index for morph_name in motion.morphs.names for mf in motion.morphs[morph_name]]))
 
         if not morph_fnos:
             logger.warning("モーフによる変形があるキーフレが見つからなかったため、処理を中断します", decoration=MLogger.Decoration.BOX)
-            return
+            return []
 
+        repair_fnos: set[int] = {0}
         model.update_vertices_by_bone()
 
         logger.info("チェック対象モーフ抽出", decoration=MLogger.Decoration.LINE)
@@ -189,7 +189,7 @@ class RepairMorphUsecase:
                 # 出力は補正値のみ設定
                 rmf = VmdMorphFrame(target_fno, max_ratio_morph_name, target_morph_repair_ratio)
                 output_motion.append_morph_frame(rmf)
-                repair_output_motion.append_morph_frame(rmf.copy())
+                repair_fnos |= {target_fno}
 
                 logger.info(
                     "モーフ破綻補正[{f}({i})][{m}][{m1}:{f1} ({r1:.3f} -> {r2:.3f})]",
@@ -212,6 +212,8 @@ class RepairMorphUsecase:
                         mf = motion.morphs[morph_name][fno]
                         fno_morph_ratios[morph_name] = mf.ratio
                         fno_morph_reads[morph_name] = mf.read
+
+        return sorted(repair_fnos)
 
     def get_vertex_positions(self, model: PmxModel, morph_name: str, ratio: float) -> tuple[set[int], np.ndarray]:
         morph = model.morphs[morph_name]
