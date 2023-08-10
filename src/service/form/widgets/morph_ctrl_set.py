@@ -41,7 +41,7 @@ class MorphCtrlSet:
         self.sizer.Add(self.smile_morph_ctrl.sizer, 0, wx.ALL, 3)
 
         # 顔アップ
-        self.preview_window_btn = wx.Button(self.window, wx.ID_ANY, __("モーフプレビュー"), wx.DefaultPosition, wx.Size(100, -1))
+        self.preview_window_btn = wx.Button(self.window, wx.ID_ANY, __("プレビュー"), wx.DefaultPosition, wx.Size(80, -1))
         self.preview_window_btn.SetToolTip(__("選択されたモーフによる変化をサブウィンドウで確認できます"))
         self.preview_window_btn.Bind(wx.EVT_BUTTON, self.on_show_preview_window)
         self.sizer.Add(self.preview_window_btn, 0, wx.ALL, 3)

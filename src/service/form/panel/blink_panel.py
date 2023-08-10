@@ -42,7 +42,7 @@ class BlinkPanel(ServiceCanvasPanel):
 
         self.blink_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
-        self.blink_title_ctrl = wx.StaticText(self.scrolled_window, wx.ID_ANY, __("まばたき生成パラメーター: "), wx.DefaultPosition, wx.DefaultSize, 0)
+        self.blink_title_ctrl = wx.StaticText(self.window, wx.ID_ANY, __("まばたき生成パラメーター: "), wx.DefaultPosition, wx.DefaultSize, 0)
         self.blink_title_ctrl.SetToolTip(
             "\n".join(
                 [
@@ -53,12 +53,12 @@ class BlinkPanel(ServiceCanvasPanel):
         )
         self.blink_sizer.Add(self.blink_title_ctrl, 0, wx.ALL, 3)
 
-        self.blink_set = BlinkCtrlSet(self, self.scrolled_window)
+        self.blink_set = BlinkCtrlSet(self, self.window)
         self.blink_set.initialize({})
         self.blink_sizer.Add(self.blink_set.sizer, 0, wx.ALL, 3)
         self.window_sizer.Add(self.blink_sizer, 0, wx.ALL, 3)
 
-        self.replace_set = MorphCtrlSet(self.frame, self, self.scrolled_window)
+        self.replace_set = MorphCtrlSet(self.frame, self, self.window)
         self.replace_set.initialize([])
         self.window_sizer.Add(self.replace_set.sizer, 0, wx.ALL, 3)
 

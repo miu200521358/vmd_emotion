@@ -69,21 +69,12 @@ class ServicePanel(NotebookPanel):
         return BaseWorker(self.frame, self.on_exec_result)
 
     def _initialize_ui(self) -> None:
-        self.scrolled_window = wx.ScrolledWindow(
-            self,
-            wx.ID_ANY,
-            wx.DefaultPosition,
-            wx.Size(-1, -1),
-            wx.FULL_REPAINT_ON_RESIZE | wx.VSCROLL | wx.HSCROLL,
-        )
-        self.scrolled_window.SetScrollRate(5, 5)
-
-        self.window_sizer = wx.BoxSizer(wx.VERTICAL)
+        self.header_sizer = wx.BoxSizer(wx.VERTICAL)
 
         # ファイル -------------------------
 
         self.model_ctrl = MPmxFilePickerCtrl(
-            self.scrolled_window,
+            self,
             self.frame,
             self,
             key="model_pmx",
@@ -94,10 +85,10 @@ class ServicePanel(NotebookPanel):
             tooltip=f"{self.emotion_type}を付けたい人物モデルを指定してください",
             file_change_event=self.on_change_model_pmx,
         )
-        self.model_ctrl.set_parent_sizer(self.window_sizer)
+        self.model_ctrl.set_parent_sizer(self.header_sizer)
 
         self.motion_ctrl = MVmdFilePickerCtrl(
-            self.scrolled_window,
+            self,
             self.frame,
             self,
             key="motion_vmd",
@@ -108,10 +99,10 @@ class ServicePanel(NotebookPanel):
             tooltip=f"{self.emotion_type}を付けたいモーションを指定してください",
             file_change_event=self.on_change_motion,
         )
-        self.motion_ctrl.set_parent_sizer(self.window_sizer)
+        self.motion_ctrl.set_parent_sizer(self.header_sizer)
 
         self.output_motion_ctrl = MVmdFilePickerCtrl(
-            self.scrolled_window,
+            self,
             self.frame,
             self,
             title=f"{self.emotion_type}モーション出力先",
@@ -119,22 +110,16 @@ class ServicePanel(NotebookPanel):
             is_save=True,
             tooltip=f"{self.emotion_type}モーションの出力ファイルパスです\n任意の値に変更可能です",
         )
-        self.output_motion_ctrl.set_parent_sizer(self.window_sizer)
+        self.output_motion_ctrl.set_parent_sizer(self.header_sizer)
 
-        # 個別サービス ---------------------------
-
-        # 個別サービス用UIを追加
-        self._initialize_service_ui()
-
-        self.scrolled_window.SetSizer(self.window_sizer)
-        self.root_sizer.Add(self.scrolled_window, 1, wx.ALL | wx.EXPAND | wx.FIXED_MINSIZE, 3)
+        self.root_sizer.Add(self.header_sizer, 0, wx.ALL | wx.EXPAND, 3)
 
         # ボタン -------------------------
 
         self.btn_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
         self.prepare_btn_ctrl = ExecButton(
-            self.scrolled_window,
+            self,
             self,
             __("データ読み込み"),
             __("データ読み込み停止"),
@@ -145,7 +130,7 @@ class ServicePanel(NotebookPanel):
         self.btn_sizer.Add(self.prepare_btn_ctrl, 0, wx.ALL, 3)
 
         self.exec_btn_ctrl = ExecButton(
-            self.scrolled_window,
+            self,
             self,
             __(f"{self.exec_label}"),
             __(f"{self.exec_label}停止"),
@@ -156,7 +141,7 @@ class ServicePanel(NotebookPanel):
         self.btn_sizer.Add(self.exec_btn_ctrl, 0, wx.ALL, 3)
 
         self.save_btn_ctrl = ExecButton(
-            self.scrolled_window,
+            self,
             self,
             __(f"{self.emotion_type}モーション出力"),
             __(f"{self.emotion_type}モーション出力停止"),
@@ -166,11 +151,35 @@ class ServicePanel(NotebookPanel):
         )
         self.btn_sizer.Add(self.save_btn_ctrl, 0, wx.ALL, 3)
 
-        self.window_sizer.Add(self.btn_sizer, 0, wx.ALIGN_CENTER | wx.SHAPED, 5)
+        self.root_sizer.Add(self.btn_sizer, 0, wx.ALIGN_CENTER | wx.SHAPED, 5)
+
+        # 個別サービス用ヘッダを追加
+        self._initialize_service_ui_header()
+
+        # 個別サービス ---------------------------
+        self.window = wx.ScrolledWindow(
+            self,
+            wx.ID_ANY,
+            wx.DefaultPosition,
+            wx.Size(-1, -1),
+            wx.FULL_REPAINT_ON_RESIZE | wx.VSCROLL | wx.HSCROLL,
+        )
+        self.window.SetScrollRate(5, 5)
+
+        self.window_sizer = wx.BoxSizer(wx.VERTICAL)
+
+        # 個別サービス用UIを追加
+        self._initialize_service_ui()
+
+        self.window.SetSizer(self.window_sizer)
+        self.root_sizer.Add(self.window, 1, wx.ALL | wx.EXPAND | wx.FIXED_MINSIZE, 3)
 
         # コンソール -----------------
         self.console_ctrl = ConsoleCtrl(self, self.frame, self, rows=self.console_rows)
         self.console_ctrl.set_parent_sizer(self.root_sizer)
+
+    def _initialize_service_ui_header(self) -> None:
+        pass
 
     def _initialize_service_ui(self) -> None:
         pass
@@ -247,9 +256,6 @@ class ServicePanel(NotebookPanel):
         if not (self.model_ctrl.data and self.motion_ctrl.data):
             logger.warning("モデルデータもしくはモーションデータが正常に配置できませんでした", decoration=MLogger.Decoration.BOX)
             return
-
-        self.frame_slider.SetMaxFrameNo(motion.max_fno)
-        logger.debug("SetMaxFrameNo")
 
         self.bone_matrixes = bone_matrixes
         logger.debug("bone_matrixes")
@@ -364,6 +370,6 @@ class ServicePanel(NotebookPanel):
             self.preview_window.SetPosition(wx.Point(max(0, frame_x - self.preview_window_size.x - 10), max(0, frame_y)))
 
     def fit_window(self) -> None:
-        self.scrolled_window.Layout()
-        self.scrolled_window.Fit()
+        self.window.Layout()
+        self.window.Fit()
         self.Layout()

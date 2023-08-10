@@ -1111,3 +1111,71 @@ msgstr ""
 msgid "生成したモーフ条件調整をVMDモーションデータとして出力します\nモーフ条件調整生成実行後、クリックできるようになります"
 msgstr ""
 
+
+msgid "条件追加"
+msgstr ""
+
+
+msgid "調整条件を追加できます"
+msgstr ""
+
+
+msgid "条件全削除"
+msgstr ""
+
+
+msgid "全ての調整条件を削除できます"
+msgstr ""
+
+
+msgid "開始X: "
+msgstr ""
+
+
+msgid "開始Y: "
+msgstr ""
+
+
+msgid "終了X: "
+msgstr ""
+
+
+msgid "終了Y: "
+msgstr ""
+
+
+msgid "下限値: "
+msgstr ""
+
+
+msgid "上限値: "
+msgstr ""
+
+
+msgid "補間曲線: "
+msgstr ""
+
+
+msgid "ボタンをONにすると、補間曲線の形を確認したり変更できます"
+msgstr ""
+
+
+msgid "ベジェプレビュー"
+msgstr ""
+
+
+msgid "補間曲線プレビュー"
+msgstr ""
+
+
+msgid "補間曲線に準拠してモーフの値を調整した場合の変化をプレビューで確認出来ます\nスライダーの値が元の値でプレビューで確認できるのが補間曲線準拠の値です"
+msgstr ""
+
+
+msgid "ボタンをONにすると、補間曲線の形や補間曲線に準拠したモーフの変化をプレビューで確認できます"
+msgstr ""
+
+
+msgid "ボタンをOFFにすると元々のモーフの変化量による変化に切り替えられます\nもう一度ONにすると、補間曲線に準拠した変化量になります"
+msgstr ""
+

@@ -74,21 +74,21 @@ class ServiceCanvasPanel(CanvasPanel):
         return BaseWorker(self.frame, self.on_exec_result)
 
     def _initialize_ui(self) -> None:
-        self.scrolled_window = wx.ScrolledWindow(
+        self.window = wx.ScrolledWindow(
             self,
             wx.ID_ANY,
             wx.DefaultPosition,
             wx.Size(-1, -1),
             wx.FULL_REPAINT_ON_RESIZE | wx.VSCROLL | wx.HSCROLL,
         )
-        self.scrolled_window.SetScrollRate(5, 5)
+        self.window.SetScrollRate(5, 5)
 
         self.window_sizer = wx.BoxSizer(wx.VERTICAL)
 
         # ファイル -------------------------
 
         self.model_ctrl = MPmxFilePickerCtrl(
-            self.scrolled_window,
+            self.window,
             self.frame,
             self,
             key="model_pmx",
@@ -102,7 +102,7 @@ class ServiceCanvasPanel(CanvasPanel):
         self.model_ctrl.set_parent_sizer(self.window_sizer)
 
         self.motion_ctrl = MVmdFilePickerCtrl(
-            self.scrolled_window,
+            self.window,
             self.frame,
             self,
             key="motion_vmd",
@@ -116,7 +116,7 @@ class ServiceCanvasPanel(CanvasPanel):
         self.motion_ctrl.set_parent_sizer(self.window_sizer)
 
         self.output_motion_ctrl = MVmdFilePickerCtrl(
-            self.scrolled_window,
+            self.window,
             self.frame,
             self,
             title=f"{self.emotion_type}モーション出力先",
@@ -136,22 +136,22 @@ class ServiceCanvasPanel(CanvasPanel):
             ]
         )
 
-        self.frame_title_ctrl = wx.StaticText(self.scrolled_window, wx.ID_ANY, __("モーション"), wx.DefaultPosition, wx.DefaultSize, 0)
+        self.frame_title_ctrl = wx.StaticText(self.window, wx.ID_ANY, __("モーション"), wx.DefaultPosition, wx.DefaultSize, 0)
         self.frame_title_ctrl.SetToolTip(frame_tooltip)
         self.play_sizer.Add(self.frame_title_ctrl, 0, wx.ALL, 3)
 
         # スライダー
         self.frame_slider = FrameSliderCtrl(
-            self.scrolled_window, border=3, size=wx.Size(860, -1), tooltip=frame_tooltip, change_event=self.on_frame_change
+            self.window, border=3, size=wx.Size(760, -1), tooltip=frame_tooltip, change_event=self.on_frame_change
         )
         self.play_sizer.Add(self.frame_slider.sizer, 0, wx.ALL, 0)
 
-        self.play_ctrl = wx.Button(self.scrolled_window, wx.ID_ANY, __("再生"), wx.DefaultPosition, wx.Size(80, -1))
+        self.play_ctrl = wx.Button(self.window, wx.ID_ANY, __("再生"), wx.DefaultPosition, wx.Size(80, -1))
         self.play_ctrl.SetToolTip(__("モーションを再生することができます（ただし重いです）"))
         self.play_ctrl.Bind(wx.EVT_BUTTON, self.on_play)
         self.play_sizer.Add(self.play_ctrl, 0, wx.ALL, 3)
 
-        self.sub_window_ctrl = wx.Button(self.scrolled_window, wx.ID_ANY, __("顔アップ"), wx.DefaultPosition, wx.Size(80, -1))
+        self.sub_window_ctrl = wx.Button(self.window, wx.ID_ANY, __("顔アップ"), wx.DefaultPosition, wx.Size(80, -1))
         self.sub_window_ctrl.SetToolTip(__("顔アップ固定のプレビューをサブウィンドウで確認出来ます"))
         self.sub_window_ctrl.Bind(wx.EVT_BUTTON, self.on_show_sub_window)
         self.play_sizer.Add(self.sub_window_ctrl, 0, wx.ALL, 3)
@@ -163,15 +163,15 @@ class ServiceCanvasPanel(CanvasPanel):
         # 個別サービス用UIを追加
         self._initialize_service_ui()
 
-        self.scrolled_window.SetSizer(self.window_sizer)
-        self.root_sizer.Add(self.scrolled_window, 1, wx.ALL | wx.EXPAND | wx.FIXED_MINSIZE, 3)
+        self.window.SetSizer(self.window_sizer)
+        self.root_sizer.Add(self.window, 1, wx.ALL | wx.EXPAND | wx.FIXED_MINSIZE, 3)
 
         # ボタン -------------------------
 
         self.btn_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
         self.prepare_btn_ctrl = ExecButton(
-            self.scrolled_window,
+            self.window,
             self,
             __("データ読み込み"),
             __("データ読み込み停止"),
@@ -182,7 +182,7 @@ class ServiceCanvasPanel(CanvasPanel):
         self.btn_sizer.Add(self.prepare_btn_ctrl, 0, wx.ALL, 3)
 
         self.exec_btn_ctrl = ExecButton(
-            self.scrolled_window,
+            self.window,
             self,
             __(f"{self.exec_label}"),
             __(f"{self.exec_label}停止"),
@@ -193,7 +193,7 @@ class ServiceCanvasPanel(CanvasPanel):
         self.btn_sizer.Add(self.exec_btn_ctrl, 0, wx.ALL, 3)
 
         self.save_btn_ctrl = ExecButton(
-            self.scrolled_window,
+            self.window,
             self,
             __(f"{self.emotion_type}モーション出力"),
             __(f"{self.emotion_type}モーション出力停止"),
@@ -429,7 +429,7 @@ class ServiceCanvasPanel(CanvasPanel):
         self.play_ctrl.Enable(True)
 
     def on_resize(self, event: wx.Event):
-        self.scrolled_window.SetPosition(wx.Point(0, self.canvas.size.height))
+        self.window.SetPosition(wx.Point(0, self.canvas.size.height))
 
     def on_play(self, event: wx.Event) -> None:
         if self.canvas.playing:
@@ -458,6 +458,6 @@ class ServiceCanvasPanel(CanvasPanel):
             self.sub_window.SetPosition(wx.Point(max(0, frame_x - self.sub_window_size.x - 10), max(0, frame_y)))
 
     def fit_window(self) -> None:
-        self.scrolled_window.Layout()
-        self.scrolled_window.Fit()
+        self.window.Layout()
+        self.window.Fit()
         self.Layout()
