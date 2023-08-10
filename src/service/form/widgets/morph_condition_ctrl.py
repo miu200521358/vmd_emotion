@@ -21,21 +21,26 @@ __ = logger.get_text
 
 
 class MorphConditionCtrl:
-    def __init__(self, frame: BaseFrame, parent: BasePanel, window: wx.ScrolledWindow, sizer: wx.Sizer, model: PmxModel) -> None:
+    def __init__(
+        self, frame: BaseFrame, parent: BasePanel, window: wx.ScrolledWindow, sizer: wx.Sizer, model: PmxModel, motion: VmdMotion
+    ) -> None:
         self.frame = frame
         self.parent = parent
         self.window = window
         self.sizer = sizer
         self.model = model
+        self.motion = motion
 
         self.bezier_window_size = wx.Size(300, 700)
         self.bezier_dialog: Optional[BezierDialog] = None
 
+        morph_names = [mname for mname in motion.morphs.names if 2 < len(motion.morphs[mname].indexes)]
+
         self.morph_name_ctrl = wx.ComboBox(
-            self.window, id=wx.ID_ANY, choices=model.morphs.names, size=wx.Size(200, -1), style=wx.CB_DROPDOWN | wx.TE_PROCESS_ENTER
+            self.window, id=wx.ID_ANY, choices=morph_names, size=wx.Size(200, -1), style=wx.CB_DROPDOWN | wx.TE_PROCESS_ENTER
         )
         self.morph_name_ctrl.Bind(wx.EVT_TEXT_ENTER, self.on_enter_choice)
-        if 0 < len(model.morphs.names):
+        if 0 < len(motion.morphs.names):
             self.morph_name_ctrl.SetSelection(0)
         self.sizer.Add(self.morph_name_ctrl, 0, wx.ALL, 3)
 
@@ -136,6 +141,22 @@ class MorphConditionCtrl:
         if idx >= 0:
             event.GetEventObject().SetSelection(idx)
 
+    @property
+    def history(self) -> Optional[dict[str, str]]:
+        if not self.morph_name_ctrl.GetStringSelection():
+            return None
+
+        return {
+            "model": self.model.name,
+            "morph_name": str(self.morph_name_ctrl.GetStringSelection()),
+            "min": str(self.min_ctrl.GetValue()),
+            "max": str(self.max_ctrl.GetValue()),
+            "start_x": str(self.start_x_ctrl.GetValue()),
+            "start_y": str(self.start_y_ctrl.GetValue()),
+            "end_x": str(self.end_x_ctrl.GetValue()),
+            "end_y": str(self.end_y_ctrl.GetValue()),
+        }
+
 
 class BezierDialog(wx.Dialog):
     def __init__(self, parent: BaseFrame, condition_ctrl: MorphConditionCtrl, title: str, size: wx.Size, *args, **kw):
@@ -222,7 +243,10 @@ class BezierPanel(BasePanel):
         interpolation.end.x = self.bezier_ctrl.end_x_ctrl.GetValue()
         interpolation.end.y = self.bezier_ctrl.end_y_ctrl.GetValue()
 
-        _, ry, _ = evaluate(interpolation, 0, int(self.slider.GetValue() * 100), 100)
+        min_v = 0
+        max_v = int(self.condition_ctrl.max_ctrl.GetValue() * 100) + int(abs(self.condition_ctrl.min_ctrl.GetValue()) * 100)
+
+        _, ry, _ = evaluate(interpolation, min_v, int((self.slider.GetValue() + abs(self.condition_ctrl.min_ctrl.GetValue())) * 100), max_v)
         ratio = self.slider.GetValue() * ry if self.is_view_bezier else self.slider.GetValue()
 
         motion = VmdMotion()

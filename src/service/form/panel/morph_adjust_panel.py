@@ -6,6 +6,7 @@ import wx
 from mlib.core.logger import MLogger
 from mlib.pmx.pmx_collection import PmxModel
 from mlib.service.form.notebook_frame import NotebookFrame
+from mlib.utils.file_utils import insert_history, save_histories
 from mlib.vmd.vmd_collection import VmdMotion
 from mlib.vmd.vmd_tree import VmdBoneFrameTrees
 from service.worker.config.morph_adjust_worker import MorphAdjustWorker
@@ -75,8 +76,18 @@ class MorphAdjustPanel(ServicePanel):
 
         self.on_add_condition(wx.EVT_BUTTON)
 
+    def save_histories_on_exec(self) -> None:
+        for condition in self.conditions:
+            history = condition.history
+            if history:
+                insert_history(history, self.frame.histories["morph_condition"])
+
+        save_histories(self.frame.histories)
+
     def on_add_condition(self, event: wx.Event) -> None:
-        self.conditions.append(MorphConditionCtrl(self.frame, self, self.window, self.condition_sizer, self.model_ctrl.data))
+        self.conditions.append(
+            MorphConditionCtrl(self.frame, self, self.window, self.condition_sizer, self.model_ctrl.data, self.motion_ctrl.data)
+        )
         self.fit_window()
 
     def on_clear_condition(self, event: wx.Event) -> None:

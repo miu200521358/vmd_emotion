@@ -19,7 +19,7 @@ class MainFrame(NotebookFrame):
     def __init__(self, app: wx.App, title: str, size: wx.Size, *args, **kw) -> None:
         super().__init__(
             app,
-            history_keys=["model_pmx", "motion_vmd"],
+            history_keys=["model_pmx", "motion_vmd", "morph_condition"],
             title=title,
             size=size,
         )

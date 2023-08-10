@@ -1179,3 +1179,19 @@ msgstr ""
 msgid "ボタンをOFFにすると元々のモーフの変化量による変化に切り替えられます\nもう一度ONにすると、補間曲線に準拠した変化量になります"
 msgstr ""
 
+
+msgid "モーフ条件調整開始"
+msgstr ""
+
+
+msgid "モーフ条件調整完了"
+msgstr ""
+
+
+msgid "実行完了"
+msgstr ""
+
+
+msgid "保存完了"
+msgstr ""
+

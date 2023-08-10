@@ -209,12 +209,6 @@ class ServicePanel(NotebookPanel):
                 self.Enable(False)
                 self.load_worker.start()
 
-    def save_histories(self) -> None:
-        self.model_ctrl.save_path()
-        self.motion_ctrl.save_path()
-
-        save_histories(self.frame.histories)
-
     def on_preparer_result(
         self,
         result: bool,
@@ -266,10 +260,20 @@ class ServicePanel(NotebookPanel):
 
         logger.info("読み込み完了", decoration=MLogger.Decoration.BOX)
 
+    def save_histories(self) -> None:
+        self.model_ctrl.save_path()
+        self.motion_ctrl.save_path()
+
+        save_histories(self.frame.histories)
+
+    def save_histories_on_exec(self) -> None:
+        pass
+
     def exec(self, event: wx.Event) -> None:
         MLogger.console_handler = ConsoleHandler(self.console_ctrl.text_ctrl)
         self.frame.running_worker = True
         self.Enable(False)
+        self.save_histories_on_exec()
         self.service_worker.start()
 
     def on_exec_result(self, result: bool, data: tuple[VmdMotion, VmdMotion, list[int]], elapsed_time: str):

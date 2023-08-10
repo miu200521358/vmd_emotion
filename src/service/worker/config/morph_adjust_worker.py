@@ -27,12 +27,17 @@ class MorphAdjustWorker(BaseWorker):
 
         logger.info("モーフ条件調整開始", decoration=MLogger.Decoration.BOX)
 
-        fnos = MorphAdjustUsecase().repair_morph(
+        conditions: list[dict[str, str]] = []
+        for condition in self.panel.conditions:
+            history = condition.history
+            if history:
+                conditions.append(history)
+
+        fnos = MorphAdjustUsecase().adjust(
             model,
             motion,
             output_motion,
-            self.panel.check_morph_threshold_ctrl.GetValue(),
-            self.panel.repair_morph_factor_ctrl.GetValue(),
+            conditions,
         )
 
         self.result_data = motion, output_motion, fnos
