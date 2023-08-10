@@ -657,3 +657,153 @@ msgstr "After expression generation, vmd output with repair at the end of the ou
 
 msgid "補正キーフレだけ出力するため、元となった表情モーションの後に読み込んでください"
 msgstr "To output only the correction keyfre, please read after the original facial expression motion"
+
+msgid "目線を付けたい人物モデルを指定してください"
+msgstr "Please specify the model of the person you wish to line up with"
+
+msgid "目線を付けたいモーションを指定してください"
+msgstr "Please specify the motion to which you wish to add the line of sight"
+
+msgid "目線モーション出力先"
+msgstr "Eye motion output destination"
+
+msgid "目線モーションの出力ファイルパスです\n任意の値に変更可能です"
+msgstr "The output file path of the eye motion.
+
+msgid "データ読み込み"
+msgstr "Data loading"
+
+msgid "データ読み込み停止"
+msgstr "Stop reading data"
+
+msgid "指定されたモデルとモーションを読み込みます。"
+msgstr "Loads the specified model and motion"
+
+msgid "目線生成停止"
+msgstr "Stop eye generation"
+
+msgid "生成した目線をVMDモーションデータとして出力します\n目線生成"
+msgstr "Output the generated line of sight as VMD motion data\n line of sight generation"
+
+msgid "目線モーション出力停止"
+msgstr "Stop eye motion output"
+
+msgid "生成した目線をVMDモーションデータとして出力します\n目線生成後、クリックできるようになります"
+msgstr "Output the generated line of sight as VMD motion data ϱn the line of sight can be clicked after it is generated"
+
+msgid "人物モデル欄に有効なパスが設定されていない為、タブ遷移を中断します。"
+msgstr "The tab transition is aborted because no valid path is set in the person model field"
+
+msgid "生成した目線をVMDモーションデータとして出力します\nデータ読み込み後、クリックできるようになります"
+msgstr "The generated eye line will be output as VMD motion data that can be clicked on after loading the VMD motion data"
+
+msgid "生成した目線をVMDモーションデータとして出力します\n目線生成実行後、クリックできるようになります"
+msgstr "The generated line of sight will be output as VMD motion data.ЈAfter the line of sight generation is executed, you will be able to click on the line of sight"
+
+msgid "目線生成パラメーター"
+msgstr "Eye generation parameters"
+
+msgid "目線生成パラメーター: "
+msgstr "Eye generation parameters:"
+
+msgid "人物モデル欄に有効なパスが設定されていない為、読み込みを中断します。"
+msgstr "Loading will be aborted because no valid path is set in the person model field"
+
+msgid "モーション欄に有効なパスが設定されていない為、読み込みを中断します。"
+msgstr "The reading is aborted because no valid path is set in the motion field"
+
+msgid "まばたきを付けたい人物モデルを指定してください"
+msgstr "Specify the person model you want to blink"
+
+msgid "まばたきを付けたいモーションを指定してください"
+msgstr "Please specify the motion you want to blink"
+
+msgid "まばたきモーション出力先"
+msgstr "Blink motion output destination"
+
+msgid "まばたきモーションの出力ファイルパスです\n任意の値に変更可能です"
+msgstr "The output file path for the blink motion.
+
+msgid "まばたき生成パラメーター: "
+msgstr "Blink generation parameters:"
+
+msgid "まばたき・下モーフを使用しますが、モデルに該当モーフがなく他で代用できる場合は置き換えてください"
+msgstr "Blink and lower morphs are used, but if the model does not have the corresponding morphs and you can substitute them elsewhere, please replace them"
+
+msgid "まばたき生成停止"
+msgstr "Stop blinking generation"
+
+msgid "生成したまばたきをVMDモーションデータとして出力します\nデータ読み込み後、クリックできるようになります"
+msgstr "Outputs the generated blink as VMD motion data,Јn which can be clicked on after the data is loaded"
+
+msgid "まばたきモーション出力停止"
+msgstr "Blink motion output stopped"
+
+msgid "生成したまばたきをVMDモーションデータとして出力します\nまばたき生成実行後、クリックできるようになります"
+msgstr "Outputs the generated blink as VMD motion data.ЈAfter the blink generation is executed, you will be able to click on it"
+
+msgid "モーフ置換設定"
+msgstr "Morph Replacement Settings"
+
+msgid "置き換えモーフの選択肢\n表示枠に記載されているモーフのみが選択可能です"
+msgstr "Only the morphs listed in the Јn display box can be selected for replacement morphs"
+
+msgid "モーフプレビュー"
+msgstr "Morph Preview"
+
+msgid "選択されたモーフによる変化をサブウィンドウで確認できます"
+msgstr "You can see the changes caused by the selected morph in a sub-window"
+
+msgid "人物: キャッシュ読み込み完了"
+msgstr "Person: cache loading complete"
+
+msgid "モーション: キャッシュ読み込み完了"
+msgstr Motion: Cache loading complete.
+
+msgid "破綻補正モーフを付けたい人物モデルを指定してください"
+msgstr "Specify the person model to which you want to apply the morph of the correction"
+
+msgid "破綻補正モーフを付けたいモーションを指定してください"
+msgstr "Specify the motion to which you want to apply the collapse correction morph"
+
+msgid "破綻補正モーフモーション出力先"
+msgstr "Destination for collapse-corrected morph motion output"
+
+msgid "破綻補正モーフモーションの出力ファイルパスです\n任意の値に変更可能です"
+msgstr "This is the output file path of the morph motion to be corrected for the failure.
+
+msgid "破綻補正パラメーター: "
+msgstr "Failure correction parameters:"
+
+msgid "破綻補正モーフ生成"
+msgstr "Generate morphs to compensate for bankruptcy"
+
+msgid "破綻補正モーフ生成停止"
+msgstr "Stop generating bankruptcy correction morphs"
+
+msgid "生成した破綻補正モーフをVMDモーションデータとして出力します\nデータ読み込み後、クリックできるようになります"
+msgstr "Output the generated collapse correction morphs as VMD motion data, which can be clicked on after loading the data"
+
+msgid "破綻補正モーフモーション出力停止"
+msgstr "Stop outputting morph motion to compensate for collapse"
+
+msgid "生成した破綻補正モーフをVMDモーションデータとして出力します\n破綻補正モーフ生成実行後、クリックできるようになります"
+msgstr "Output the generated bankruptcy correction morphs as VMD motion data.
+
+msgid "顔アップ"
+msgstr "Face up"
+
+msgid "顔アップ固定のプレビューをサブウィンドウで確認出来ます"
+msgstr "You can see a fixed face-up preview in a sub-window"
+
+msgid "アッププレビュー"
+msgstr "Up Preview"
+
+msgid "目線を生成した後、スライダー上でホイールを動かすと生成キーフレにジャンプできます"
+msgstr "After generating the line of sight, you can jump to the generated keyfre by moving the wheel on the slider"
+
+msgid "まばたきを生成した後、スライダー上でホイールを動かすと生成キーフレにジャンプできます"
+msgstr "After generating a blink, you can jump to the generation keyfre by moving the wheel on the slider"
+
+msgid "破綻補正モーフを生成した後、スライダー上でホイールを動かすと生成キーフレにジャンプできます"
+msgstr "After generating the collapse correction morph, you can jump to the generated keyfre by moving the wheel on the slider"

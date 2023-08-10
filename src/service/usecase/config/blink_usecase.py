@@ -271,7 +271,7 @@ class BlinkUsecase:
             motion.append_morph_frame(mf1)
             output_motion.append_morph_frame(mf1.copy())
             if not is_double_after:
-                blink_fnos |= start_fno
+                blink_fnos |= {start_fno}
 
             # 閉じる
             close_fno = fno - weight_blink - 1
