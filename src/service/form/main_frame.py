@@ -137,7 +137,7 @@ class MainFrame(NotebookFrame):
         self.selected_tab_idx = self.notebook.GetSelection()
 
     def show_bezier_dialog(self, event: wx.Event, panel: BasePanel, condition: MorphConditionCtrl) -> None:
-        self.Enable(False)
+        panel.Enable(False)
         self.create_bezier_dialog(panel, condition)
 
         if self.bezier_dialog:
@@ -167,7 +167,7 @@ class MainFrame(NotebookFrame):
 
             elif self.bezier_dialog.IsShown():
                 self.bezier_dialog.Hide()
-        self.Enable(True)
+        panel.Enable(True)
         event.Skip()
 
     def create_bezier_dialog(self, panel: BasePanel, condition: MorphConditionCtrl) -> None:
