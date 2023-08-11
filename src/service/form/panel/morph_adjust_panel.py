@@ -9,10 +9,9 @@ from mlib.service.form.notebook_frame import NotebookFrame
 from mlib.utils.file_utils import insert_history, save_histories
 from mlib.vmd.vmd_collection import VmdMotion
 from mlib.vmd.vmd_tree import VmdBoneFrameTrees
-from service.worker.config.morph_adjust_worker import MorphAdjustWorker
 from service.form.panel.service_panel import ServicePanel
 from service.form.widgets.morph_condition_ctrl import MorphConditionCtrl
-from service.form.widgets.bezier_dialog import BezierDialog
+from service.worker.config.morph_adjust_worker import MorphAdjustWorker
 
 logger = MLogger(os.path.basename(__file__))
 __ = logger.get_text
@@ -21,10 +20,6 @@ __ = logger.get_text
 class MorphAdjustPanel(ServicePanel):
     def __init__(self, frame: NotebookFrame, tab_idx: int, *args, **kw) -> None:
         self.conditions: list[MorphConditionCtrl] = []
-
-        self.bezier_window_size = wx.Size(300, 700)
-        self.bezier_dialog: Optional[BezierDialog] = None
-        self.bezier_target_idx = 0
 
         super().__init__(frame, tab_idx, *args, **kw)
 
@@ -99,35 +94,3 @@ class MorphAdjustPanel(ServicePanel):
         self.window_sizer.Hide(self.condition_sizer, recursive=True)
         del self.conditions
         self.conditions = []
-
-    def on_show_bezier(self, event: wx.Event) -> None:
-        self.Enable(False)
-        self.create_bezier_window()
-
-        if self.bezier_dialog:
-            condition = self.conditions[self.bezier_target_idx]
-            if not self.bezier_dialog.IsShown():
-                self.bezier_dialog.bezier_panel.bezier_ctrl.start_x_ctrl.SetValue(condition.start_x_ctrl.GetValue())
-                self.bezier_dialog.bezier_panel.bezier_ctrl.start_y_ctrl.SetValue(condition.start_y_ctrl.GetValue())
-                self.bezier_dialog.bezier_panel.bezier_ctrl.end_x_ctrl.SetValue(condition.end_x_ctrl.GetValue())
-                self.bezier_dialog.bezier_panel.bezier_ctrl.end_y_ctrl.SetValue(condition.end_y_ctrl.GetValue())
-                self.bezier_dialog.bezier_panel.slider.SetValue(0.0)
-
-                self.bezier_dialog.bezier_panel.canvas.clear_model_set()
-                self.bezier_dialog.bezier_panel.canvas.append_model_set(self.model_ctrl.data, VmdMotion(), 0.0, True)
-                self.bezier_dialog.bezier_panel.canvas.vertical_degrees = 5
-                self.bezier_dialog.bezier_panel.canvas.look_at_center = self.model_ctrl.data.bones["頭"].position.copy()
-                self.bezier_dialog.bezier_panel.canvas.Refresh()
-
-                self.bezier_dialog.ShowModal()
-
-            elif self.bezier_dialog.IsShown():
-                self.bezier_dialog.Hide()
-        self.Enable(True)
-        event.Skip()
-
-    def create_bezier_window(self) -> None:
-        if not self.bezier_dialog:
-            self.bezier_dialog = BezierDialog(self.frame, self, __("補間曲線プレビュー"), self.bezier_window_size)
-            frame_x, frame_y = self.frame.GetPosition()
-            self.bezier_dialog.SetPosition(wx.Point(max(0, frame_x + self.frame.GetSize().GetWidth() + 10), max(0, frame_y + 30)))

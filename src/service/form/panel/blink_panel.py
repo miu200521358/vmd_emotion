@@ -8,10 +8,10 @@ from mlib.pmx.pmx_collection import PmxModel
 from mlib.service.form.notebook_frame import NotebookFrame
 from mlib.vmd.vmd_collection import VmdMotion
 from mlib.vmd.vmd_tree import VmdBoneFrameTrees
+from service.form.panel.service_canvas_panel import ServiceCanvasPanel
 from service.form.widgets.blink_ctrl_set import BlinkCtrlSet
 from service.form.widgets.morph_ctrl_set import MorphCtrlSet
 from service.worker.config.blink_worker import BlinkWorker
-from service.form.panel.service_canvas_panel import ServiceCanvasPanel
 
 logger = MLogger(os.path.basename(__file__))
 __ = logger.get_text
@@ -84,3 +84,6 @@ class BlinkPanel(ServiceCanvasPanel):
         self.blink_set.initialize(blink_conditions)
         # モーフ置換の初期化
         self.replace_set.initialize(model.morphs)
+
+    def on_show_morph_sub_window(self, event: wx.Event) -> None:
+        self.frame.show_morph_sub_window(event, self)

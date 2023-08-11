@@ -5,7 +5,7 @@ from typing import Any, Iterable, Optional
 import wx
 
 from mlib.core.logger import ConsoleHandler, MLogger
-from mlib.pmx.canvas import CanvasPanel, SubCanvasWindow
+from mlib.pmx.canvas import CanvasPanel
 from mlib.pmx.pmx_collection import PmxModel
 from mlib.service.base_worker import BaseWorker
 from mlib.service.form.notebook_frame import NotebookFrame
@@ -27,9 +27,6 @@ class ServiceCanvasPanel(CanvasPanel):
     def __init__(self, frame: NotebookFrame, tab_idx: int, *args, **kw) -> None:
         super().__init__(frame, tab_idx, 1.0, 0.4, *args, **kw)
         self.enabled_save = False
-
-        self.sub_window_size = wx.Size(300, 300)
-        self.sub_window: Optional[SubCanvasWindow] = None
 
         self.load_worker = LoadWorker(frame, self, self.on_preparer_result)
         self.load_worker.panel = self
@@ -153,7 +150,7 @@ class ServiceCanvasPanel(CanvasPanel):
 
         self.sub_window_ctrl = wx.Button(self.window, wx.ID_ANY, __("顔アップ"), wx.DefaultPosition, wx.Size(80, -1))
         self.sub_window_ctrl.SetToolTip(__("顔アップ固定のプレビューをサブウィンドウで確認出来ます"))
-        self.sub_window_ctrl.Bind(wx.EVT_BUTTON, self.on_show_sub_window)
+        self.sub_window_ctrl.Bind(wx.EVT_BUTTON, self.on_show_sync_window)
         self.play_sizer.Add(self.sub_window_ctrl, 0, wx.ALL, 3)
 
         self.window_sizer.Add(self.play_sizer, 0, wx.ALL, 3)
@@ -203,7 +200,7 @@ class ServiceCanvasPanel(CanvasPanel):
         )
         self.btn_sizer.Add(self.save_btn_ctrl, 0, wx.ALL, 3)
 
-        self.window_sizer.Add(self.btn_sizer, 0, wx.ALIGN_CENTER | wx.SHAPED, 5)
+        self.window_sizer.Add(self.btn_sizer, 0, wx.ALIGN_CENTER | wx.SHAPED, 3)
 
         # コンソール -----------------
         self.console_ctrl = ConsoleCtrl(self, self.frame, self, rows=self.console_rows)
@@ -444,24 +441,11 @@ class ServiceCanvasPanel(CanvasPanel):
             self.start_play()
         self.canvas.on_play(event)
 
-    def on_show_sub_window(self, event: wx.Event) -> None:
-        self.create_sub_window()
+    def on_show_async_window(self, event: wx.Event) -> None:
+        self.frame.show_async_sub_window(event, self)
 
-        if self.sub_window:
-            if not self.sub_window.IsShown():
-                self.sub_window.Show()
-            elif self.sub_window.IsShown():
-                self.sub_window.Hide()
-        event.Skip()
-
-    def create_sub_window(self) -> None:
-        model: Optional[PmxModel] = self.model_ctrl.data
-        if not self.sub_window and model:
-            self.sub_window = SubCanvasWindow(
-                self.frame, self.canvas, __("アッププレビュー"), self.sub_window_size, [model.name], [model.bones.names]
-            )
-            frame_x, frame_y = self.frame.GetPosition()
-            self.sub_window.SetPosition(wx.Point(max(0, frame_x - self.sub_window_size.x - 10), max(0, frame_y)))
+    def on_show_sync_window(self, event: wx.Event) -> None:
+        self.frame.show_sync_sub_window(event, self)
 
     def fit_window(self) -> None:
         self.window.Layout()

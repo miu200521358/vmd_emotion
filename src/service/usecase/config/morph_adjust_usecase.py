@@ -1,7 +1,6 @@
 import os
 
 from mlib.core.interpolation import Interpolation, evaluate
-
 from mlib.core.logger import MLogger
 from mlib.pmx.pmx_collection import PmxModel
 from mlib.vmd.vmd_collection import VmdMotion

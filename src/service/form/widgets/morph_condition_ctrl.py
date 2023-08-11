@@ -142,8 +142,7 @@ class MorphConditionCtrl:
             event.GetEventObject().SetSelection(idx)
 
     def on_show_bezier(self, event: wx.Event) -> None:
-        self.parent.bezier_target_idx = self.idx
-        self.parent.on_show_bezier(event)
+        self.frame.show_bezier_dialog(event, self.parent, self)
 
     @property
     def history(self) -> Optional[dict[str, str]]:

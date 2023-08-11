@@ -5,7 +5,6 @@ from typing import Any, Iterable, Optional
 import wx
 
 from mlib.core.logger import ConsoleHandler, MLogger
-from mlib.pmx.canvas import PreviewCanvasWindow
 from mlib.pmx.pmx_collection import PmxModel
 from mlib.service.base_worker import BaseWorker
 from mlib.service.form.notebook_frame import NotebookFrame
@@ -27,9 +26,6 @@ class ServicePanel(NotebookPanel):
     def __init__(self, frame: NotebookFrame, tab_idx: int, *args, **kw) -> None:
         super().__init__(frame, tab_idx, *args, **kw)
         self.enabled_save = False
-
-        self.preview_window_size = wx.Size(300, 300)
-        self.preview_window: Optional[PreviewCanvasWindow] = None
 
         self.load_worker = LoadWorker(frame, self, self.on_preparer_result)
         self.load_worker.panel = self
@@ -151,7 +147,7 @@ class ServicePanel(NotebookPanel):
         )
         self.btn_sizer.Add(self.save_btn_ctrl, 0, wx.ALL, 3)
 
-        self.root_sizer.Add(self.btn_sizer, 0, wx.ALIGN_CENTER | wx.SHAPED, 5)
+        self.root_sizer.Add(self.btn_sizer, 0, wx.ALIGN_CENTER | wx.SHAPED, 3)
 
         # 個別サービス用ヘッダを追加
         self._initialize_service_ui_header()
@@ -356,26 +352,11 @@ class ServicePanel(NotebookPanel):
         self.EnableLoad(enable)
         self.exec_btn_ctrl.Enable(enable)
 
-    def on_show_preview_window(self, event: wx.Event) -> None:
-        self.create_preview_window()
+    def on_show_async_window(self, event: wx.Event) -> None:
+        self.frame.show_async_sub_window(event, self)
 
-        if self.preview_window:
-            if not self.preview_window.IsShown():
-                self.preview_window.Show()
-            elif self.preview_window.IsShown():
-                self.preview_window.Hide()
-        event.Skip()
-
-    def create_preview_window(self) -> None:
-        model: Optional[PmxModel] = self.parent.model_ctrl.data
-        if not self.preview_window and model:
-            self.preview_window = PreviewCanvasWindow(
-                self.frame, __("モーフプレビュー"), self.preview_window_size, [model.name], [model.bones.names]
-            )
-            self.preview_window.panel.canvas.clear_model_set()
-            self.preview_window.panel.canvas.append_model_set(model, VmdMotion(), 0.0, True)
-            frame_x, frame_y = self.frame.GetPosition()
-            self.preview_window.SetPosition(wx.Point(max(0, frame_x - self.preview_window_size.x - 10), max(0, frame_y)))
+    def on_show_sync_window(self, event: wx.Event) -> None:
+        self.frame.show_sync_sub_window(event, self)
 
     def fit_window(self) -> None:
         self.window.Layout()

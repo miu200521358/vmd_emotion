@@ -6,8 +6,8 @@ import wx
 from mlib.core.logger import MLogger
 from mlib.service.form.notebook_frame import NotebookFrame
 from mlib.service.form.widgets.spin_ctrl import WheelSpinCtrl, WheelSpinCtrlDouble
-from service.worker.config.gaze_worker import GazeWorker
 from service.form.panel.service_canvas_panel import ServiceCanvasPanel
+from service.worker.config.gaze_worker import GazeWorker
 
 logger = MLogger(os.path.basename(__file__))
 __ = logger.get_text

@@ -20,6 +20,7 @@ data_keys = [
     ('src/i18n/ja/LC_MESSAGES/messages.mo', 'i18n/ja/LC_MESSAGES'),
     ('src/i18n/ko/LC_MESSAGES/messages.mo', 'i18n/ko/LC_MESSAGES'),
     ('src/i18n/zh/LC_MESSAGES/messages.mo', 'i18n/zh/LC_MESSAGES'),
+    ('mmd_base/mlib/resources/bezier/*.*', 'mlib/resources/bezier'),
     ('mmd_base/mlib/resources/share_toon/*.*', 'mlib/resources/share_toon'),
     ('mmd_base/mlib/pmx/glsl/*.*', 'mlib/pmx/glsl'),
 ]
