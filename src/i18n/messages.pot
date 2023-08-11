@@ -1339,3 +1339,19 @@ msgstr ""
 msgid "モーフ条件調整[{m}]"
 msgstr ""
 
+
+msgid "モーフ条件調整出力"
+msgstr ""
+
+
+msgid "モーフ条件調整出力停止"
+msgstr ""
+
+
+msgid "モーション統合出力"
+msgstr ""
+
+
+msgid "モーション統合出力停止"
+msgstr ""
+

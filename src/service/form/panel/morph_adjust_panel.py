@@ -74,6 +74,7 @@ class MorphAdjustPanel(ServicePanel):
     ):
         super().on_preparer_result(result, data, elapsed_time)
 
+        self.on_clear_condition(wx.EVT_BUTTON)
         self.on_add_condition(wx.EVT_BUTTON)
 
     def save_histories_on_exec(self) -> None:

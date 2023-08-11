@@ -1008,3 +1008,15 @@ msgstr "Blink coefficient"
 
 msgid "モーフ条件調整[{m}]"
 msgstr "Morph Condition Adjustment [{m}]"
+
+msgid "モーフ条件調整出力"
+msgstr "Morph Condition Adjustment Output"
+
+msgid "モーフ条件調整出力停止"
+msgstr "Morph condition adjustment output stopped"
+
+msgid "モーション統合出力"
+msgstr "Motion integration output"
+
+msgid "モーション統合出力停止"
+msgstr "Motion integration output stopped"
