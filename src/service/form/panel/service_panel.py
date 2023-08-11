@@ -35,6 +35,11 @@ class ServicePanel(NotebookPanel):
         self.save_worker = SaveWorker(frame, self, self.on_save_result)
         self.save_worker.panel = self
 
+        self.model_ctrl: Optional[MPmxFilePickerCtrl] = None
+        self.motion_ctrl: Optional[MVmdFilePickerCtrl] = None
+        self.prepare_btn_ctrl: Optional[ExecButton] = None
+        self.exec_btn_ctrl: Optional[ExecButton] = None
+
         self._initialize_ui()
 
         self.fit_window()
@@ -64,11 +69,7 @@ class ServicePanel(NotebookPanel):
     def create_service_worker(self) -> BaseWorker:
         return BaseWorker(self.frame, self.on_exec_result)
 
-    def _initialize_ui(self) -> None:
-        self.header_sizer = wx.BoxSizer(wx.VERTICAL)
-
-        # ファイル -------------------------
-
+    def _create_file_set(self) -> None:
         self.model_ctrl = MPmxFilePickerCtrl(
             self,
             self.frame,
@@ -110,8 +111,7 @@ class ServicePanel(NotebookPanel):
 
         self.root_sizer.Add(self.header_sizer, 0, wx.ALL | wx.EXPAND, 3)
 
-        # ボタン -------------------------
-
+    def _create_button_set(self) -> None:
         self.btn_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
         self.prepare_btn_ctrl = ExecButton(
@@ -149,6 +149,17 @@ class ServicePanel(NotebookPanel):
 
         self.root_sizer.Add(self.btn_sizer, 0, wx.ALIGN_CENTER | wx.SHAPED, 3)
 
+    def _initialize_ui(self) -> None:
+        self.header_sizer = wx.BoxSizer(wx.VERTICAL)
+
+        # ファイル -------------------------
+
+        self._create_file_set()
+
+        # ボタン -------------------------
+
+        self._create_button_set()
+
         # 個別サービス用ヘッダを追加
         self._initialize_service_ui_header()
 
@@ -184,20 +195,20 @@ class ServicePanel(NotebookPanel):
         MLogger.console_handler = ConsoleHandler(self.console_ctrl.text_ctrl)
 
         if not self.load_worker.started:
-            if not self.model_ctrl.valid():
+            if self.model_ctrl and not self.model_ctrl.valid():
                 self.Enable(False)
                 self.EnableLoad(True)
 
                 logger.warning("人物モデル欄に有効なパスが設定されていない為、読み込みを中断します。")
                 return
-            if not self.motion_ctrl.valid():
+            if self.motion_ctrl and not self.motion_ctrl.valid():
                 self.Enable(False)
                 self.EnableLoad(True)
 
                 logger.warning("モーション欄に有効なパスが設定されていない為、読み込みを中断します。")
                 return
 
-            if not self.model_ctrl.data or not self.motion_ctrl.data:
+            if self.model_ctrl and self.motion_ctrl and (not self.model_ctrl.data or not self.motion_ctrl.data):
                 # 読み込む
                 self.save_histories()
 
@@ -215,7 +226,7 @@ class ServicePanel(NotebookPanel):
         self.frame.running_worker = False
         self.console_ctrl.write(f"\n----------------\n{elapsed_time}")
 
-        if not (result and data):
+        if not (result and data and self.model_ctrl and self.motion_ctrl):
             self.Enable(False)
             self.EnableLoad(True)
             self.frame.on_sound()
@@ -257,8 +268,10 @@ class ServicePanel(NotebookPanel):
         logger.info("読み込み完了", decoration=MLogger.Decoration.BOX)
 
     def save_histories(self) -> None:
-        self.model_ctrl.save_path()
-        self.motion_ctrl.save_path()
+        if self.model_ctrl:
+            self.model_ctrl.save_path()
+        if self.motion_ctrl:
+            self.motion_ctrl.save_path()
 
         save_histories(self.frame.histories)
 
@@ -276,6 +289,11 @@ class ServicePanel(NotebookPanel):
         self.frame.running_worker = False
         MLogger.console_handler = ConsoleHandler(self.console_ctrl.text_ctrl)
         self.console_ctrl.write(f"\n----------------\n{elapsed_time}")
+
+        if not (result and data and self.motion_ctrl):
+            self.Enable(True)
+            self.frame.on_sound()
+            return
 
         # モーションデータを上書きして再読み込み
         motion, output_motion, fnos = data
@@ -308,6 +326,9 @@ class ServicePanel(NotebookPanel):
         logger.info("保存完了", decoration=MLogger.Decoration.BOX)
 
     def on_change_model_pmx(self, event: wx.Event) -> None:
+        if not self.model_ctrl:
+            return
+
         self.model_ctrl.unwrap()
         if self.model_ctrl.read_name():
             self.model_ctrl.read_digest()
@@ -316,6 +337,9 @@ class ServicePanel(NotebookPanel):
         self.EnableLoad(True)
 
     def on_change_motion(self, event: wx.Event) -> None:
+        if not self.motion_ctrl:
+            return
+
         self.motion_ctrl.unwrap()
         if self.motion_ctrl.read_name():
             self.motion_ctrl.read_digest()
@@ -324,7 +348,7 @@ class ServicePanel(NotebookPanel):
         self.EnableLoad(True)
 
     def create_output_path(self) -> None:
-        if self.model_ctrl.valid() and self.motion_ctrl.valid():
+        if self.model_ctrl and self.motion_ctrl and self.model_ctrl.valid() and self.motion_ctrl.valid():
             model_dir_path, model_file_name, model_file_ext = separate_path(self.model_ctrl.path)
             motion_dir_path, motion_file_name, motion_file_ext = separate_path(self.motion_ctrl.path)
             self.model_ctrl.read_name()
@@ -343,14 +367,18 @@ class ServicePanel(NotebookPanel):
             self.save_btn_ctrl.Enable(True)
 
     def EnableLoad(self, enable: bool) -> None:
-        self.model_ctrl.Enable(enable)
-        self.motion_ctrl.Enable(enable)
+        if self.model_ctrl:
+            self.model_ctrl.Enable(enable)
+        if self.motion_ctrl:
+            self.motion_ctrl.Enable(enable)
         self.output_motion_ctrl.Enable(enable)
-        self.prepare_btn_ctrl.Enable(enable)
+        if self.prepare_btn_ctrl:
+            self.prepare_btn_ctrl.Enable(enable)
 
     def EnableExec(self, enable: bool) -> None:
         self.EnableLoad(enable)
-        self.exec_btn_ctrl.Enable(enable)
+        if self.exec_btn_ctrl:
+            self.exec_btn_ctrl.Enable(enable)
 
     def on_show_async_window(self, event: wx.Event) -> None:
         self.frame.show_async_sub_window(event, self)

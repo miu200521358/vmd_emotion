@@ -1215,3 +1215,103 @@ msgstr ""
 msgid "補間曲線を適用せずにウィンドウを閉じます"
 msgstr ""
 
+
+msgid "統合モーション追加"
+msgstr ""
+
+
+msgid "統合対象モーションを追加できます"
+msgstr ""
+
+
+msgid "統合モーション全削除"
+msgstr ""
+
+
+msgid "全ての統合対象モーションを削除できます"
+msgstr ""
+
+
+msgid "モーション統合生成"
+msgstr ""
+
+
+msgid "モーション統合生成停止"
+msgstr ""
+
+
+msgid "生成したモーション統合をVMDモーションデータとして出力します\nデータ読み込み後、クリックできるようになります"
+msgstr ""
+
+
+msgid "モーション統合モーション出力"
+msgstr ""
+
+
+msgid "モーション統合モーション出力停止"
+msgstr ""
+
+
+msgid "生成したモーション統合をVMDモーションデータとして出力します\nモーション統合生成実行後、クリックできるようになります"
+msgstr ""
+
+
+msgid "統合モーション出力先"
+msgstr ""
+
+
+msgid "統合モーションの出力ファイルパスです\n任意の値に変更可能です"
+msgstr ""
+
+
+msgid "統合したいモーションを指定してください"
+msgstr ""
+
+
+msgid "統合モーションをVMDモーションデータとして出力します\nモーションを1件でも指定した後、クリックできるようになります"
+msgstr ""
+
+
+msgid "モーション統合開始"
+msgstr ""
+
+
+msgid "モーション全打ち統合"
+msgstr ""
+
+
+msgid "キーフレ統合"
+msgstr ""
+
+
+msgid "-- キーフレ統合 [{i} ({p:.2f}%)]"
+msgstr ""
+
+
+msgid "モーション不要キー削除"
+msgstr ""
+
+
+msgid "統合モーション出力開始"
+msgstr ""
+
+
+msgid "モーション統合完了"
+msgstr ""
+
+
+msgid "ボーンモーション出力"
+msgstr ""
+
+
+msgid "-- ボーンモーション出力 [{i} ({p:.2f}%)]"
+msgstr ""
+
+
+msgid "-- モーフモーション出力 [{i} ({p:.2f}%)]"
+msgstr ""
+
+
+msgid "-- モーフデータ読み取り [{i} ({p:.2f}%)]"
+msgstr ""
+

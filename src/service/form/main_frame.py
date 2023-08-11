@@ -16,6 +16,7 @@ from service.form.panel.repair_panel import RepairPanel
 from service.form.widgets.bezier_dialog import BezierDialog
 from service.form.widgets.morph_condition_ctrl import MorphConditionCtrl
 from service.form.widgets.morph_sub_window import MorphSubCanvasWindow
+from service.form.panel.motion_merge_panel import MotionMergePanel
 
 logger = MLogger(os.path.basename(__file__), level=1)
 __ = logger.get_text
@@ -47,6 +48,10 @@ class MainFrame(NotebookFrame):
         # モーフ条件調整
         self.morph_adjust_panel = MorphAdjustPanel(self, 3)
         self.notebook.AddPage(self.morph_adjust_panel, __("モーフ条件調整"), False)
+
+        # モーション統合
+        self.motion_merge_panel = MotionMergePanel(self, 4)
+        self.notebook.AddPage(self.motion_merge_panel, __("モーション統合"), False)
 
         self.models: dict[str, PmxModel] = {}
         self.motions: dict[str, VmdMotion] = {}

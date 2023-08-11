@@ -45,6 +45,6 @@ class MorphAdjustWorker(BaseWorker):
         logger.info("モーフ条件調整完了", decoration=MLogger.Decoration.BOX)
 
     def output_log(self):
-        output_log_path = os.path.join(get_root_dir(), f"{os.path.basename(self.panel.output_motion_ctrl.path)}_repair.log")
+        output_log_path = os.path.join(get_root_dir(), f"{os.path.basename(self.panel.output_motion_ctrl.path)}_morph_adjust.log")
         # 出力されたメッセージを全部出力
         self.panel.console_ctrl.text_ctrl.SaveFile(filename=output_log_path)
