@@ -10,6 +10,7 @@ from mlib.service.form.base_panel import BasePanel
 from mlib.utils.file_utils import get_root_dir
 from mlib.vmd.vmd_collection import VmdMotion
 from service.usecase.config.morph_adjust_usecase import MorphAdjustUsecase
+from service.usecase.save_usecase import SaveUsecase
 
 logger = MLogger(os.path.basename(__file__), level=1)
 __ = logger.get_text
@@ -23,7 +24,6 @@ class MorphAdjustWorker(BaseWorker):
     def thread_execute(self):
         model: PmxModel = self.panel.model_ctrl.data
         motion: VmdMotion = self.panel.motion_ctrl.data
-        output_motion = VmdMotion(self.panel.output_motion_ctrl.path)
 
         logger.info("モーフ条件調整開始", decoration=MLogger.Decoration.BOX)
 
@@ -33,14 +33,24 @@ class MorphAdjustWorker(BaseWorker):
             if history:
                 conditions.append(history)
 
-        fnos = MorphAdjustUsecase().adjust(
+        output_motion, fnos = MorphAdjustUsecase().adjust(
             model,
             motion,
-            output_motion,
+            self.panel.output_motion_ctrl.path,
             conditions,
         )
 
         self.result_data = motion, output_motion, fnos
+
+        if not self.panel.output_motion_ctrl.path or not os.path.exists(os.path.dirname(self.panel.output_motion_ctrl.path)):
+            logger.warning("出力ファイルパスが有効なパスではないため、デフォルトの出力ファイルパスを再設定します。")
+            self.panel.create_output_path()
+
+        SaveUsecase().save(
+            model,
+            output_motion,
+            self.panel.output_motion_ctrl.path,
+        )
 
         logger.info("モーフ条件調整完了", decoration=MLogger.Decoration.BOX)
 

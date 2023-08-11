@@ -18,7 +18,7 @@ class MorphRepairUsecase:
         self,
         model: PmxModel,
         motion: VmdMotion,
-        output_motion: VmdMotion,
+        output_motion_path: str,
         check_threshold: float,
         repair_factor: float,
     ) -> list[int]:
@@ -30,6 +30,7 @@ class MorphRepairUsecase:
             logger.warning("モーフによる変形があるキーフレが見つからなかったため、処理を中断します", decoration=MLogger.Decoration.BOX)
             return []
 
+        output_motion = VmdMotion(output_motion_path)
         repair_fnos: set[int] = {0}
         model.update_vertices_by_bone()
 

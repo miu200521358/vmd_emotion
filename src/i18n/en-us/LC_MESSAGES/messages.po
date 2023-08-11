@@ -915,3 +915,96 @@ msgstr "Apply the interpolation curve to the main screen"
 
 msgid "補間曲線を適用せずにウィンドウを閉じます"
 msgstr "Closes the window without applying the interpolation curve"
+
+msgid "統合モーション追加"
+msgstr "Integrated motion added"
+
+msgid "統合対象モーションを追加できます"
+msgstr "You can add a motion to be integrated"
+
+msgid "統合モーション全削除"
+msgstr "Delete all integrated motions"
+
+msgid "全ての統合対象モーションを削除できます"
+msgstr "You can delete all the motions to be merged"
+
+msgid "モーション統合生成"
+msgstr "Integrated Motion Generation"
+
+msgid "モーション統合生成停止"
+msgstr "Motion integration generation stopped"
+
+msgid "生成したモーション統合をVMDモーションデータとして出力します\nデータ読み込み後、クリックできるようになります"
+msgstr "Outputs the generated motion integration as VMD motion data,¸n which can be clicked on after the data has been loaded"
+
+msgid "モーション統合モーション出力"
+msgstr "Motion Integrated Motion Output"
+
+msgid "モーション統合モーション出力停止"
+msgstr "Motion integration motion output stop"
+
+msgid "生成したモーション統合をVMDモーションデータとして出力します\nモーション統合生成実行後、クリックできるようになります"
+msgstr "Outputs the generated motion integration as VMD motion data.ЈAfter the motion integration generation is executed, you will be able to click on it"
+
+msgid "統合モーション出力先"
+msgstr "Integrated Motion Output Destination"
+
+msgid "統合モーションの出力ファイルパスです\n任意の値に変更可能です"
+msgstr "The output file path for the integrated motion.
+
+msgid "統合したいモーションを指定してください"
+msgstr "Please specify the motion you wish to integrate"
+
+msgid "統合モーションをVMDモーションデータとして出力します\nモーションを1件でも指定した後、クリックできるようになります"
+msgstr "Outputs the integrated motion as VMD motion data after specifying any one of the \n motions, you will be able to click on it"
+
+msgid "モーション統合開始"
+msgstr "Motion integration initiated"
+
+msgid "モーション全打ち統合"
+msgstr "Motion all strike integration"
+
+msgid "キーフレ統合"
+msgstr "Keefre Integration"
+
+msgid "-- キーフレ統合 [{i} ({p:.2f}%)]"
+msgstr "-- keyfre integration [{i} ({p:.2f}%)]"
+
+msgid "モーション不要キー削除"
+msgstr "Delete Motion Unnecessary Key"
+
+msgid "統合モーション出力開始"
+msgstr "Integrated motion output initiated"
+
+msgid "モーション統合完了"
+msgstr "Motion integration complete"
+
+msgid "ボーンモーション出力"
+msgstr "Bone Motion Output"
+
+msgid "-- ボーンモーション出力 [{i} ({p:.2f}%)]"
+msgstr "-- Bone motion output [{i} ({p:.2f}%)]"
+
+msgid "-- モーフモーション出力 [{i} ({p:.2f}%)]"
+msgstr "-- Morph motion output [{i} ({p:.2f}%)]"
+
+msgid "-- モーフデータ読み取り [{i} ({p:.2f}%)]"
+msgstr "-- Morph data read [{i} ({p:.2f}%)]"
+
+msgid "出力ファイルパスが有効なパスではないため、デフォルトの出力ファイルパスを再設定します。"
+msgstr "The output file path is not a valid path, reset the default output file path"
+
+msgid "ボーンキーフレーム統合"
+msgstr "Bone Keyframe Integration"
+
+msgid "-- ボーンキーフレーム統合 [{i} ({p:.2f}%)]"
+msgstr "-- Bone keyframe integration [{i} ({p:.2f}%)]"
+
+msgid "目線の上下に合わせたまばたきモーフを追加する際の補正係数"
+msgstr "Correction factor for adding a blink morph to match the upper and lower eye line"
+
+msgid "まばたき係数"
+msgstr "Blink coefficient"
+
+msgid "モーフ条件調整[{m}]"
+msgstr "Morph Condition Adjustment [{m}]"

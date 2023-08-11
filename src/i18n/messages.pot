@@ -1327,3 +1327,15 @@ msgstr ""
 msgid "-- ボーンキーフレーム統合 [{i} ({p:.2f}%)]"
 msgstr ""
 
+
+msgid "目線の上下に合わせたまばたきモーフを追加する際の補正係数"
+msgstr ""
+
+
+msgid "まばたき係数"
+msgstr ""
+
+
+msgid "モーフ条件調整[{m}]"
+msgstr ""
+

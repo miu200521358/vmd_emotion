@@ -15,6 +15,7 @@ class MotionMergeUsecase:
     def merge(
         self,
         motion_paths: list[str],
+        output_motion_path: str,
     ) -> VmdMotion:
         """モーション統合"""
 
@@ -36,7 +37,7 @@ class MotionMergeUsecase:
         for motion in motions[1:]:
             merge_motion, frame_cnt = self.merge_motion(merge_motion, motion, frame_cnt, total_frame_cnt)
 
-        output_motion = VmdMotion()
+        output_motion = VmdMotion(output_motion_path)
 
         # 統合しなかったボーンとモーフを追加する
         for motion in motions:

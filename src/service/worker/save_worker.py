@@ -20,10 +20,10 @@ class SaveWorker(BaseWorker):
         self.panel = panel
 
     def thread_execute(self):
-        if not self.panel.model_ctrl.data:
+        if self.panel.model_ctrl and not self.panel.model_ctrl.data:
             raise MApplicationException("モデルデータが読み込まれていません")
 
-        if not self.panel.motion_ctrl.data:
+        if self.panel.motion_ctrl and not self.panel.motion_ctrl.data:
             raise MApplicationException("モーションデータが読み込まれていません")
 
         if not self.panel.output_motion_ctrl.data:

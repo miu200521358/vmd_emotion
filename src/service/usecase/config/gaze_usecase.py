@@ -7,7 +7,7 @@ from mlib.core.logger import MLogger
 from mlib.core.math import MQuaternion, MVector2D, MVector3D
 from mlib.pmx.pmx_collection import PmxModel
 from mlib.vmd.vmd_collection import VmdMotion
-from mlib.vmd.vmd_part import VmdBoneFrame
+from mlib.vmd.vmd_part import VmdBoneFrame, VmdMorphFrame
 
 logger = MLogger(os.path.basename(__file__), level=1)
 __ = logger.get_text
@@ -21,7 +21,7 @@ class GazeUsecase:
         self,
         model: PmxModel,
         motion: VmdMotion,
-        output_motion: VmdMotion,
+        output_motion_path: str,
         gaze_infection: float,
         gaze_ratio_x: float,
         gaze_limit_upper_x: int,
@@ -30,12 +30,15 @@ class GazeUsecase:
         gaze_limit_upper_y: int,
         gaze_limit_lower_y: int,
         gaze_reset_num: int,
-    ) -> list[int]:
+        gaze_blink_ratio: float,
+    ) -> tuple[VmdMotion, list[int]]:
         """目線生成"""
 
-        if "両目" in motion.bones.names:
-            # 既存の両目キーフレは削除
-            del motion.bones["両目"]
+        # 既存は削除
+        del motion.bones["両目"]
+        del motion.morphs["まばたき"]
+
+        output_motion = VmdMotion(output_motion_path)
 
         # 目線が動く可能性があるキーフレ一覧
         eye_fnos = sorted(set([bf.index for bone_name in model.bone_trees["両目"].names for bf in motion.bones[bone_name]]))
@@ -44,6 +47,7 @@ class GazeUsecase:
         eye_matrixes = motion.animate_bone(eye_fnos, model, ["両目"], out_fno_log=True)
 
         gaze_fnos: set[int] = {0}
+        gaze_fidxs: set[int] = {0}
 
         prev_gaze = None
         gaze_vectors: list[MVector3D] = []
@@ -122,45 +126,59 @@ class GazeUsecase:
             gaze_qq = gaze_x_qq * gaze_y_qq
             gaze_degrees = gaze_qq.to_euler_degrees()
             # Z回転を殺して上下限を設定する
-            gaze_xy_qq = MQuaternion.from_euler_degrees(
-                max(gaze_limit_lower_x, min(gaze_limit_upper_x, gaze_degrees.x)),
-                max(gaze_limit_lower_y, min(gaze_limit_upper_y, gaze_degrees.y)),
-                0,
-            )
+            gaze_x_degree = max(gaze_limit_lower_x, min(gaze_limit_upper_x, gaze_degrees.x))
+            gaze_y_degree = max(gaze_limit_lower_y, min(gaze_limit_upper_y, gaze_degrees.y))
+            gaze_xy_qq = MQuaternion.from_euler_degrees(gaze_x_degree, gaze_y_degree, 0)
 
             bf = VmdBoneFrame(fno, "両目")
             bf.rotation = gaze_xy_qq
             motion.append_bone_frame(bf)
             output_motion.append_bone_frame(bf.copy())
             gaze_fnos |= {fno}
+            gaze_fidxs |= {iidx - 1}
+
+            if 0 > gaze_x_degree:
+                # 目線が下を向いていたらまぶたも少し下げる
+                gaze_x_ratio = (gaze_x_degree / gaze_limit_lower_x) * gaze_blink_ratio
+            else:
+                # 目線が上を向いていたらまぶたを少し上げる
+                gaze_x_ratio = (gaze_x_degree / gaze_limit_upper_x) * -gaze_blink_ratio
+
+            mf = VmdMorphFrame(fno, "まばたき")
+            mf.ratio = gaze_x_ratio
+            motion.append_morph_frame(mf)
+            output_motion.append_morph_frame(mf.copy())
 
             logger.debug("目線生成[{f}] 向き[{d}] 回転[{r}]", f=fno, d=infection_gaze_vector, r=gaze_qq.to_euler_degrees_mmd())
 
-        for i, (iidx, next_iidx) in enumerate(zip(infection_eyes[:-1], infection_eyes[1:])):
+        for i, (iidx, fno) in enumerate(zip(gaze_fidxs, gaze_fnos)):
             logger.count("目線クリア", index=i, total_index_count=len(infection_eyes), display_block=100)
 
-            fno = eye_fnos[iidx]
-            next_fno = eye_fnos[next_iidx]
-
-            # 前の目線との間に静止期間を設ける
-            if gaze_reset_num * 3 > next_fno - fno:
-                continue
-
             # 前側の元に戻るキーフレ
-            if not [f for f in range(-gaze_reset_num, gaze_reset_num) if (fno + f) in eye_fnos]:
-                bf = VmdBoneFrame(fno + gaze_reset_num, "両目")
+            if gaze_reset_num < fno - gaze_reset_num and not [f for f in range(-gaze_reset_num - 1, 0) if (fno - f) in gaze_fnos]:
+                before_reset_fno = int(fno - gaze_reset_num / 2)
+                bf = VmdBoneFrame(before_reset_fno, "両目")
                 motion.append_bone_frame(bf)
                 output_motion.append_bone_frame(bf.copy())
 
-                logger.debug("目線クリア 始[{d}]", d=bf.index)
+                mf = VmdMorphFrame(before_reset_fno, "まばたき")
+                motion.append_morph_frame(mf)
+                output_motion.append_morph_frame(mf.copy())
+
+                logger.debug("目線クリア 始[{d}]", d=before_reset_fno)
 
             # 後側の元に戻るキーフレ
-            if not [f for f in range(-gaze_reset_num, gaze_reset_num) if (next_fno + f) in eye_fnos]:
-                next_bf = VmdBoneFrame(next_fno - gaze_reset_num, "両目")
+            if not [f for f in range(1, gaze_reset_num + 1) if (fno + f) in gaze_fnos]:
+                after_reset_fno = int(fno + gaze_reset_num / 2)
+                next_bf = VmdBoneFrame(after_reset_fno, "両目")
                 motion.append_bone_frame(next_bf)
                 output_motion.append_bone_frame(next_bf.copy())
 
-                logger.debug("目線クリア 終[{r}]", r=next_bf.index)
+                mf = VmdMorphFrame(after_reset_fno, "まばたき")
+                motion.append_morph_frame(mf)
+                output_motion.append_morph_frame(mf.copy())
+
+                logger.debug("目線クリア 終[{r}]", r=after_reset_fno)
 
         eye_fnos = output_motion.bones["両目"].indexes
         for fidx, (prev_fno, now_fno, next_fno) in enumerate(zip(eye_fnos[:-2:2], eye_fnos[1:-1:2], eye_fnos[2::2])):
@@ -185,12 +203,12 @@ class GazeUsecase:
             a, b, c = solve([[x1**2, x1, 1], [x2**2, x2, 1], [x3**2, x3, 1]], [prev_degree, now_degree, next_degree])
 
             now_degrees: list[float] = []
-            for fidx in range(now_fno - prev_fno):
+            for fidx in range(int(now_fno - prev_fno)):
                 now_degrees.append(a * fidx**2 + b * fidx + c)
             now_interpolation = create_interpolation(now_degrees)
 
             next_degrees: list[float] = []
-            for fidx in range(now_fno - prev_fno, next_fno - prev_fno):
+            for fidx in range(int(now_fno - prev_fno), int(next_fno - prev_fno)):
                 next_degrees.append(a * fidx**2 + b * fidx + c)
             next_interpolation = create_interpolation(next_degrees)
 
@@ -205,7 +223,7 @@ class GazeUsecase:
                 + f"now[{now_bf.index}][{now_bf.interpolations.rotation}]"
             )
 
-        return sorted(gaze_fnos)
+        return output_motion, sorted(gaze_fnos)
 
 
 def fitted_x_function(x: float):

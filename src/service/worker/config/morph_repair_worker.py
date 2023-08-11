@@ -23,14 +23,12 @@ class MorphRepairWorker(BaseWorker):
     def thread_execute(self):
         model: PmxModel = self.panel.model_ctrl.data
         motion: VmdMotion = self.panel.motion_ctrl.data
-        output_motion = VmdMotion(self.panel.output_motion_ctrl.path)
 
         logger.info("モーフ破綻補正開始", decoration=MLogger.Decoration.BOX)
 
-        fnos = MorphRepairUsecase().repair(
+        output_motion, fnos = MorphRepairUsecase().repair(
             model,
             motion,
-            output_motion,
             self.panel.check_morph_threshold_ctrl.GetValue(),
             self.panel.repair_morph_factor_ctrl.GetValue(),
         )

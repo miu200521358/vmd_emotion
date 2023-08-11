@@ -23,21 +23,23 @@ class BlinkUsecase:
         self,
         model: PmxModel,
         motion: VmdMotion,
-        output_motion: VmdMotion,
+        output_motion_path: str,
         condition_probabilities: dict[str, float],
         linkage_depth: float,
         blink_span: int,
         eyebrow_below_name: str,
         blink_name: str,
         smile_name: str,
-    ) -> list[int]:
+    ) -> tuple[VmdMotion, list[int]]:
         """まばたき生成"""
 
         # 既存キーフレ削除
-        del output_motion.bones["右目"]
-        del output_motion.bones["左目"]
-        del output_motion.morphs[blink_name]
-        del output_motion.morphs[eyebrow_below_name]
+        del motion.bones["右目"]
+        del motion.bones["左目"]
+        del motion.morphs[blink_name]
+        del motion.morphs[eyebrow_below_name]
+
+        output_motion = VmdMotion(output_motion_path)
 
         # まばたきをする可能性があるキーフレ一覧
         # 手足の動きもキーフレを取る
@@ -450,7 +452,7 @@ class BlinkUsecase:
                         is_double_after = False
                     fno = list(range_fnos.keys())[int(np.argmax(list(range_fnos.values())))]
 
-        return sorted(blink_fnos)
+        return output_motion, sorted(blink_fnos)
 
 
 class BlinkCondition:

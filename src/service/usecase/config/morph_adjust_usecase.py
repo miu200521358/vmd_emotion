@@ -15,16 +15,19 @@ class MorphAdjustUsecase:
         self,
         model: PmxModel,
         motion: VmdMotion,
-        output_motion: VmdMotion,
+        output_motion_path: str,
         conditions: list[dict[str, str]],
-    ) -> list[int]:
+    ) -> tuple[VmdMotion, list[int]]:
         """モーフ条件調整"""
         fnos: set[int] = set([])
+
+        output_motion = motion.copy()
+        output_motion.path = output_motion_path
 
         for condition in conditions:
             fnos |= self.adjust_condition(model, motion, output_motion, condition)
 
-        return sorted(fnos)
+        return output_motion, sorted(fnos)
 
     def adjust_condition(
         self,

@@ -23,14 +23,13 @@ class BlinkWorker(BaseWorker):
     def thread_execute(self):
         model: PmxModel = self.panel.model_ctrl.data
         motion: VmdMotion = self.panel.motion_ctrl.data
-        output_motion: VmdMotion = self.panel.output_motion_ctrl.data
 
         logger.info("まばたき生成開始", decoration=MLogger.Decoration.BOX)
 
-        fnos = BlinkUsecase().create_blink(
+        output_motion, fnos = BlinkUsecase().create_blink(
             model,
             motion,
-            output_motion,
+            self.panel.output_motion_ctrl.path,
             self.panel.blink_set.condition_probabilities,
             self.panel.blink_set.linkage_depth_ctrl.GetValue(),
             self.panel.blink_set.blink_span_ctrl.GetValue(),

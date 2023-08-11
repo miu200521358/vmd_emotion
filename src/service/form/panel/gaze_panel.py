@@ -53,7 +53,7 @@ class GazePanel(ServiceCanvasPanel):
         self.gaze_infection_title_ctrl.SetToolTip(gaze_infection_tooltip)
         self.gaze_sizer.Add(self.gaze_infection_title_ctrl, 0, wx.ALL, 3)
 
-        self.gaze_infection_ctrl = WheelSpinCtrlDouble(self.window, initial=0.5, min=0.1, max=1.0, inc=0.01, size=wx.Size(60, -1))
+        self.gaze_infection_ctrl = WheelSpinCtrlDouble(self.window, initial=0.5, min=0.1, max=1.0, inc=0.01, size=wx.Size(55, -1))
         self.gaze_infection_ctrl.SetToolTip(gaze_infection_tooltip)
         self.gaze_sizer.Add(self.gaze_infection_ctrl, 0, wx.ALL, 3)
 
@@ -64,7 +64,7 @@ class GazePanel(ServiceCanvasPanel):
         self.gaze_ratio_x_title_ctrl.SetToolTip(gaze_ratio_x_tooltip)
         self.gaze_sizer.Add(self.gaze_ratio_x_title_ctrl, 0, wx.ALL, 3)
 
-        self.gaze_ratio_x_ctrl = WheelSpinCtrlDouble(self.window, initial=0.7, min=0.5, max=1.5, inc=0.01, size=wx.Size(60, -1))
+        self.gaze_ratio_x_ctrl = WheelSpinCtrlDouble(self.window, initial=0.7, min=0.5, max=1.5, inc=0.01, size=wx.Size(55, -1))
         self.gaze_ratio_x_ctrl.SetToolTip(gaze_ratio_x_tooltip)
         self.gaze_sizer.Add(self.gaze_ratio_x_ctrl, 0, wx.ALL, 3)
 
@@ -75,7 +75,7 @@ class GazePanel(ServiceCanvasPanel):
         self.gaze_limit_upper_x_title_ctrl.SetToolTip(gaze_limit_upper_x_tooltip)
         self.gaze_sizer.Add(self.gaze_limit_upper_x_title_ctrl, 0, wx.ALL, 3)
 
-        self.gaze_limit_upper_x_ctrl = WheelSpinCtrl(self.window, initial=3, min=0, max=45, size=wx.Size(60, -1))
+        self.gaze_limit_upper_x_ctrl = WheelSpinCtrl(self.window, initial=3, min=0, max=45, size=wx.Size(50, -1))
         self.gaze_limit_upper_x_ctrl.SetToolTip(gaze_limit_upper_x_tooltip)
         self.gaze_sizer.Add(self.gaze_limit_upper_x_ctrl, 0, wx.ALL, 3)
 
@@ -86,7 +86,7 @@ class GazePanel(ServiceCanvasPanel):
         self.gaze_limit_lower_x_title_ctrl.SetToolTip(gaze_limit_lower_x_tooltip)
         self.gaze_sizer.Add(self.gaze_limit_lower_x_title_ctrl, 0, wx.ALL, 3)
 
-        self.gaze_limit_lower_x_ctrl = WheelSpinCtrl(self.window, initial=-7, min=-45, max=0, size=wx.Size(60, -1))
+        self.gaze_limit_lower_x_ctrl = WheelSpinCtrl(self.window, initial=-7, min=-45, max=0, size=wx.Size(50, -1))
         self.gaze_limit_lower_x_ctrl.SetToolTip(gaze_limit_lower_x_tooltip)
         self.gaze_sizer.Add(self.gaze_limit_lower_x_ctrl, 0, wx.ALL, 3)
 
@@ -97,7 +97,7 @@ class GazePanel(ServiceCanvasPanel):
         self.gaze_ratio_y_title_ctrl.SetToolTip(gaze_ratio_y_tooltip)
         self.gaze_sizer.Add(self.gaze_ratio_y_title_ctrl, 0, wx.ALL, 3)
 
-        self.gaze_ratio_y_ctrl = WheelSpinCtrlDouble(self.window, initial=0.7, min=0.5, max=1.5, inc=0.01, size=wx.Size(60, -1))
+        self.gaze_ratio_y_ctrl = WheelSpinCtrlDouble(self.window, initial=0.7, min=0.5, max=1.5, inc=0.01, size=wx.Size(55, -1))
         self.gaze_ratio_y_ctrl.SetToolTip(gaze_ratio_y_tooltip)
         self.gaze_sizer.Add(self.gaze_ratio_y_ctrl, 0, wx.ALL, 3)
 
@@ -108,7 +108,7 @@ class GazePanel(ServiceCanvasPanel):
         self.gaze_limit_upper_y_title_ctrl.SetToolTip(gaze_limit_upper_y_tooltip)
         self.gaze_sizer.Add(self.gaze_limit_upper_y_title_ctrl, 0, wx.ALL, 3)
 
-        self.gaze_limit_upper_y_ctrl = WheelSpinCtrl(self.window, initial=12, min=0, max=45, size=wx.Size(60, -1))
+        self.gaze_limit_upper_y_ctrl = WheelSpinCtrl(self.window, initial=12, min=0, max=45, size=wx.Size(55, -1))
         self.gaze_limit_upper_y_ctrl.SetToolTip(gaze_limit_upper_y_tooltip)
         self.gaze_sizer.Add(self.gaze_limit_upper_y_ctrl, 0, wx.ALL, 3)
 
@@ -119,7 +119,7 @@ class GazePanel(ServiceCanvasPanel):
         self.gaze_limit_lower_y_title_ctrl.SetToolTip(gaze_limit_lower_y_tooltip)
         self.gaze_sizer.Add(self.gaze_limit_lower_y_title_ctrl, 0, wx.ALL, 3)
 
-        self.gaze_limit_lower_y_ctrl = WheelSpinCtrl(self.window, initial=-12, min=-45, max=0, size=wx.Size(60, -1))
+        self.gaze_limit_lower_y_ctrl = WheelSpinCtrl(self.window, initial=-12, min=-45, max=0, size=wx.Size(55, -1))
         self.gaze_limit_lower_y_ctrl.SetToolTip(gaze_limit_lower_y_tooltip)
         self.gaze_sizer.Add(self.gaze_limit_lower_y_ctrl, 0, wx.ALL, 3)
 
@@ -130,9 +130,20 @@ class GazePanel(ServiceCanvasPanel):
         self.gaze_reset_title_ctrl.SetToolTip(gaze_reset_tooltip)
         self.gaze_sizer.Add(self.gaze_reset_title_ctrl, 0, wx.ALL, 3)
 
-        self.gaze_reset_ctrl = WheelSpinCtrl(self.window, initial=8, min=5, max=15, size=wx.Size(60, -1))
+        self.gaze_reset_ctrl = WheelSpinCtrl(self.window, initial=12, min=5, max=30, size=wx.Size(50, -1))
         self.gaze_reset_ctrl.SetToolTip(gaze_reset_tooltip)
         self.gaze_sizer.Add(self.gaze_reset_ctrl, 0, wx.ALL, 3)
+
+        # --------------
+        gaze_blink_tooltip = __("目線の上下に合わせたまばたきモーフを追加する際の補正係数")
+
+        self.gaze_blink_title_ctrl = wx.StaticText(self.window, wx.ID_ANY, __("まばたき係数"), wx.DefaultPosition, wx.DefaultSize, 0)
+        self.gaze_blink_title_ctrl.SetToolTip(gaze_blink_tooltip)
+        self.gaze_sizer.Add(self.gaze_blink_title_ctrl, 0, wx.ALL, 3)
+
+        self.gaze_blink_ctrl = WheelSpinCtrlDouble(self.window, initial=0.2, min=0.0, max=1.0, inc=0.01, size=wx.Size(55, -1))
+        self.gaze_blink_ctrl.SetToolTip(gaze_blink_tooltip)
+        self.gaze_sizer.Add(self.gaze_blink_ctrl, 0, wx.ALL, 3)
 
         # --------------
         self.window_sizer.Add(self.gaze_sizer, 0, wx.ALL, 3)
@@ -147,3 +158,4 @@ class GazePanel(ServiceCanvasPanel):
         self.gaze_limit_upper_y_ctrl.Enable(enable)
         self.gaze_limit_lower_y_ctrl.Enable(enable)
         self.gaze_reset_ctrl.Enable(enable)
+        self.gaze_blink_ctrl.Enable(enable)

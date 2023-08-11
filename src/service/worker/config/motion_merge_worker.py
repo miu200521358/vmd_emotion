@@ -28,7 +28,7 @@ class MotionMergeWorker(BaseWorker):
             if motion.valid():
                 motion_paths.append(motion.path)
 
-        output_motion = MotionMergeUsecase().merge(motion_paths)
+        output_motion = MotionMergeUsecase().merge(motion_paths, self.panel.output_motion_ctrl.path)
 
         fnos: list[int] = []
         self.result_data = motion, output_motion, fnos

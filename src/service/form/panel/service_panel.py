@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from typing import Any, Iterable, Optional
+from typing import Iterable, Optional
 
 import wx
 
@@ -16,7 +16,6 @@ from mlib.utils.file_utils import save_histories, separate_path
 from mlib.vmd.vmd_collection import VmdMotion
 from mlib.vmd.vmd_tree import VmdBoneFrameTrees
 from service.worker.load_worker import LoadWorker
-from service.worker.save_worker import SaveWorker
 
 logger = MLogger(os.path.basename(__file__))
 __ = logger.get_text
@@ -31,9 +30,6 @@ class ServicePanel(NotebookPanel):
         self.load_worker.panel = self
 
         self.service_worker = self.create_service_worker()
-
-        self.save_worker = SaveWorker(frame, self, self.on_save_result)
-        self.save_worker.panel = self
 
         self.model_ctrl: Optional[MPmxFilePickerCtrl] = None
         self.motion_ctrl: Optional[MVmdFilePickerCtrl] = None
@@ -57,7 +53,7 @@ class ServicePanel(NotebookPanel):
 
     @property
     def exec_label(self) -> str:
-        return f"{self.emotion_type}生成"
+        return f"{self.emotion_type}出力"
 
     @property
     def console_rows(self) -> int:
@@ -136,17 +132,6 @@ class ServicePanel(NotebookPanel):
             __(f"生成した{self.emotion_type}をVMDモーションデータとして出力します\nデータ読み込み後、クリックできるようになります"),
         )
         self.btn_sizer.Add(self.exec_btn_ctrl, 0, wx.ALL, 3)
-
-        self.save_btn_ctrl = ExecButton(
-            self,
-            self,
-            __(f"{self.emotion_type}モーション出力"),
-            __(f"{self.emotion_type}モーション出力停止"),
-            self.save,
-            250,
-            __(f"生成した{self.emotion_type}をVMDモーションデータとして出力します\n{self.emotion_type}生成実行後、クリックできるようになります"),
-        )
-        self.btn_sizer.Add(self.save_btn_ctrl, 0, wx.ALL, 3)
 
         self.root_sizer.Add(self.btn_sizer, 0, wx.ALIGN_CENTER | wx.SHAPED, 3)
 
@@ -291,14 +276,15 @@ class ServicePanel(NotebookPanel):
         MLogger.console_handler = ConsoleHandler(self.console_ctrl.text_ctrl)
         self.console_ctrl.write(f"\n----------------\n{elapsed_time}")
 
-        if not (result and data and self.motion_ctrl):
+        if not (result and data):
             self.Enable(True)
             self.frame.on_sound()
             return
 
         # モーションデータを上書きして再読み込み
         motion, output_motion, fnos = data
-        self.motion_ctrl.data = motion
+        if self.motion_ctrl:
+            self.motion_ctrl.data = motion
         self.output_motion_ctrl.data = output_motion
 
         # 保存ボタンを有効にできるようにする
@@ -307,24 +293,6 @@ class ServicePanel(NotebookPanel):
         self.frame.on_sound()
 
         logger.info("実行完了", decoration=MLogger.Decoration.BOX)
-
-    def save(self, event: wx.Event) -> None:
-        MLogger.console_handler = ConsoleHandler(self.console_ctrl.text_ctrl)
-        self.frame.running_worker = True
-        self.Enable(False)
-        self.save_worker.start()
-
-    def on_save_result(self, result: bool, data: Optional[Any], elapsed_time: str) -> None:
-        self.frame.running_worker = False
-        MLogger.console_handler = ConsoleHandler(self.console_ctrl.text_ctrl)
-        self.console_ctrl.write(f"\n----------------\n{elapsed_time}")
-
-        # 保存ボタンを有効にできるようにする
-        self.enabled_save = True
-        self.Enable(True)
-        self.frame.on_sound()
-
-        logger.info("保存完了", decoration=MLogger.Decoration.BOX)
 
     def on_change_model_pmx(self, event: wx.Event) -> None:
         if not self.model_ctrl:

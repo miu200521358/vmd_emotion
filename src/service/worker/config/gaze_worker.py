@@ -23,14 +23,13 @@ class GazeWorker(BaseWorker):
     def thread_execute(self):
         model: PmxModel = self.panel.model_ctrl.data
         motion: VmdMotion = self.panel.motion_ctrl.data
-        output_motion: VmdMotion = self.panel.output_motion_ctrl.data
 
         logger.info("目線生成開始", decoration=MLogger.Decoration.BOX)
 
-        fnos = GazeUsecase().create_gaze(
+        output_motion, fnos = GazeUsecase().create_gaze(
             model,
             motion,
-            output_motion,
+            self.panel.output_motion_ctrl.path,
             self.panel.gaze_infection_ctrl.GetValue(),
             self.panel.gaze_ratio_x_ctrl.GetValue(),
             self.panel.gaze_limit_upper_x_ctrl.GetValue(),
@@ -39,6 +38,7 @@ class GazeWorker(BaseWorker):
             self.panel.gaze_limit_upper_y_ctrl.GetValue(),
             self.panel.gaze_limit_lower_y_ctrl.GetValue(),
             self.panel.gaze_reset_ctrl.GetValue(),
+            self.panel.gaze_blink_ctrl.GetValue(),
         )
 
         self.result_data = motion, output_motion, fnos
