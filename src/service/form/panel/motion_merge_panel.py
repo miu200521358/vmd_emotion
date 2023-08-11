@@ -110,7 +110,7 @@ class MotionMergePanel(ServicePanel):
     def _create_button_set(self) -> None:
         self.btn_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
-        self.save_btn_ctrl = ExecButton(
+        self.exec_btn_ctrl = ExecButton(
             self,
             self,
             __(f"{self.exec_label}"),
@@ -119,7 +119,7 @@ class MotionMergePanel(ServicePanel):
             250,
             __("統合モーションをVMDモーションデータとして出力します\nモーションを1件でも指定した後、クリックできるようになります"),
         )
-        self.btn_sizer.Add(self.save_btn_ctrl, 0, wx.ALL, 3)
+        self.btn_sizer.Add(self.exec_btn_ctrl, 0, wx.ALL, 3)
 
         self.root_sizer.Add(self.btn_sizer, 0, wx.ALIGN_CENTER | wx.SHAPED, 3)
 

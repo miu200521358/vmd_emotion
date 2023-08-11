@@ -8,7 +8,6 @@ from mlib.service.base_worker import BaseWorker
 from mlib.service.form.base_frame import BaseFrame
 from mlib.service.form.base_panel import BasePanel
 from mlib.utils.file_utils import get_root_dir
-from mlib.vmd.vmd_collection import VmdMotion
 from service.usecase.config.motion_merge_usecase import MotionMergeUsecase
 from service.usecase.save_usecase import SaveUsecase
 
@@ -22,8 +21,6 @@ class MotionMergeWorker(BaseWorker):
         self.panel = panel
 
     def thread_execute(self):
-        output_motion = VmdMotion(self.panel.output_motion_ctrl.path)
-
         logger.info("モーション統合開始", decoration=MLogger.Decoration.BOX)
 
         motion_paths: list[str] = []
@@ -31,10 +28,7 @@ class MotionMergeWorker(BaseWorker):
             if motion.valid():
                 motion_paths.append(motion.path)
 
-        output_motion = MotionMergeUsecase().merge(
-            output_motion,
-            motion_paths,
-        )
+        output_motion = MotionMergeUsecase().merge(motion_paths)
 
         fnos: list[int] = []
         self.result_data = motion, output_motion, fnos
@@ -45,10 +39,14 @@ class MotionMergeWorker(BaseWorker):
         output_model.model_name = "統合データ"
         output_model.english_name = "MergeData"
 
+        if not self.panel.output_motion_ctrl.path or not os.path.exists(os.path.dirname(self.panel.output_motion_ctrl.path)):
+            logger.warning("出力ファイルパスが有効なパスではないため、デフォルトの出力ファイルパスを再設定します。")
+            self.panel.create_output_path()
+
         SaveUsecase().save(
             output_model,
             output_motion,
-            output_motion.path,
+            self.panel.output_motion_ctrl.path,
         )
 
         logger.info("モーション統合完了", decoration=MLogger.Decoration.BOX)

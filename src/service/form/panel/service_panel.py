@@ -39,6 +39,7 @@ class ServicePanel(NotebookPanel):
         self.motion_ctrl: Optional[MVmdFilePickerCtrl] = None
         self.prepare_btn_ctrl: Optional[ExecButton] = None
         self.exec_btn_ctrl: Optional[ExecButton] = None
+        self.save_btn_ctrl: Optional[ExecButton] = None
 
         self._initialize_ui()
 
@@ -360,10 +361,10 @@ class ServicePanel(NotebookPanel):
 
     def Enable(self, enable: bool) -> None:
         self.EnableExec(enable)
-        if not enable:
+        if not enable and self.save_btn_ctrl:
             self.enabled_save = self.save_btn_ctrl.Enabled
             self.save_btn_ctrl.Enable(enable)
-        elif self.enabled_save:
+        elif self.enabled_save and self.save_btn_ctrl:
             self.save_btn_ctrl.Enable(True)
 
     def EnableLoad(self, enable: bool) -> None:
