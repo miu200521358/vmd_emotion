@@ -140,6 +140,7 @@ class MotionMergePanel(ServicePanel):
         save_histories(self.frame.histories)
 
     def on_add_motion(self, event: wx.Event) -> None:
+        target_idx = len(self.motions)
         motion_ctrl = MVmdFilePickerCtrl(
             self.window,
             self.frame,
@@ -150,15 +151,19 @@ class MotionMergePanel(ServicePanel):
             name_spacer=1,
             is_save=False,
             tooltip="統合したいモーションを指定してください",
-            file_change_event=self.on_change_motion,
+            file_change_event=lambda event: self.on_change_motion(event, target_idx),
         )
         self.motions.append(motion_ctrl)
         motion_ctrl.set_parent_sizer(self.motion_sizer)
         self.Enable(True)
         self.fit_window()
 
-    def on_change_motion(self, event: wx.Event) -> None:
-        self.create_output_path()
+    def on_change_motion(self, event: wx.Event, target_idx: int) -> None:
+        self.motions[target_idx].unwrap()
+        if self.motions[target_idx].read_name():
+            self.motions[target_idx].read_digest()
+            self.create_output_path()
+
         self.on_add_motion(event)
 
     def create_output_path(self) -> None:
