@@ -21,27 +21,7 @@
 ■ Summary
 ----------------------------------------------------------------
 
-　This tool fits a specified costume to a specified model according to her body shape.
-　After some degree of automatic fitting, adjustments can be made to individual bones.
-
-　If the opacity of the material is set to less than 1, it will not be used as a changeable model.
-
-　The following bones will be created for the changeover model
-　　All parents, upper body 2, arm twist, hand twist, foot D, knee D, ankle D, toes EX
-
-　[Work required in advance]
-　　If there are vertices in the same material that you want to output and those that you do not want to output, please separate the materials.
-
-　[Manual adjustment after output]
-　　Set the rigid body group and non-collision group.
-　　　　→ If the costume is to be violent, set the rigid body at the base of the costume to be non-collision with the rigid body of the body it is in contact with.
-　　Delete lower vertex
-　　　　→ Delete vertices as long as they do not cause holes in the model, so that vertices do not penetrate the model and the model becomes lighter.
-
-　【Notes】
-　　The weights of the costume models have been slightly altered to clean up the deformation.
-　　　This product is not available for costume models for which weight manipulation is not permitted.
-　　If the mesh on the arms or other body-covering positions of the costume is weighted with weights other than the quasi-standard bones, it will not be eligible for support
+Tools to generate blinks, eye lines, etc., and conditionally adjust morphs in accordance with motion
 
 
 ----------------------------------------------------------------
@@ -49,6 +29,13 @@ Video distribution
 ----------------------------------------------------------------
 
 (In preparation)
+
+----------------------------------------------------------------
+■　Still image for content tree
+----------------------------------------------------------------
+
+　VmdEmotion - コンテンツツリー用
+　https://seiga.nicovideo.jp/seiga/im11238870
 
 ----------------------------------------------------------------
 Included files
@@ -84,33 +71,21 @@ The file history can be copied by placing "history.json" in the same hierarchy a
 ■　Basic Usage
 ----------------------------------------------------------------
 
- 1. in the File tab, specify the person model and costume model (motion is optional but heavy...)
+Open the tab for the function you want to execute, load the model and motion, and press the Execute button.
+You can see a preview of the entire motion and a close-up of the face.
 
- 2. open the Settings tab
-    - Once you open the settings tab, you can press the output button. 3.
-
- 3. In the Settings tab, the left side of the screen shows the model with basic fitting (height, build, etc.) done.
-    - In the upper right corner, you can specify whether or not the material will be output as opacity.
-       - Materials with opacity less than 1 will not be output, so please lower the opacity of materials you do not need.
-    - In the lower right corner, you can adjust each bone type.
-       - X ... Horizontal direction
-       - Y ... Vertical direction
-       - Z ... Depth direction
-    - If there is a mesh with the same bone name but with weights applied to both the person and the costume, the position of the mesh will basically be output according to the person's side.
-      However, if you check the box "Bone positions are aligned with costume model", you can force the output to be aligned with the bone positions on the costume side.
-      (Especially from the wrist to the tips of the fingers, no fitting is performed, so please select accordingly.)
-    - If the "Share settings as skin material" checkbox is checked for both the person and costume skin material, the person's skin material settings will be copied to the costume and the texture color will be matched.
-
- 4. When you have finished fitting, go back to the File tab and click the "Output Costume Model" button.
-    - The model will be output with the material, bones, rigid body, etc. adjusted accordingly.
-    - If there is a risk of overwriting files, textures, etc. of the original model with the result of the changeover, the output will be aborted.
-
- Extra
-   The model data in the folder "Mesh Compensating Elements" is an element model that I created in VRoid Studio.
-   If the person model lacks mesh for areas such as the neck or above the elbows, this model can be loaded as a costume model,
-   The fitting results can then be output to use a person model with the necessary mesh filled in.
-   There are no restrictions, so please use it if you think it will work.
-   If the mesh of the arms or other parts of the costume are weighted with weights other than the semi-standard bones, they are not eligible for support.
+Eye line generation
+　Eye line generation based on head rotation based on motion
+　Blink (eyelid movement) is added along with eye line
+Blink generation
+　Blink generation - Blink is generated according to the motion.
+　Blink generation ・Conditions for blink generation and probability of blink generation can be adjusted.
+Correction of model breakage
+　Morphs that are corrupted by the model can be adjusted to the point where they do not corrupt.
+Morph condition adjustment
+　Morph values can be adjusted according to interpolation curves.
+Motion Integration
+　Motion Integration - Integrate multiple motions in both bones and morphs to the extent that they do not all hit.
 
 
 ----------------------------------------------------------------
@@ -143,40 +118,40 @@ Terms of use, etc.
 
 　Required Information.
 
-　　- If you publish or distribute a model with a change of clothes, please give credit where credit is due.
-　　- In the case of Nico Nico Douga, please register the still image (to be created) for the tree in the contents tree.
-　　　 - If you register as a parent in the content tree, credit is optional.
-　　- If you distribute your models to the general public, please clearly state the credit only in the distribution notice (video, etc.) and register the model in the content tree.
-　　　 - It is not necessary to request a credit statement for works that use the model in question.
+　　If you publish or distribute your motion, please give credit to the motion.
+　　If you are a member of Nico Nico Douga, please register the still image (im11209493) for the tree in the contents tree.
+　　　If you register your motion in the content tree, the credit is optional.
+　　If you are distributing the motion to the general public, please clearly indicate the credit only on the source of the distribution notice (video, etc.) and register it in the content tree.
+　　　*It is not necessary to request a credit statement for works that use the motion in question.
 
 　Optional
 
-　　- The following actions are permitted within the scope of the original model's terms and conditions.
+　　With regard to this tool and motion, you are free to do the following acts within the scope of the terms and conditions of the original motion or model
 
-　　- Adjustment and modification of changed models
-　　　 - In the case of distributed models, please make sure that the terms of use allow for alterations.
-　　- Posting videos of models on video-sharing sites, SNS, etc.
-　　　 - Posting of models with costume settings created in progress is also acceptable.
-　　　 - However, if the original model's terms and conditions stipulate a posting destination, age restrictions, etc., models dressed with this tool will also be subject to those terms and conditions.
-　　- Distribution of models to an unspecified number of people
-　　　 - Only self-made models or models for which distribution to an unspecified number of people is permitted.
+　　Adjustment or modification of the generated motion
+　　　In the case of distributed motions, please confirm that additions and modifications are permitted (not prohibited) by the terms and conditions.
+　　Posting videos of models on video-sharing sites, SNS, etc.
+　　　Posting of motion and tool captures generated in progress is also acceptable.
+　　　However, if the terms of the original motion or model stipulate conditions such as posting destination or age restrictions, the motion generated by this tool will also be subject to those conditions.
+　　Distribution of motion to an unspecified number of people
+　　　Only for motions that have been created by the user or that have been approved for distribution to an unspecified number of people for additions or modifications.
 
 　Prohibited items
 
-　　- Please refrain from the following acts regarding this tool and generated models
+　　Please refrain from the following actions regarding this tool and generated motions
 
-　　- Actions that are outside the scope of the rules of the original model.
-　　- Complete self-made statement.
-　　- Actions that may cause inconvenience to the rights holders.
-　　- Actions that are intended to defame or slander others (regardless of whether they are two-dimensional or three-dimensional).
+　　Actions outside the scope of the terms and conditions of the original motion, etc.
+　　Any comments that are completely self-made.
+　　Actions that may cause inconvenience to the rights holders.
+　　・Actions that are intended to defame or slander others (regardless of whether they are two-dimensional or three-dimensional).
 
-　　- The following conditions are not prohibited, but we ask that you take them into consideration
-　　　 - Use of images that contain excessive violence, obscenity, romantic, bizarre, political or religious expressions (R-15 or above).
+　　The following conditions are not prohibited, but we ask for your consideration
+　　　Use of images that contain excessive violence, obscenity, romantic, bizarre, political, or religious expressions (R-15 or above).
 
-　　　 - Please make sure to check the terms and conditions of the original model before using the work.
-　　　 - Please be sure to check the scope of the terms and conditions of the original model, etc., before using the work.
+　　　Please be sure to check the scope of the terms and conditions of the original motion picture before using the motion picture.
+　　　Please be sure to check the scope of the terms and conditions of the original motion picture before using the motion picture.
 
-　　- Please note that "commercial use" is not prohibited in this tool, but is prohibited in PMXEditor.
+　　Please note that "commercial use" is not prohibited in this tool, but is prohibited in PMXEditor.
 
 　Disclaimer
 
@@ -204,12 +179,15 @@ https://github.com/miu200521358/pmx_dressup
 Icons are borrowed from icon-rainbow
 https://icon-rainbow.com/%E3%83%AF%E3%83%B3%E3%83%94%E3%83%BC%E3%82%B9%E3%81%AE%E7%84%A1%E6%96%99%E3%82%A2%E3%82%A4%E3%82%B3%E3%83 %B3%E7%B4%A0%E6%9D%90-2/
 
+Icons in the tool are borrowed from Google Material Icon.
+https://fonts.google.com/icons
+
 
 ----------------------------------------------------------------
 Credits
 ----------------------------------------------------------------
 
-　Tool name: PmxDressup
+　Tool name: VmdEmotion
 　Author: miu or miu200521358
 
 　http://www.nicovideo.jp/user/2776342
