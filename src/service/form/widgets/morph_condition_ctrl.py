@@ -18,14 +18,14 @@ class MorphConditionCtrl:
     def __init__(
         self,
         frame: BaseFrame,
-        parent: BasePanel,
+        panel: BasePanel,
         window: wx.ScrolledWindow,
         sizer: wx.Sizer,
         model: PmxModel,
         idx: int,
     ) -> None:
         self.frame = frame
-        self.parent = parent
+        self.panel = panel
         self.window = window
         self.sizer = sizer
         self.model = model
@@ -142,7 +142,7 @@ class MorphConditionCtrl:
             event.GetEventObject().SetSelection(idx)
 
     def on_show_bezier(self, event: wx.Event) -> None:
-        self.frame.show_bezier_dialog(event, self.parent, self)
+        self.frame.show_bezier_dialog(event, self.panel, self)
 
     @property
     def history(self) -> Optional[dict[str, str]]:

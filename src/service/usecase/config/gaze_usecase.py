@@ -155,7 +155,7 @@ class GazeUsecase:
             logger.count("目線クリア", index=i, total_index_count=len(infection_eyes), display_block=100)
 
             # 前側の元に戻るキーフレ
-            if gaze_reset_num < fno - gaze_reset_num and not [f for f in range(-gaze_reset_num - 1, 0) if (fno - f) in gaze_fnos]:
+            if 0 < fno and not [f for f in range(-gaze_reset_num - 1, 0) if (fno - f) in gaze_fnos]:
                 before_reset_fno = int(fno - gaze_reset_num / 2)
                 bf = VmdBoneFrame(before_reset_fno, "両目")
                 motion.append_bone_frame(bf)
@@ -168,7 +168,7 @@ class GazeUsecase:
                 logger.debug("目線クリア 始[{d}]", d=before_reset_fno)
 
             # 後側の元に戻るキーフレ
-            if not [f for f in range(1, gaze_reset_num + 1) if (fno + f) in gaze_fnos]:
+            if 0 < fno and not [f for f in range(1, gaze_reset_num + 1) if (fno + f) in gaze_fnos]:
                 after_reset_fno = int(fno + gaze_reset_num / 2)
                 next_bf = VmdBoneFrame(after_reset_fno, "両目")
                 motion.append_bone_frame(next_bf)

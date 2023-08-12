@@ -64,8 +64,8 @@ class MotionMergeUsecase:
     ) -> tuple[VmdMotion, int]:
         """モーション同士の統合"""
         # 両方にキーがあるのだけ統合
-        merged_bone_names: set[str] = set(motion2.bones.names)
-        merged_morph_names: set[str] = set(motion2.morphs.names)
+        merged_bone_names: set[str] = set(motion1.bones.names) & set(motion2.bones.names)
+        merged_morph_names: set[str] = set(motion1.morphs.names) & set(motion2.morphs.names)
         output_motion = VmdMotion()
 
         for bone_name in merged_bone_names:
@@ -78,7 +78,7 @@ class MotionMergeUsecase:
                 output_motion.insert_bone_frame(bf1 + bf2)
                 frame_cnt += 1
 
-        self.ensure_bone_motion(output_motion, motion1, motion2)
+        self.ensure_bone_motion(output_motion, motion1, motion2, merged_bone_names)
 
         for morph_name in merged_morph_names:
             for fno in sorted(set(motion1.morphs[morph_name].indexes) | set(motion2.morphs[morph_name].indexes)):
@@ -90,14 +90,20 @@ class MotionMergeUsecase:
                 output_motion.insert_morph_frame(mf1 + mf2)
                 frame_cnt += 1
 
-        self.ensure_morph_motion(output_motion, motion1, motion2)
+        self.ensure_morph_motion(output_motion, motion1, motion2, merged_morph_names)
 
         return output_motion, frame_cnt
 
-    def ensure_bone_motion(self, output_motion: VmdMotion, motion1: VmdMotion, motion2: VmdMotion) -> None:
+    def ensure_bone_motion(
+        self,
+        output_motion: VmdMotion,
+        motion1: VmdMotion,
+        motion2: VmdMotion,
+        merged_bone_names: set[str],
+    ) -> None:
         """ボーンキーフレの検算"""
 
-        for bone_name in output_motion.bones.names:
+        for bone_name in merged_bone_names:
             for prev_fno, next_fno in zip(output_motion.bones[bone_name].indexes, output_motion.bones[bone_name].indexes[1:]):
                 position_x_dots: list[float] = [0.0]
                 position_y_dots: list[float] = [0.0]
@@ -189,10 +195,16 @@ class MotionMergeUsecase:
                     ensure_bf = bf1 + bf2
                     output_motion.insert_bone_frame(ensure_bf)
 
-    def ensure_morph_motion(self, output_motion: VmdMotion, motion1: VmdMotion, motion2: VmdMotion) -> None:
+    def ensure_morph_motion(
+        self,
+        output_motion: VmdMotion,
+        motion1: VmdMotion,
+        motion2: VmdMotion,
+        merged_morph_names: set[str],
+    ) -> None:
         """モーフキーフレの検算"""
 
-        for morph_name in output_motion.morphs.names:
+        for morph_name in merged_morph_names:
             for prev_fno, next_fno in zip(output_motion.morphs[morph_name].indexes, output_motion.morphs[morph_name].indexes[1:]):
                 ensure_morphs = VmdMorphNameFrames()
                 output_morphs = VmdMorphNameFrames()

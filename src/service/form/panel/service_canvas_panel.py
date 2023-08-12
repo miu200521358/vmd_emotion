@@ -189,17 +189,6 @@ class ServiceCanvasPanel(CanvasPanel):
         )
         self.btn_sizer.Add(self.exec_btn_ctrl, 0, wx.ALL, 3)
 
-        self.save_btn_ctrl = ExecButton(
-            self.window,
-            self,
-            __(f"{self.emotion_type}モーション出力"),
-            __(f"{self.emotion_type}モーション出力停止"),
-            self.save,
-            250,
-            __(f"生成した{self.emotion_type}をVMDモーションデータとして出力します\n{self.emotion_type}生成実行後、クリックできるようになります"),
-        )
-        self.btn_sizer.Add(self.save_btn_ctrl, 0, wx.ALL, 3)
-
         self.window_sizer.Add(self.btn_sizer, 0, wx.ALIGN_CENTER | wx.SHAPED, 3)
 
         # コンソール -----------------
@@ -233,6 +222,7 @@ class ServiceCanvasPanel(CanvasPanel):
 
                 self.frame.running_worker = True
                 self.Enable(False)
+                self.EnableLoad(True)
                 self.load_worker.start()
             else:
                 # 既に読み取りが完了していたらそのまま表示
@@ -311,6 +301,7 @@ class ServiceCanvasPanel(CanvasPanel):
         MLogger.console_handler = ConsoleHandler(self.console_ctrl.text_ctrl)
         self.frame.running_worker = True
         self.Enable(False)
+        self.exec_btn_ctrl.Enable(True)
         self.service_worker.start()
 
     def on_exec_result(self, result: bool, data: tuple[VmdMotion, VmdMotion, list[int]], elapsed_time: str):
@@ -388,11 +379,6 @@ class ServiceCanvasPanel(CanvasPanel):
 
     def Enable(self, enable: bool) -> None:
         self.EnableExec(enable)
-        if not enable:
-            self.enabled_save = self.save_btn_ctrl.Enabled
-            self.save_btn_ctrl.Enable(enable)
-        elif self.enabled_save:
-            self.save_btn_ctrl.Enable(True)
 
     def EnableLoad(self, enable: bool) -> None:
         self.model_ctrl.Enable(enable)

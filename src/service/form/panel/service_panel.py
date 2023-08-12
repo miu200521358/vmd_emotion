@@ -24,7 +24,6 @@ __ = logger.get_text
 class ServicePanel(NotebookPanel):
     def __init__(self, frame: NotebookFrame, tab_idx: int, *args, **kw) -> None:
         super().__init__(frame, tab_idx, *args, **kw)
-        self.enabled_save = False
 
         self.load_worker = LoadWorker(frame, self, self.on_preparer_result)
         self.load_worker.panel = self
@@ -35,7 +34,6 @@ class ServicePanel(NotebookPanel):
         self.motion_ctrl: Optional[MVmdFilePickerCtrl] = None
         self.prepare_btn_ctrl: Optional[ExecButton] = None
         self.exec_btn_ctrl: Optional[ExecButton] = None
-        self.save_btn_ctrl: Optional[ExecButton] = None
 
         self._initialize_ui()
 
@@ -200,6 +198,7 @@ class ServicePanel(NotebookPanel):
 
                 self.frame.running_worker = True
                 self.Enable(False)
+                self.EnableLoad(True)
                 self.load_worker.start()
 
     def on_preparer_result(
@@ -268,6 +267,8 @@ class ServicePanel(NotebookPanel):
         MLogger.console_handler = ConsoleHandler(self.console_ctrl.text_ctrl)
         self.frame.running_worker = True
         self.Enable(False)
+        if self.exec_btn_ctrl:
+            self.exec_btn_ctrl.Enable(True)
         self.save_histories_on_exec()
         self.service_worker.start()
 
@@ -329,11 +330,6 @@ class ServicePanel(NotebookPanel):
 
     def Enable(self, enable: bool) -> None:
         self.EnableExec(enable)
-        if not enable and self.save_btn_ctrl:
-            self.enabled_save = self.save_btn_ctrl.Enabled
-            self.save_btn_ctrl.Enable(enable)
-        elif self.enabled_save and self.save_btn_ctrl:
-            self.save_btn_ctrl.Enable(True)
 
     def EnableLoad(self, enable: bool) -> None:
         if self.model_ctrl:

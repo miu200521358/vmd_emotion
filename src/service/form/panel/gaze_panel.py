@@ -108,7 +108,7 @@ class GazePanel(ServiceCanvasPanel):
         self.gaze_limit_upper_y_title_ctrl.SetToolTip(gaze_limit_upper_y_tooltip)
         self.gaze_sizer.Add(self.gaze_limit_upper_y_title_ctrl, 0, wx.ALL, 3)
 
-        self.gaze_limit_upper_y_ctrl = WheelSpinCtrl(self.window, initial=12, min=0, max=45, size=wx.Size(55, -1))
+        self.gaze_limit_upper_y_ctrl = WheelSpinCtrl(self.window, initial=10, min=0, max=45, size=wx.Size(55, -1))
         self.gaze_limit_upper_y_ctrl.SetToolTip(gaze_limit_upper_y_tooltip)
         self.gaze_sizer.Add(self.gaze_limit_upper_y_ctrl, 0, wx.ALL, 3)
 
@@ -119,7 +119,7 @@ class GazePanel(ServiceCanvasPanel):
         self.gaze_limit_lower_y_title_ctrl.SetToolTip(gaze_limit_lower_y_tooltip)
         self.gaze_sizer.Add(self.gaze_limit_lower_y_title_ctrl, 0, wx.ALL, 3)
 
-        self.gaze_limit_lower_y_ctrl = WheelSpinCtrl(self.window, initial=-12, min=-45, max=0, size=wx.Size(55, -1))
+        self.gaze_limit_lower_y_ctrl = WheelSpinCtrl(self.window, initial=-10, min=-45, max=0, size=wx.Size(55, -1))
         self.gaze_limit_lower_y_ctrl.SetToolTip(gaze_limit_lower_y_tooltip)
         self.gaze_sizer.Add(self.gaze_limit_lower_y_ctrl, 0, wx.ALL, 3)
 
