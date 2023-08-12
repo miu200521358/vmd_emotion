@@ -1,7 +1,6 @@
 import os
 
 from mlib.core.interpolation import create_interpolation, get_infections
-
 from mlib.core.logger import MLogger
 from mlib.vmd.vmd_collection import VmdBoneNameFrames, VmdMorphNameFrames, VmdMotion
 from mlib.vmd.vmd_part import VmdBoneFrame

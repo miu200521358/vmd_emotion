@@ -12,11 +12,11 @@ from mlib.vmd.vmd_collection import VmdMotion
 from service.form.panel.blink_panel import BlinkPanel
 from service.form.panel.gaze_panel import GazePanel
 from service.form.panel.morph_adjust_panel import MorphAdjustPanel
+from service.form.panel.motion_merge_panel import MotionMergePanel
 from service.form.panel.repair_panel import RepairPanel
 from service.form.widgets.bezier_dialog import BezierDialog
 from service.form.widgets.morph_condition_ctrl import MorphConditionCtrl
 from service.form.widgets.morph_sub_window import MorphSubCanvasWindow
-from service.form.panel.motion_merge_panel import MotionMergePanel
 
 logger = MLogger(os.path.basename(__file__), level=1)
 __ = logger.get_text
