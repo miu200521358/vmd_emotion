@@ -110,7 +110,7 @@ class BezierDialogPanel(BasePanel):
         ratio = self.slider.GetValue() * ry if self.is_view_bezier else self.slider.GetValue()
 
         motion = VmdMotion()
-        motion.append_morph_frame(VmdMorphFrame(0, self.frame.condition_ctrl.morph_name_ctrl.GetStringSelection(), ratio))
+        motion.append_morph_frame(VmdMorphFrame(0, self.frame.condition_ctrl.morph_name_ctrl.choice_ctrl.GetStringSelection(), ratio))
         self.canvas.model_sets[0].motion = motion
         self.canvas.change_motion(event, is_bone_deform=False)
 

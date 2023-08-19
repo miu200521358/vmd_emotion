@@ -7,7 +7,6 @@ from mlib.core.logger import MLogger
 from mlib.pmx.pmx_collection import PmxModel
 from mlib.service.form.notebook_frame import NotebookFrame
 from mlib.vmd.vmd_collection import VmdMotion
-from mlib.vmd.vmd_tree import VmdBoneFrameTrees
 from service.form.panel.service_canvas_panel import ServiceCanvasPanel
 from service.form.widgets.blink_ctrl_set import BlinkCtrlSet
 from service.form.widgets.morph_ctrl_set import MorphCtrlSet
@@ -70,7 +69,7 @@ class BlinkPanel(ServiceCanvasPanel):
     def on_preparer_result(
         self,
         result: bool,
-        data: Optional[tuple[PmxModel, PmxModel, VmdMotion, VmdMotion, dict[str, float], VmdBoneFrameTrees]],
+        data: Optional[tuple[PmxModel, PmxModel, VmdMotion, VmdMotion, dict[str, float]]],
         elapsed_time: str,
     ):
         super().on_preparer_result(result, data, elapsed_time)
@@ -78,7 +77,7 @@ class BlinkPanel(ServiceCanvasPanel):
         if not (result and data):
             return
 
-        _, model, _, _, blink_conditions, _ = data
+        _, model, _, _, blink_conditions = data
 
         # まばたき条件の初期化
         self.blink_set.initialize(blink_conditions)

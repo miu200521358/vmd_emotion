@@ -8,6 +8,7 @@ from mlib.service.base_worker import BaseWorker
 from mlib.service.form.base_frame import BaseFrame
 from mlib.service.form.base_panel import BasePanel
 from mlib.utils.file_utils import get_root_dir
+from mlib.vmd.vmd_collection import VmdMotion
 from service.usecase.save_usecase import SaveUsecase
 
 logger = MLogger(os.path.basename(__file__))
@@ -39,6 +40,22 @@ class SaveWorker(BaseWorker):
         SaveUsecase().save(
             self.panel.model_ctrl.data,
             self.panel.output_motion_ctrl.data,
+            self.panel.output_motion_ctrl.path,
+        )
+
+        logger.info("*** モーション出力成功 ***\n出力先: {f}", f=self.panel.output_motion_ctrl.path, decoration=MLogger.Decoration.BOX)
+
+    def execute_sub(self, model_name: str, output_motion: VmdMotion):
+        if not self.panel.output_motion_ctrl.path or not os.path.exists(os.path.dirname(self.panel.output_motion_ctrl.path)):
+            logger.warning("出力ファイルパスが有効なパスではないため、デフォルトの出力ファイルパスを再設定します。")
+            self.panel.create_output_path()
+            os.makedirs(os.path.dirname(self.panel.output_motion_ctrl.path), exist_ok=True)
+
+        logger.info("モーション出力開始", decoration=MLogger.Decoration.BOX)
+
+        SaveUsecase().save(
+            model_name,
+            output_motion,
             self.panel.output_motion_ctrl.path,
         )
 

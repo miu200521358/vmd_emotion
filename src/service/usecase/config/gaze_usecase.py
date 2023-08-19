@@ -1,10 +1,11 @@
 import os
 
+import numpy as np
 from numpy.linalg import solve
 
 from mlib.core.interpolation import IP_MAX, create_interpolation, get_infections
 from mlib.core.logger import MLogger
-from mlib.core.math import MQuaternion, MVector2D, MVector3D
+from mlib.core.math import MQuaternion, MVector2D, MVector3D, MVectorDict
 from mlib.pmx.pmx_collection import PmxModel
 from mlib.vmd.vmd_collection import VmdMotion
 from mlib.vmd.vmd_part import VmdBoneFrame, VmdMorphFrame
@@ -46,11 +47,8 @@ class GazeUsecase:
         logger.info("目線変動量取得", decoration=MLogger.Decoration.LINE)
         eye_matrixes = motion.animate_bone(eye_fnos, model, ["両目"], out_fno_log=True)
 
-        gaze_fnos: set[int] = {0}
-        gaze_fidxs: set[int] = {0}
-
         prev_gaze = None
-        gaze_vectors: list[MVector3D] = []
+        gaze_vectors = MVectorDict()
         gaze_dots: list[float] = []
         for fidx, fno in enumerate(eye_fnos):
             logger.count("目線変動量取得", index=fidx, total_index_count=len(eye_fnos), display_block=100)
@@ -60,6 +58,7 @@ class GazeUsecase:
             if not prev_gaze:
                 # 初回はスルー
                 prev_gaze = gaze_vector
+                gaze_vectors.append(fno, gaze_vector)
                 gaze_dots.append(1.0)
                 continue
 
@@ -68,13 +67,13 @@ class GazeUsecase:
             # logger.debug(f"fno[{fno:04d}], eye[{eye_global_direction_vector}], gaze[{gaze_vector}], dot[{gaze_dot:.3f}]")
 
             gaze_dots.append(gaze_dot)
-            gaze_vectors.append(gaze_vector)
+            gaze_vectors.append(fno, gaze_vector)
             prev_gaze = gaze_vector
 
         logger.info("目線変曲点抽出", decoration=MLogger.Decoration.LINE)
         # logger.debug(gaze_dots)
 
-        infection_eyes = get_infections(gaze_dots, (1 - gaze_infection) * 0.02)
+        infection_eyes = get_infections(gaze_dots, (1 - gaze_infection) * 0.01)
         # logger.debug(infection_eyes)
 
         logger.info("目線生成", decoration=MLogger.Decoration.LINE)
@@ -89,22 +88,83 @@ class GazeUsecase:
         motion.append_bone_frame(end_bf)
         output_motion.append_bone_frame(end_bf.copy())
 
-        for i, iidx in enumerate(infection_eyes):
+        gaze_fnos: list[int] = [eye_fnos[0]]
+        gaze_iidxs: list[int] = [0]
+
+        for i, iidx in enumerate(sorted(infection_eyes)):
             logger.count("目線生成", index=i, total_index_count=len(infection_eyes), display_block=1000)
 
             if 1 > i:
                 continue
 
-            fno = eye_fnos[iidx - 1]
+            infection_fno = eye_fnos[iidx]
+            infection_gaze_vector = MVector3D(*gaze_vectors.vectors[infection_fno])
+            gaze_distances = gaze_vectors.distances(infection_gaze_vector)
 
-            if 1 < i:
-                prev_fno = eye_fnos[iidx - 2]
-                if 5 > fno - prev_fno:
-                    # 前の目線からあまりにも近い場合スルー
-                    continue
+            # 視線がある程度離れたキーフレを今回打つ場所とする
+            now_iidx = int(gaze_iidxs[-1] + np.argmin(gaze_distances[gaze_iidxs[-1] : iidx] > gaze_infection))
+            fno = eye_fnos[now_iidx]
+            gaze_vector = MVector3D(*gaze_vectors.vectors[fno])
 
-            gaze_vector = gaze_vectors[iidx - 1]
-            infection_gaze_vector = gaze_vectors[iidx]
+            if gaze_reset_num < fno - gaze_fnos[-1]:
+                # 前回から一定距離が開いてる場合、クリアする
+                prev_fno = gaze_fnos[-1]
+                prev_gaze_vector = MVector3D(*gaze_vectors.vectors[prev_fno])
+                prev_clear_gaze_distances = gaze_vectors.distances(prev_gaze_vector)
+
+                prev_after_reset_iidx = gaze_iidxs[-1]
+                for r in [10, 7, 5, 3]:
+                    if (prev_clear_gaze_distances[(gaze_iidxs[-1] + 1) : now_iidx] > gaze_infection * (r * 0.1)).any():
+                        # 前のキーフレの視線から比べて変化がある程度あった箇所を抽出して、その中の最初の切れ目をリセットキーフレとする
+                        prev_after_reset_iidx += int(
+                            np.min(np.where(prev_clear_gaze_distances[(gaze_iidxs[-1] + 1) : now_iidx] > gaze_infection * (r * 0.1))[0])
+                        )
+                        break
+
+                prev_after_reset_fno = int(prev_fno + gaze_reset_num / 2)
+                if prev_after_reset_iidx > gaze_iidxs[-1] and eye_fnos[prev_after_reset_iidx] - prev_fno < gaze_reset_num:
+                    # 前回と今回の間で一定以上動いている場合、クリアする
+                    prev_after_reset_fno = eye_fnos[prev_after_reset_iidx]
+
+                prev_after_reset_bf = VmdBoneFrame(prev_after_reset_fno, "両目")
+                motion.append_bone_frame(prev_after_reset_bf)
+                output_motion.append_bone_frame(prev_after_reset_bf.copy())
+
+                prev_after_reset_mf = VmdMorphFrame(prev_after_reset_fno, "まばたき")
+                motion.append_morph_frame(prev_after_reset_mf)
+                output_motion.append_morph_frame(prev_after_reset_mf.copy())
+
+                logger.debug(f"目線クリア({fno}) 前終[{prev_after_reset_fno}]")
+
+                # -----------------------
+                # 終了から今回の開始までにも一定の距離がある場合、そこまでクリアを維持する
+                now_clear_gaze_distances = gaze_vectors.distances(gaze_vector)
+
+                now_before_reset_iidx = prev_after_reset_iidx
+                for r in [10, 7, 5, 3]:
+                    if (now_clear_gaze_distances[(prev_after_reset_iidx + 1) : now_iidx] < gaze_infection * (r * 0.1)).any():
+                        now_before_reset_iidx += int(
+                            np.min(
+                                np.where(now_clear_gaze_distances[(prev_after_reset_iidx + 1) : now_iidx] < gaze_infection * (r * 0.1))[0]
+                            )
+                        )
+                        break
+
+                now_before_reset_fno = int(fno - gaze_reset_num / 2)
+                if now_before_reset_iidx > gaze_iidxs[-1] and fno - eye_fnos[now_before_reset_iidx] < gaze_reset_num:
+                    # 前回と今回の間で一定以上動いている場合、クリアする
+                    now_before_reset_fno = eye_fnos[now_before_reset_iidx]
+
+                if prev_after_reset_fno < now_before_reset_fno:
+                    now_before_reset_bf = VmdBoneFrame(now_before_reset_fno, "両目")
+                    motion.append_bone_frame(now_before_reset_bf)
+                    output_motion.append_bone_frame(now_before_reset_bf.copy())
+
+                    now_before_reset_mf = VmdMorphFrame(now_before_reset_fno, "まばたき")
+                    motion.append_morph_frame(now_before_reset_mf)
+                    output_motion.append_morph_frame(now_before_reset_mf.copy())
+
+                    logger.debug(f"目線クリア({fno}) 今始[{now_before_reset_fno}]")
 
             # 目線の変動が一定以上であれば目線を動かす
             gaze_full_qq = MQuaternion.rotate(gaze_vector, infection_gaze_vector)
@@ -134,8 +194,8 @@ class GazeUsecase:
             bf.rotation = gaze_xy_qq
             motion.append_bone_frame(bf)
             output_motion.append_bone_frame(bf.copy())
-            gaze_fnos |= {fno}
-            gaze_fidxs |= {iidx - 1}
+            gaze_fnos.append(fno)
+            gaze_iidxs.append(now_iidx)
 
             if 0 > gaze_x_degree:
                 # 目線が下を向いていたらまぶたも少し下げる
@@ -144,41 +204,24 @@ class GazeUsecase:
                 # 目線が上を向いていたらまぶたを少し上げる
                 gaze_x_ratio = (gaze_x_degree / gaze_limit_upper_x) * -gaze_blink_ratio
 
-            mf = VmdMorphFrame(fno, "まばたき")
-            mf.ratio = gaze_x_ratio
-            motion.append_morph_frame(mf)
-            output_motion.append_morph_frame(mf.copy())
+            prev_after_reset_mf = VmdMorphFrame(fno, "まばたき")
+            prev_after_reset_mf.ratio = gaze_x_ratio
+            motion.append_morph_frame(prev_after_reset_mf)
+            output_motion.append_morph_frame(prev_after_reset_mf.copy())
 
             logger.debug("目線生成[{f}] 向き[{d}] 回転[{r}]", f=fno, d=infection_gaze_vector, r=gaze_qq.to_euler_degrees_mmd())
 
-        for i, (iidx, fno) in enumerate(zip(gaze_fidxs, gaze_fnos)):
-            logger.count("目線クリア", index=i, total_index_count=len(infection_eyes), display_block=100)
+        # 最後に元に戻す ----------
+        prev_after_reset_fno = gaze_fnos[-1] + gaze_reset_num
+        prev_after_reset_bf = VmdBoneFrame(prev_after_reset_fno, "両目")
+        motion.append_bone_frame(prev_after_reset_bf)
+        output_motion.append_bone_frame(prev_after_reset_bf.copy())
 
-            # 前側の元に戻るキーフレ
-            if 0 < fno and not [f for f in range(-gaze_reset_num - 1, 0) if (fno - f) in gaze_fnos]:
-                before_reset_fno = int(fno - gaze_reset_num / 2)
-                bf = VmdBoneFrame(before_reset_fno, "両目")
-                motion.append_bone_frame(bf)
-                output_motion.append_bone_frame(bf.copy())
+        prev_after_reset_mf = VmdMorphFrame(prev_after_reset_fno, "まばたき")
+        motion.append_morph_frame(prev_after_reset_mf)
+        output_motion.append_morph_frame(prev_after_reset_mf.copy())
 
-                mf = VmdMorphFrame(before_reset_fno, "まばたき")
-                motion.append_morph_frame(mf)
-                output_motion.append_morph_frame(mf.copy())
-
-                logger.debug("目線クリア 始[{d}]", d=before_reset_fno)
-
-            # 後側の元に戻るキーフレ
-            if 0 < fno and not [f for f in range(1, gaze_reset_num + 1) if (fno + f) in gaze_fnos]:
-                after_reset_fno = int(fno + gaze_reset_num / 2)
-                next_bf = VmdBoneFrame(after_reset_fno, "両目")
-                motion.append_bone_frame(next_bf)
-                output_motion.append_bone_frame(next_bf.copy())
-
-                mf = VmdMorphFrame(after_reset_fno, "まばたき")
-                motion.append_morph_frame(mf)
-                output_motion.append_morph_frame(mf.copy())
-
-                logger.debug("目線クリア 終[{r}]", r=after_reset_fno)
+        logger.debug(f"目線クリア({fno}) 前終[{prev_after_reset_fno}]")
 
         eye_fnos = output_motion.bones["両目"].indexes
         for fidx, (prev_fno, now_fno, next_fno) in enumerate(zip(eye_fnos[:-2:2], eye_fnos[1:-1:2], eye_fnos[2::2])):
@@ -186,15 +229,15 @@ class GazeUsecase:
 
             prev_bf = output_motion.bones["両目"][prev_fno]
             now_bf = output_motion.bones["両目"][now_fno]
-            next_bf = output_motion.bones["両目"][next_fno]
+            prev_after_reset_bf = output_motion.bones["両目"][next_fno]
 
             prev_degree = prev_bf.rotation.to_signed_degrees(Z_AXIS)
             now_degree = now_bf.rotation.to_signed_degrees(Z_AXIS)
-            next_degree = next_bf.rotation.to_signed_degrees(Z_AXIS)
+            next_degree = prev_after_reset_bf.rotation.to_signed_degrees(Z_AXIS)
 
             prev_degree = 1
             now_degree = now_bf.rotation.dot(prev_bf.rotation)
-            next_degree = next_bf.rotation.dot(now_bf.rotation)
+            next_degree = prev_after_reset_bf.rotation.dot(now_bf.rotation)
 
             x1 = 0
             x2 = now_fno - prev_fno
@@ -215,8 +258,8 @@ class GazeUsecase:
             prev_bf.interpolations.rotation.end = MVector2D(IP_MAX, IP_MAX) - now_interpolation.start
             now_bf.interpolations.rotation.start = now_interpolation.start
             now_bf.interpolations.rotation.end = MVector2D(IP_MAX, IP_MAX) - next_interpolation.start
-            next_bf.interpolations.rotation.start = next_interpolation.start
-            next_bf.interpolations.rotation.end = next_interpolation.end
+            prev_after_reset_bf.interpolations.rotation.start = next_interpolation.start
+            prev_after_reset_bf.interpolations.rotation.end = next_interpolation.end
 
             logger.debug(
                 f"目線補間曲線 係数[{a:.3f}, {b:.3f}, {c:.3f}] prev[{prev_bf.index}][{prev_bf.interpolations.rotation}] "

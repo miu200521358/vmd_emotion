@@ -14,7 +14,6 @@ from mlib.service.form.widgets.exec_btn_ctrl import ExecButton
 from mlib.service.form.widgets.file_ctrl import MPmxFilePickerCtrl, MVmdFilePickerCtrl
 from mlib.utils.file_utils import save_histories, separate_path
 from mlib.vmd.vmd_collection import VmdMotion
-from mlib.vmd.vmd_tree import VmdBoneFrameTrees
 from service.worker.load_worker import LoadWorker
 
 logger = MLogger(os.path.basename(__file__))
@@ -204,7 +203,7 @@ class ServicePanel(NotebookPanel):
     def on_preparer_result(
         self,
         result: bool,
-        data: Optional[tuple[PmxModel, PmxModel, VmdMotion, VmdMotion, dict[str, float], VmdBoneFrameTrees]],
+        data: Optional[tuple[PmxModel, PmxModel, VmdMotion, VmdMotion, dict[str, float]]],
         elapsed_time: str,
     ):
         MLogger.console_handler = ConsoleHandler(self.console_ctrl.text_ctrl)
@@ -217,7 +216,7 @@ class ServicePanel(NotebookPanel):
             self.frame.on_sound()
             return
 
-        original_model, model, original_motion, motion, blink_conditions, bone_matrixes = data
+        original_model, model, original_motion, motion, blink_conditions = data
 
         logger.debug("結果展開")
 
@@ -241,14 +240,13 @@ class ServicePanel(NotebookPanel):
             logger.warning("モデルデータもしくはモーションデータが正常に配置できませんでした", decoration=MLogger.Decoration.BOX)
             return
 
-        self.bone_matrixes = bone_matrixes
-        logger.debug("bone_matrixes")
-
         self.blink_conditions = blink_conditions
         logger.debug("blink_conditions")
 
         self.Enable(False)
         self.EnableExec(True)
+
+        self.frame.on_sound()
 
         logger.info("読み込み完了", decoration=MLogger.Decoration.BOX)
 
@@ -321,12 +319,21 @@ class ServicePanel(NotebookPanel):
         if self.model_ctrl and self.motion_ctrl and self.model_ctrl.valid() and self.motion_ctrl.valid():
             model_dir_path, model_file_name, model_file_ext = separate_path(self.model_ctrl.path)
             motion_dir_path, motion_file_name, motion_file_ext = separate_path(self.motion_ctrl.path)
+            motion_file_names = motion_file_name.split("_")
             self.model_ctrl.read_name()
             self.motion_ctrl.read_name()
-            self.output_motion_ctrl.path = os.path.join(
-                motion_dir_path,
-                f"{motion_file_name}_{model_file_name}_{__(self.emotion_type)}_{datetime.now():%Y%m%d_%H%M%S}{motion_file_ext}",
-            )
+            if model_file_name in self.motion_ctrl.path and 3 < len(motion_file_names):
+                # 既にモデル名が設定済みである場合、モデル名は追加しない
+                self.output_motion_ctrl.path = os.path.join(
+                    motion_dir_path,
+                    f"{'_'.join(motion_file_names[:-3])}_{motion_file_names[-3]}_{__(self.emotion_type)}_"
+                    + f"{datetime.now():%Y%m%d_%H%M%S}{motion_file_ext}",
+                )
+            else:
+                self.output_motion_ctrl.path = os.path.join(
+                    motion_dir_path,
+                    f"{motion_file_name}_{model_file_name}_{__(self.emotion_type)}_{datetime.now():%Y%m%d_%H%M%S}{motion_file_ext}",
+                )
 
     def Enable(self, enable: bool) -> None:
         self.EnableExec(enable)

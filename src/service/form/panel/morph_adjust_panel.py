@@ -54,7 +54,51 @@ class MorphAdjustPanel(ServicePanel):
         self.root_sizer.Add(self.header_sizer, 0, wx.ALL | wx.ALIGN_RIGHT, 3)
 
     def _initialize_service_ui(self) -> None:
-        self.condition_sizer = wx.FlexGridSizer(18)
+        self.condition_sizer = wx.FlexGridSizer(13)
+
+        pass
+
+    def add_header(self) -> None:
+        self.condition_sizer.Add(wx.StaticText(self.window, wx.ID_ANY, __("対象モーフ"), wx.DefaultPosition, wx.DefaultSize, 0), 0, wx.ALL, 3)
+
+        self.condition_sizer.Add(wx.StaticText(self.window, wx.ID_ANY, __("置換モーフ"), wx.DefaultPosition, wx.DefaultSize, 0), 0, wx.ALL, 3)
+
+        self.condition_sizer.Add(wx.StaticText(self.window, wx.ID_ANY, " | ", wx.DefaultPosition, wx.DefaultSize, 0), 0, wx.ALL, 3)
+
+        # 倍率
+        self.ratio_title = wx.StaticText(self.window, wx.ID_ANY, __("倍率"), wx.DefaultPosition, wx.DefaultSize, 0)
+        self.condition_sizer.Add(self.ratio_title, 0, wx.ALL, 3)
+
+        # 下限値
+        self.min_title = wx.StaticText(self.window, wx.ID_ANY, __("下限値"), wx.DefaultPosition, wx.DefaultSize, 0)
+        self.condition_sizer.Add(self.min_title, 0, wx.ALL, 3)
+
+        # 上限値
+        self.max_title = wx.StaticText(self.window, wx.ID_ANY, __("上限値"), wx.DefaultPosition, wx.DefaultSize, 0)
+        self.condition_sizer.Add(self.max_title, 0, wx.ALL, 3)
+
+        self.bezier_title = wx.StaticText(self.window, wx.ID_ANY, __("補間曲線"), wx.DefaultPosition, wx.DefaultSize, 0)
+        self.condition_sizer.Add(self.bezier_title, 0, wx.ALL, 3)
+
+        # 開始X
+        self.start_x_title = wx.StaticText(self.window, wx.ID_ANY, __("開始X"), wx.DefaultPosition, wx.DefaultSize, 0)
+        self.condition_sizer.Add(self.start_x_title, 0, wx.ALL, 3)
+
+        # 開始Y
+        self.start_y_title = wx.StaticText(self.window, wx.ID_ANY, __("開始Y"), wx.DefaultPosition, wx.DefaultSize, 0)
+        self.condition_sizer.Add(self.start_y_title, 0, wx.ALL, 3)
+
+        # 終了X
+        self.end_x_title = wx.StaticText(self.window, wx.ID_ANY, __("終了X"), wx.DefaultPosition, wx.DefaultSize, 0)
+        self.condition_sizer.Add(self.end_x_title, 0, wx.ALL, 3)
+
+        # 終了Y
+        self.end_y_title = wx.StaticText(self.window, wx.ID_ANY, __("終了Y"), wx.DefaultPosition, wx.DefaultSize, 0)
+        self.condition_sizer.Add(self.end_y_title, 0, wx.ALL, 3)
+
+        self.condition_sizer.Add(wx.StaticText(self.window, wx.ID_ANY, "  ", wx.DefaultPosition, wx.DefaultSize, 0), 0, wx.ALL, 3)
+
+        self.condition_sizer.Add(wx.StaticText(self.window, wx.ID_ANY, "  ", wx.DefaultPosition, wx.DefaultSize, 0), 0, wx.ALL, 3)
 
         # --------------
         self.window_sizer.Add(self.condition_sizer, 0, wx.ALL, 3)
@@ -75,6 +119,7 @@ class MorphAdjustPanel(ServicePanel):
         super().on_preparer_result(result, data, elapsed_time)
 
         self.on_clear_condition(wx.EVT_BUTTON)
+        self.add_header()
         self.on_add_condition(wx.EVT_BUTTON)
 
     def save_histories_on_exec(self) -> None:
@@ -87,7 +132,9 @@ class MorphAdjustPanel(ServicePanel):
 
     def on_add_condition(self, event: wx.Event) -> None:
         self.conditions.append(
-            MorphConditionCtrl(self.frame, self, self.window, self.condition_sizer, self.model_ctrl.data, len(self.conditions))
+            MorphConditionCtrl(
+                self.frame, self, self.window, self.condition_sizer, self.model_ctrl.data, self.motion_ctrl.data, len(self.conditions)
+            )
         )
         self.fit_window()
 

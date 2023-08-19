@@ -47,13 +47,13 @@ class GazePanel(ServiceCanvasPanel):
         self.gaze_sizer.Add(self.gaze_title_ctrl, 0, wx.ALL, 3)
 
         # --------------
-        gaze_infection_tooltip = __("目線キーフレを作成する頻度。\n値が大きいほど、小さな動きでも目線が動くようになります。")
+        gaze_infection_tooltip = __("目線キーフレを作成する頻度。\n値が小さいほど、小さな動きでも目線が動くようになります。")
 
         self.gaze_infection_title_ctrl = wx.StaticText(self.window, wx.ID_ANY, __("頻度"), wx.DefaultPosition, wx.DefaultSize, 0)
         self.gaze_infection_title_ctrl.SetToolTip(gaze_infection_tooltip)
         self.gaze_sizer.Add(self.gaze_infection_title_ctrl, 0, wx.ALL, 3)
 
-        self.gaze_infection_ctrl = WheelSpinCtrlDouble(self.window, initial=0.5, min=0.1, max=1.0, inc=0.01, size=wx.Size(55, -1))
+        self.gaze_infection_ctrl = WheelSpinCtrlDouble(self.window, initial=0.4, min=0.1, max=1.0, inc=0.01, size=wx.Size(55, -1))
         self.gaze_infection_ctrl.SetToolTip(gaze_infection_tooltip)
         self.gaze_sizer.Add(self.gaze_infection_ctrl, 0, wx.ALL, 3)
 

@@ -37,6 +37,8 @@ class MorphAdjustUsecase:
         condition: dict[str, str],
     ) -> set[int]:
         morph_name = condition["morph_name"]
+        replace_morph_name = condition["replace_morph_name"]
+        ratio = float(condition["ratio"])
         min_ratio = float(condition["min"])
         max_ratio = float(condition["max"])
         min_v = 0
@@ -57,9 +59,26 @@ class MorphAdjustUsecase:
         for n, mf in enumerate(motion.morphs[morph_name]):
             logger.count("モーフ条件調整[{m}]", m=morph_name, index=n, total_index_count=len(motion.morphs[morph_name]), display_block=10000)
             _, ry, _ = evaluate(interpolation, min_v, int((mf.ratio + abs(min_ratio)) * 100), max_v)
-            ratio = mf.ratio * ry
+            r = mf.ratio * ry * ratio
 
-            new_mf = VmdMorphFrame(mf.index, mf.name, ratio)
-            output_motion.append_morph_frame(new_mf)
+            mname = replace_morph_name if replace_morph_name else mf.name
+            prev_index, now_index, next_index = output_motion.morphs[mname].range_indexes(mf.index)
+            new_mf = VmdMorphFrame(now_index, mname, r)
+
+            if prev_index == now_index == next_index:
+                # 今のキーに既にキーフレがある場合
+                if replace_morph_name:
+                    # 置き換えの場合、加算
+                    now_mf = output_motion.morphs[mname][now_index]
+                    output_motion.append_morph_frame(now_mf + new_mf)
+                else:
+                    # 置き換えしない場合、そのまま置換
+                    output_motion.append_morph_frame(new_mf)
+            else:
+                # 該当キーにキーフレがない場合、置換
+                output_motion.append_morph_frame(new_mf)
+
+        if replace_morph_name:
+            del output_motion.morphs[morph_name]
 
         return set(motion.morphs[morph_name].indexes)

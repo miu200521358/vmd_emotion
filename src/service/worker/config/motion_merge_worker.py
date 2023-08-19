@@ -3,13 +3,12 @@ import os
 import wx
 
 from mlib.core.logger import MLogger
-from mlib.pmx.pmx_collection import PmxModel
 from mlib.service.base_worker import BaseWorker
 from mlib.service.form.base_frame import BaseFrame
 from mlib.service.form.base_panel import BasePanel
 from mlib.utils.file_utils import get_root_dir
 from service.usecase.config.motion_merge_usecase import MotionMergeUsecase
-from service.usecase.save_usecase import SaveUsecase
+from service.worker.save_worker import SaveWorker
 
 logger = MLogger(os.path.basename(__file__), level=1)
 __ = logger.get_text
@@ -33,21 +32,7 @@ class MotionMergeWorker(BaseWorker):
         fnos: list[int] = []
         self.result_data = motion, output_motion, fnos
 
-        logger.info("統合モーション出力開始", decoration=MLogger.Decoration.BOX)
-
-        output_model = PmxModel()
-        output_model.model_name = "統合データ"
-        output_model.english_name = "MergeData"
-
-        if not self.panel.output_motion_ctrl.path or not os.path.exists(os.path.dirname(self.panel.output_motion_ctrl.path)):
-            logger.warning("出力ファイルパスが有効なパスではないため、デフォルトの出力ファイルパスを再設定します。")
-            self.panel.create_output_path()
-
-        SaveUsecase().save(
-            output_model,
-            output_motion,
-            self.panel.output_motion_ctrl.path,
-        )
+        SaveWorker(self.frame, self.panel, self.result_func).execute_sub("統合データ", output_motion)
 
         logger.info("モーション統合完了", decoration=MLogger.Decoration.BOX)
 

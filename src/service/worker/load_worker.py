@@ -68,15 +68,12 @@ class LoadWorker(BaseWorker):
 
         blink_conditions = usecase.get_blink_conditions()
 
-        bone_matrixes = usecase.get_bone_matrixes(model)
-
         self.result_data = (
             original_model,
             model,
             original_motion,
             motion,
             blink_conditions,
-            bone_matrixes,
         )
 
     def output_log(self):

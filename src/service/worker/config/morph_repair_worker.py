@@ -10,7 +10,7 @@ from mlib.service.form.base_panel import BasePanel
 from mlib.utils.file_utils import get_root_dir
 from mlib.vmd.vmd_collection import VmdMotion
 from service.usecase.config.morph_repair_usecase import MorphRepairUsecase
-from service.usecase.save_usecase import SaveUsecase
+from service.worker.save_worker import SaveWorker
 
 logger = MLogger(os.path.basename(__file__), level=1)
 __ = logger.get_text
@@ -36,15 +36,7 @@ class MorphRepairWorker(BaseWorker):
 
         self.result_data = motion, output_motion, fnos
 
-        if not self.panel.output_motion_ctrl.path or not os.path.exists(os.path.dirname(self.panel.output_motion_ctrl.path)):
-            logger.warning("出力ファイルパスが有効なパスではないため、デフォルトの出力ファイルパスを再設定します。")
-            self.panel.create_output_path()
-
-        SaveUsecase().save(
-            model,
-            output_motion,
-            self.panel.output_motion_ctrl.path,
-        )
+        SaveWorker(self.frame, self.panel, self.result_func).execute_sub(model.name, output_motion)
 
         logger.info("モーフ破綻補正完了", decoration=MLogger.Decoration.BOX)
 

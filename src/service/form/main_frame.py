@@ -6,6 +6,7 @@ import wx
 from mlib.core.logger import MLogger
 from mlib.pmx.canvas import SyncSubCanvasWindow
 from mlib.pmx.pmx_collection import PmxModel
+from mlib.pmx.shader import MShader
 from mlib.service.form.base_panel import BasePanel
 from mlib.service.form.notebook_frame import NotebookFrame
 from mlib.vmd.vmd_collection import VmdMotion
@@ -83,6 +84,9 @@ class MainFrame(NotebookFrame):
                     self.morph_sub_window.panel.canvas.vertical_degrees = 5
                     self.morph_sub_window.panel.canvas.look_at_center = model.bones["頭"].position.copy()
                     self.morph_sub_window.panel.canvas.Refresh()
+                    self.morph_sub_window.panel.canvas.camera_offset_position.y = (
+                        model.bones["頭"].position.y - MShader.INITIAL_CAMERA_POSITION_Y
+                    )
 
                 frame_x, frame_y = self.GetPosition()
                 self.morph_sub_window.SetPosition(wx.Point(max(0, frame_x + self.GetSize().GetWidth() + 10), max(0, frame_y + 30)))
@@ -153,22 +157,27 @@ class MainFrame(NotebookFrame):
                 self.morph_sub_window.Hide()
 
             if not self.bezier_dialog.IsShown():
-                self.bezier_dialog.bezier_panel.bezier_ctrl.start_x_ctrl.SetValue(condition.start_x_ctrl.GetValue())
-                self.bezier_dialog.bezier_panel.bezier_ctrl.start_y_ctrl.SetValue(condition.start_y_ctrl.GetValue())
-                self.bezier_dialog.bezier_panel.bezier_ctrl.end_x_ctrl.SetValue(condition.end_x_ctrl.GetValue())
-                self.bezier_dialog.bezier_panel.bezier_ctrl.end_y_ctrl.SetValue(condition.end_y_ctrl.GetValue())
-                self.bezier_dialog.bezier_panel.slider.SetValue(0.0)
+                model: Optional[PmxModel] = panel.model_ctrl.data
+                if model:
+                    self.bezier_dialog.bezier_panel.bezier_ctrl.start_x_ctrl.SetValue(condition.start_x_ctrl.GetValue())
+                    self.bezier_dialog.bezier_panel.bezier_ctrl.start_y_ctrl.SetValue(condition.start_y_ctrl.GetValue())
+                    self.bezier_dialog.bezier_panel.bezier_ctrl.end_x_ctrl.SetValue(condition.end_x_ctrl.GetValue())
+                    self.bezier_dialog.bezier_panel.bezier_ctrl.end_y_ctrl.SetValue(condition.end_y_ctrl.GetValue())
+                    self.bezier_dialog.bezier_panel.slider.SetValue(0.0)
 
-                self.bezier_dialog.bezier_panel.canvas.clear_model_set()
-                self.bezier_dialog.bezier_panel.canvas.append_model_set(panel.model_ctrl.data, VmdMotion(), bone_alpha=0.0, is_sub=True)
-                self.bezier_dialog.bezier_panel.canvas.vertical_degrees = 5
-                self.bezier_dialog.bezier_panel.canvas.look_at_center = panel.model_ctrl.data.bones["頭"].position.copy()
-                self.bezier_dialog.bezier_panel.canvas.Refresh()
+                    self.bezier_dialog.bezier_panel.canvas.clear_model_set()
+                    self.bezier_dialog.bezier_panel.canvas.append_model_set(model, VmdMotion(), bone_alpha=0.0, is_sub=True)
+                    self.bezier_dialog.bezier_panel.canvas.vertical_degrees = 5
+                    self.bezier_dialog.bezier_panel.canvas.look_at_center = model.bones["頭"].position.copy()
+                    self.bezier_dialog.bezier_panel.canvas.camera_offset_position.y = (
+                        model.bones["頭"].position.y - MShader.INITIAL_CAMERA_POSITION_Y
+                    )
+                    self.bezier_dialog.bezier_panel.canvas.Refresh()
 
-                frame_x, frame_y = self.GetPosition()
-                self.bezier_dialog.SetPosition(wx.Point(max(0, frame_x + self.GetSize().GetWidth() + 10), max(0, frame_y + 30)))
+                    frame_x, frame_y = self.GetPosition()
+                    self.bezier_dialog.SetPosition(wx.Point(max(0, frame_x + self.GetSize().GetWidth() + 10), max(0, frame_y + 30)))
 
-                self.bezier_dialog.ShowModal()
+                    self.bezier_dialog.ShowModal()
 
             elif self.bezier_dialog.IsShown():
                 self.bezier_dialog.Hide()

@@ -1020,3 +1020,60 @@ msgstr "Motion integration output"
 
 msgid "モーション統合出力停止"
 msgstr "Motion integration output stopped"
+
+msgid "置換先: "
+msgstr "Replace with:"
+
+msgid "倍率: "
+msgstr "Magnification:"
+
+msgid "置換先モーフ"
+msgstr "Replace with" morph
+
+msgid "調整モーフのプルダウンの選択肢を上方向に移動できます。"
+msgstr "The pull-down choices for the adjustment morph can be moved upward"
+
+msgid "調整対象となる調整モーフの選択肢\n選択されたモーフに対して調整を行います"
+msgstr "Adjustment will be made to the morphs selected for adjustment"
+
+msgid "調整モーフのプルダウンの選択肢を下方向に移動できます。"
+msgstr "You can move the pull-down choices for the adjustment morph downward"
+
+msgid "置換モーフ"
+msgstr "Substitution morph"
+
+msgid "置換モーフのプルダウンの選択肢を上方向に移動できます。"
+msgstr "You can move the choices in the pull-down for the replacement morph upward"
+
+msgid "調整対象となる置換モーフの選択肢\n選択モーフを置換したい場合に選択してください"
+msgstr "Choice of replacement morphs to be adjusted\nChoose if you want to replace selected morphs"
+
+msgid "置換モーフのプルダウンの選択肢を下方向に移動できます。"
+msgstr "You can move the pull-down choices in the Replace Morph downwards"
+
+msgid "モーフ全体の倍率を一律で調整出来ます"
+msgstr "You can adjust the magnification of the entire morph uniformly"
+
+msgid "モーフに設定できる値の下限を設定できます"
+msgstr "Allows you to set a lower limit on the value that can be set for morphs"
+
+msgid "補間曲線の開始Xの値。補間曲線はプレビュー（目）アイコンから確認・調整できます"
+msgstr "The starting X value of the interpolation curve. The interpolation curve can be viewed and adjusted from the preview (eye) icon"
+
+msgid "補間曲線の開始Yの値。補間曲線はプレビュー（目）アイコンから確認・調整できます"
+msgstr "The starting Y value of the interpolation curve. The interpolation curve can be viewed and adjusted from the preview (eye) icon"
+
+msgid "補間曲線の終了Xの値。補間曲線はプレビュー（目）アイコンから確認・調整できます"
+msgstr "The value of the end X of the interpolation curve. The interpolation curve can be viewed and adjusted from the preview (eye) icon"
+
+msgid "補間曲線の終了Yの値。補間曲線はプレビュー（目）アイコンから確認・調整できます"
+msgstr "The value of the end Y of the interpolation curve. The interpolation curve can be viewed and adjusted from the preview (eye) icon"
+
+msgid "選択された補間曲線をパネルに設定します"
+msgstr "Sets the selected interpolation curve to the panel"
+
+msgid "*** 処理を停止します ***"
+msgstr "*** Stop processing ***"
+
+msgid "初期姿勢計算"
+msgstr "Initial Attitude Calculation"

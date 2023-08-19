@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from typing import Any, Iterable, Optional
+from typing import Iterable, Optional
 
 import wx
 
@@ -15,9 +15,7 @@ from mlib.service.form.widgets.file_ctrl import MPmxFilePickerCtrl, MVmdFilePick
 from mlib.service.form.widgets.frame_slider_ctrl import FrameSliderCtrl
 from mlib.utils.file_utils import save_histories, separate_path
 from mlib.vmd.vmd_collection import VmdMotion
-from mlib.vmd.vmd_tree import VmdBoneFrameTrees
 from service.worker.load_worker import LoadWorker
-from service.worker.save_worker import SaveWorker
 
 logger = MLogger(os.path.basename(__file__))
 __ = logger.get_text
@@ -32,9 +30,6 @@ class ServiceCanvasPanel(CanvasPanel):
         self.load_worker.panel = self
 
         self.service_worker = self.create_service_worker()
-
-        self.save_worker = SaveWorker(frame, self, self.on_save_result)
-        self.save_worker.panel = self
 
         # 上にビューワー
         self.root_sizer.Add(self.canvas, 1, wx.EXPAND | wx.ALL, 0)
@@ -241,7 +236,7 @@ class ServiceCanvasPanel(CanvasPanel):
     def on_preparer_result(
         self,
         result: bool,
-        data: Optional[tuple[PmxModel, PmxModel, VmdMotion, VmdMotion, dict[str, float], VmdBoneFrameTrees]],
+        data: Optional[tuple[PmxModel, PmxModel, VmdMotion, VmdMotion, dict[str, float]]],
         elapsed_time: str,
     ):
         MLogger.console_handler = ConsoleHandler(self.console_ctrl.text_ctrl)
@@ -256,7 +251,7 @@ class ServiceCanvasPanel(CanvasPanel):
 
         logger.info("描画準備開始", decoration=MLogger.Decoration.BOX)
 
-        original_model, model, original_motion, motion, blink_conditions, bone_matrixes = data
+        original_model, model, original_motion, motion, blink_conditions = data
 
         logger.debug("結果展開")
 
@@ -283,9 +278,6 @@ class ServiceCanvasPanel(CanvasPanel):
         self.frame_slider.SetMaxFrameNo(motion.max_fno)
         logger.debug("SetMaxFrameNo")
 
-        self.bone_matrixes = bone_matrixes
-        logger.debug("bone_matrixes")
-
         self.blink_conditions = blink_conditions
         logger.debug("blink_conditions")
 
@@ -294,6 +286,8 @@ class ServiceCanvasPanel(CanvasPanel):
 
         self.Enable(False)
         self.EnableExec(True)
+
+        self.frame.on_sound()
 
         logger.info("読み込み完了", decoration=MLogger.Decoration.BOX)
 
@@ -332,24 +326,6 @@ class ServiceCanvasPanel(CanvasPanel):
 
         logger.info("実行完了", decoration=MLogger.Decoration.BOX)
 
-    def save(self, event: wx.Event) -> None:
-        MLogger.console_handler = ConsoleHandler(self.console_ctrl.text_ctrl)
-        self.frame.running_worker = True
-        self.Enable(False)
-        self.save_worker.start()
-
-    def on_save_result(self, result: bool, data: Optional[Any], elapsed_time: str) -> None:
-        self.frame.running_worker = False
-        MLogger.console_handler = ConsoleHandler(self.console_ctrl.text_ctrl)
-        self.console_ctrl.write(f"\n----------------\n{elapsed_time}")
-
-        # 保存ボタンを有効にできるようにする
-        self.enabled_save = True
-        self.Enable(True)
-        self.frame.on_sound()
-
-        logger.info("保存完了", decoration=MLogger.Decoration.BOX)
-
     def on_change_model_pmx(self, event: wx.Event) -> None:
         self.model_ctrl.unwrap()
         if self.model_ctrl.read_name():
@@ -370,12 +346,21 @@ class ServiceCanvasPanel(CanvasPanel):
         if self.model_ctrl.valid() and self.motion_ctrl.valid():
             model_dir_path, model_file_name, model_file_ext = separate_path(self.model_ctrl.path)
             motion_dir_path, motion_file_name, motion_file_ext = separate_path(self.motion_ctrl.path)
+            motion_file_names = motion_file_name.split("_")
             self.model_ctrl.read_name()
             self.motion_ctrl.read_name()
-            self.output_motion_ctrl.path = os.path.join(
-                motion_dir_path,
-                f"{motion_file_name}_{model_file_name}_{__(self.emotion_type)}_{datetime.now():%Y%m%d_%H%M%S}{motion_file_ext}",
-            )
+            if model_file_name in self.motion_ctrl.path and 3 < len(motion_file_names):
+                # 既にモデル名が設定済みである場合、モデル名は追加しない
+                self.output_motion_ctrl.path = os.path.join(
+                    motion_dir_path,
+                    f"{'_'.join(motion_file_names[:-3])}_{motion_file_names[-3]}_{__(self.emotion_type)}_"
+                    + f"{datetime.now():%Y%m%d_%H%M%S}{motion_file_ext}",
+                )
+            else:
+                self.output_motion_ctrl.path = os.path.join(
+                    motion_dir_path,
+                    f"{motion_file_name}_{model_file_name}_{__(self.emotion_type)}_{datetime.now():%Y%m%d_%H%M%S}{motion_file_ext}",
+                )
 
     def Enable(self, enable: bool) -> None:
         self.EnableExec(enable)
