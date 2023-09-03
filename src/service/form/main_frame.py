@@ -24,12 +24,13 @@ __ = logger.get_text
 
 
 class MainFrame(NotebookFrame):
-    def __init__(self, app: wx.App, title: str, size: wx.Size, *args, **kw) -> None:
+    def __init__(self, app: wx.App, title: str, size: wx.Size, is_saving: bool, *args, **kw) -> None:
         super().__init__(
             app,
             history_keys=["model_pmx", "motion_vmd", "morph_condition", "motion_condition"],
             title=title,
             size=size,
+            is_saving=is_saving,
         )
         self.selected_tab_idx = 0
         self.running_worker = False
