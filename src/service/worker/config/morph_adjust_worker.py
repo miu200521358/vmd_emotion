@@ -17,7 +17,9 @@ __ = logger.get_text
 
 
 class MorphAdjustWorker(BaseWorker):
-    def __init__(self, frame: BaseFrame, panel: BasePanel, result_event: wx.Event) -> None:
+    def __init__(
+        self, frame: BaseFrame, panel: BasePanel, result_event: wx.Event
+    ) -> None:
         super().__init__(frame, result_event)
         self.panel = panel
 
@@ -42,11 +44,16 @@ class MorphAdjustWorker(BaseWorker):
 
         self.result_data = motion, output_motion, fnos
 
-        SaveWorker(self.frame, self.panel, self.result_func).execute_sub(model.name, output_motion)
+        SaveWorker(self.frame, self.panel, self.result_func).execute_sub(
+            model.name, output_motion
+        )
 
         logger.info("モーフ条件調整完了", decoration=MLogger.Decoration.BOX)
 
     def output_log(self):
-        output_log_path = os.path.join(get_root_dir(), f"{os.path.basename(self.panel.output_motion_ctrl.path)}_morph_adjust.log")
+        output_log_path = os.path.join(
+            get_root_dir(),
+            f"{os.path.basename(self.panel.output_motion_ctrl.path)}_morph_adjust.log",
+        )
         # 出力されたメッセージを全部出力
         self.panel.console_ctrl.text_ctrl.SaveFile(filename=output_log_path)

@@ -41,12 +41,21 @@ class BlinkPanel(ServiceCanvasPanel):
 
         self.blink_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
-        self.blink_title_ctrl = wx.StaticText(self.window, wx.ID_ANY, __("まばたき生成パラメーター: "), wx.DefaultPosition, wx.DefaultSize, 0)
+        self.blink_title_ctrl = wx.StaticText(
+            self.window,
+            wx.ID_ANY,
+            __("まばたき生成パラメーター: "),
+            wx.DefaultPosition,
+            wx.DefaultSize,
+            0,
+        )
         self.blink_title_ctrl.SetToolTip(
             "\n".join(
                 [
                     __("頭などの動きに合わせてをまばたきを生成します"),
-                    __("まばたき・下モーフを使用しますが、モデルに該当モーフがなく他で代用できる場合は置き換えてください"),
+                    __(
+                        "まばたき・下モーフを使用しますが、モデルに該当モーフがなく他で代用できる場合は置き換えてください"
+                    ),
                 ]
             )
         )
@@ -69,7 +78,9 @@ class BlinkPanel(ServiceCanvasPanel):
     def on_preparer_result(
         self,
         result: bool,
-        data: Optional[tuple[PmxModel, PmxModel, VmdMotion, VmdMotion, dict[str, float]]],
+        data: Optional[
+            tuple[PmxModel, PmxModel, VmdMotion, VmdMotion, dict[str, float]]
+        ],
         elapsed_time: str,
     ):
         super().on_preparer_result(result, data, elapsed_time)

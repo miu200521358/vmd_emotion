@@ -34,7 +34,9 @@ class MotionMergeUsecase:
         merge_motion.morphs = motions[0].morphs.copy()
 
         for motion in motions[1:]:
-            merge_motion, frame_cnt = self.merge_motion(merge_motion, motion, frame_cnt, total_frame_cnt)
+            merge_motion, frame_cnt = self.merge_motion(
+                merge_motion, motion, frame_cnt, total_frame_cnt
+            )
 
         output_motion = VmdMotion(output_motion_path)
 
@@ -63,13 +65,25 @@ class MotionMergeUsecase:
     ) -> tuple[VmdMotion, int]:
         """モーション同士の統合"""
         # 両方にキーがあるのだけ統合
-        merged_bone_names: set[str] = set(motion1.bones.names) & set(motion2.bones.names)
-        merged_morph_names: set[str] = set(motion1.morphs.names) & set(motion2.morphs.names)
+        merged_bone_names: set[str] = set(motion1.bones.names) & set(
+            motion2.bones.names
+        )
+        merged_morph_names: set[str] = set(motion1.morphs.names) & set(
+            motion2.morphs.names
+        )
         output_motion = VmdMotion()
 
         for bone_name in merged_bone_names:
-            for fno in sorted(set(motion1.bones[bone_name].indexes) | set(motion2.bones[bone_name].indexes)):
-                logger.count("ボーンキーフレーム統合", index=frame_cnt, total_index_count=total_frame_cnt, display_block=10000)
+            for fno in sorted(
+                set(motion1.bones[bone_name].indexes)
+                | set(motion2.bones[bone_name].indexes)
+            ):
+                logger.count(
+                    "ボーンキーフレーム統合",
+                    index=frame_cnt,
+                    total_index_count=total_frame_cnt,
+                    display_block=10000,
+                )
 
                 # まずはキーフレがあるところを単純に足していく
                 bf1 = motion1.bones[bone_name][fno]
@@ -80,8 +94,16 @@ class MotionMergeUsecase:
         self.ensure_bone_motion(output_motion, motion1, motion2, merged_bone_names)
 
         for morph_name in merged_morph_names:
-            for fno in sorted(set(motion1.morphs[morph_name].indexes) | set(motion2.morphs[morph_name].indexes)):
-                logger.count("モーフキーフレーム統合", index=frame_cnt, total_index_count=total_frame_cnt, display_block=10000)
+            for fno in sorted(
+                set(motion1.morphs[morph_name].indexes)
+                | set(motion2.morphs[morph_name].indexes)
+            ):
+                logger.count(
+                    "モーフキーフレーム統合",
+                    index=frame_cnt,
+                    total_index_count=total_frame_cnt,
+                    display_block=10000,
+                )
 
                 # まずはキーフレがあるところを単純に足していく
                 mf1 = motion1.morphs[morph_name][fno]
@@ -103,7 +125,10 @@ class MotionMergeUsecase:
         """ボーンキーフレの検算"""
 
         for bone_name in merged_bone_names:
-            for prev_fno, next_fno in zip(output_motion.bones[bone_name].indexes, output_motion.bones[bone_name].indexes[1:]):
+            for prev_fno, next_fno in zip(
+                output_motion.bones[bone_name].indexes,
+                output_motion.bones[bone_name].indexes[1:],
+            ):
                 position_x_dots: list[float] = [0.0]
                 position_y_dots: list[float] = [0.0]
                 position_z_dots: list[float] = [0.0]
@@ -112,7 +137,9 @@ class MotionMergeUsecase:
                 ensure_bfs = VmdBoneNameFrames()
                 output_bfs = VmdBoneNameFrames()
 
-                logger.debug(f"[{bone_name}][{prev_fno} - {next_fno}] ------------------------------")
+                logger.debug(
+                    f"[{bone_name}][{prev_fno} - {next_fno}] ------------------------------"
+                )
 
                 prev_ensure_bf: VmdBoneFrame = None
                 for fno in range(prev_fno, next_fno + 1):
@@ -124,19 +151,37 @@ class MotionMergeUsecase:
                     ensure_bfs.append(ensure_bf)
 
                     if prev_ensure_bf:
-                        position_x_dots.append(ensure_bf.position.x - prev_ensure_bf.position.x)
-                        position_y_dots.append(ensure_bf.position.y - prev_ensure_bf.position.y)
-                        position_z_dots.append(ensure_bf.position.z - prev_ensure_bf.position.z)
-                        rotation_dots.append(ensure_bf.rotation.dot(prev_ensure_bf.rotation))
+                        position_x_dots.append(
+                            ensure_bf.position.x - prev_ensure_bf.position.x
+                        )
+                        position_y_dots.append(
+                            ensure_bf.position.y - prev_ensure_bf.position.y
+                        )
+                        position_z_dots.append(
+                            ensure_bf.position.z - prev_ensure_bf.position.z
+                        )
+                        rotation_dots.append(
+                            ensure_bf.rotation.dot(prev_ensure_bf.rotation)
+                        )
 
                     prev_ensure_bf = ensure_bf
 
-                output_motion.bones[bone_name].data[next_fno].interpolations.translation_x = create_interpolation(position_x_dots)
-                output_motion.bones[bone_name].data[next_fno].interpolations.translation_y = create_interpolation(position_y_dots)
-                output_motion.bones[bone_name].data[next_fno].interpolations.translation_z = create_interpolation(position_z_dots)
-                output_motion.bones[bone_name].data[next_fno].interpolations.rotation = create_interpolation(rotation_dots)
+                output_motion.bones[bone_name].data[
+                    next_fno
+                ].interpolations.translation_x = create_interpolation(position_x_dots)
+                output_motion.bones[bone_name].data[
+                    next_fno
+                ].interpolations.translation_y = create_interpolation(position_y_dots)
+                output_motion.bones[bone_name].data[
+                    next_fno
+                ].interpolations.translation_z = create_interpolation(position_z_dots)
+                output_motion.bones[bone_name].data[
+                    next_fno
+                ].interpolations.rotation = create_interpolation(rotation_dots)
 
-                logger.debug(f"[{bone_name}] interpolations[{next_fno}]: {output_motion.bones[bone_name].data[next_fno].interpolations}")
+                logger.debug(
+                    f"[{bone_name}] interpolations[{next_fno}]: {output_motion.bones[bone_name].data[next_fno].interpolations}"
+                )
 
                 # -----------------------
 
@@ -177,13 +222,26 @@ class MotionMergeUsecase:
 
                 # -----------------------
 
-                infection_position_x_fidxs = get_infections(position_x_diff_dots, threshold=1e-5).tolist()
-                infection_position_y_fidxs = get_infections(position_y_diff_dots, threshold=1e-5).tolist()
-                infection_position_z_fidxs = get_infections(position_z_diff_dots, threshold=1e-5).tolist()
-                infection_rotation_fidxs = get_infections(rotation_diff_dots, threshold=1e-5).tolist()
+                infection_position_x_fidxs = get_infections(
+                    position_x_diff_dots, threshold=1e-5
+                ).tolist()
+                infection_position_y_fidxs = get_infections(
+                    position_y_diff_dots, threshold=1e-5
+                ).tolist()
+                infection_position_z_fidxs = get_infections(
+                    position_z_diff_dots, threshold=1e-5
+                ).tolist()
+                infection_rotation_fidxs = get_infections(
+                    rotation_diff_dots, threshold=1e-5
+                ).tolist()
 
                 for infection_fidx in sorted(
-                    set(infection_position_x_fidxs + infection_position_y_fidxs + infection_position_z_fidxs + infection_rotation_fidxs)
+                    set(
+                        infection_position_x_fidxs
+                        + infection_position_y_fidxs
+                        + infection_position_z_fidxs
+                        + infection_rotation_fidxs
+                    )
                 ):
                     infection_fno = fnos[infection_fidx]
                     logger.debug(f"[{bone_name}] infection_fno: {infection_fno}")
@@ -204,11 +262,16 @@ class MotionMergeUsecase:
         """モーフキーフレの検算"""
 
         for morph_name in merged_morph_names:
-            for prev_fno, next_fno in zip(output_motion.morphs[morph_name].indexes, output_motion.morphs[morph_name].indexes[1:]):
+            for prev_fno, next_fno in zip(
+                output_motion.morphs[morph_name].indexes,
+                output_motion.morphs[morph_name].indexes[1:],
+            ):
                 ensure_morphs = VmdMorphNameFrames()
                 output_morphs = VmdMorphNameFrames()
 
-                logger.debug(f"[{morph_name}][{prev_fno} - {next_fno}] ------------------------------")
+                logger.debug(
+                    f"[{morph_name}][{prev_fno} - {next_fno}] ------------------------------"
+                )
 
                 # -----------------------
 
@@ -238,7 +301,9 @@ class MotionMergeUsecase:
 
                 # -----------------------
 
-                infection_ratio_fidxs = get_infections(ratio_diff_dots, threshold=1e-5).tolist()
+                infection_ratio_fidxs = get_infections(
+                    ratio_diff_dots, threshold=1e-5
+                ).tolist()
 
                 for infection_fidx in infection_ratio_fidxs:
                     infection_fno = fnos[infection_fidx]

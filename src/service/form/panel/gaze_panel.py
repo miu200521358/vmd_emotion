@@ -35,7 +35,14 @@ class GazePanel(ServiceCanvasPanel):
     def _initialize_service_ui(self) -> None:
         self.gaze_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
-        self.gaze_title_ctrl = wx.StaticText(self.window, wx.ID_ANY, __("目線生成パラメーター: "), wx.DefaultPosition, wx.DefaultSize, 0)
+        self.gaze_title_ctrl = wx.StaticText(
+            self.window,
+            wx.ID_ANY,
+            __("目線生成パラメーター: "),
+            wx.DefaultPosition,
+            wx.DefaultSize,
+            0,
+        )
         self.gaze_title_ctrl.SetToolTip(
             "\n".join(
                 [
@@ -47,101 +54,175 @@ class GazePanel(ServiceCanvasPanel):
         self.gaze_sizer.Add(self.gaze_title_ctrl, 0, wx.ALL, 3)
 
         # --------------
-        gaze_infection_tooltip = __("目線キーフレを作成する頻度。\n値が小さいほど、小さな動きでも目線が動くようになります。")
+        gaze_infection_tooltip = __(
+            "目線キーフレを作成する頻度。\n値が小さいほど、小さな動きでも目線が動くようになります。"
+        )
 
-        self.gaze_infection_title_ctrl = wx.StaticText(self.window, wx.ID_ANY, __("頻度"), wx.DefaultPosition, wx.DefaultSize, 0)
+        self.gaze_infection_title_ctrl = wx.StaticText(
+            self.window, wx.ID_ANY, __("頻度"), wx.DefaultPosition, wx.DefaultSize, 0
+        )
         self.gaze_infection_title_ctrl.SetToolTip(gaze_infection_tooltip)
         self.gaze_sizer.Add(self.gaze_infection_title_ctrl, 0, wx.ALL, 3)
 
-        self.gaze_infection_ctrl = WheelSpinCtrlDouble(self.window, initial=0.4, min=0.1, max=1.0, inc=0.01, size=wx.Size(55, -1))
+        self.gaze_infection_ctrl = WheelSpinCtrlDouble(
+            self.window, initial=0.4, min=0.1, max=1.0, inc=0.01, size=wx.Size(55, -1)
+        )
         self.gaze_infection_ctrl.SetToolTip(gaze_infection_tooltip)
         self.gaze_sizer.Add(self.gaze_infection_ctrl, 0, wx.ALL, 3)
 
         # --------------
-        gaze_ratio_x_tooltip = __("目線キーフレで設定する縦方向の値の大きさ。\n値が大きいほど、目線を大きく動かすようになります。")
+        gaze_ratio_x_tooltip = __(
+            "目線キーフレで設定する縦方向の値の大きさ。\n値が大きいほど、目線を大きく動かすようになります。"
+        )
 
-        self.gaze_ratio_x_title_ctrl = wx.StaticText(self.window, wx.ID_ANY, __("縦振り幅"), wx.DefaultPosition, wx.DefaultSize, 0)
+        self.gaze_ratio_x_title_ctrl = wx.StaticText(
+            self.window,
+            wx.ID_ANY,
+            __("縦振り幅"),
+            wx.DefaultPosition,
+            wx.DefaultSize,
+            0,
+        )
         self.gaze_ratio_x_title_ctrl.SetToolTip(gaze_ratio_x_tooltip)
         self.gaze_sizer.Add(self.gaze_ratio_x_title_ctrl, 0, wx.ALL, 3)
 
-        self.gaze_ratio_x_ctrl = WheelSpinCtrlDouble(self.window, initial=0.7, min=0.5, max=1.5, inc=0.01, size=wx.Size(55, -1))
+        self.gaze_ratio_x_ctrl = WheelSpinCtrlDouble(
+            self.window, initial=0.7, min=0.5, max=1.5, inc=0.01, size=wx.Size(55, -1)
+        )
         self.gaze_ratio_x_ctrl.SetToolTip(gaze_ratio_x_tooltip)
         self.gaze_sizer.Add(self.gaze_ratio_x_ctrl, 0, wx.ALL, 3)
 
         # --------------
-        gaze_limit_upper_x_tooltip = __("目線キーフレで設定する縦方向の値の上限。\n上限を超えた回転量になった場合、上限までしか動かしません。")
+        gaze_limit_upper_x_tooltip = __(
+            "目線キーフレで設定する縦方向の値の上限。\n上限を超えた回転量になった場合、上限までしか動かしません。"
+        )
 
-        self.gaze_limit_upper_x_title_ctrl = wx.StaticText(self.window, wx.ID_ANY, __("縦上限"), wx.DefaultPosition, wx.DefaultSize, 0)
+        self.gaze_limit_upper_x_title_ctrl = wx.StaticText(
+            self.window, wx.ID_ANY, __("縦上限"), wx.DefaultPosition, wx.DefaultSize, 0
+        )
         self.gaze_limit_upper_x_title_ctrl.SetToolTip(gaze_limit_upper_x_tooltip)
         self.gaze_sizer.Add(self.gaze_limit_upper_x_title_ctrl, 0, wx.ALL, 3)
 
-        self.gaze_limit_upper_x_ctrl = WheelSpinCtrl(self.window, initial=3, min=0, max=45, size=wx.Size(50, -1))
+        self.gaze_limit_upper_x_ctrl = WheelSpinCtrl(
+            self.window, initial=3, min=0, max=45, size=wx.Size(50, -1)
+        )
         self.gaze_limit_upper_x_ctrl.SetToolTip(gaze_limit_upper_x_tooltip)
         self.gaze_sizer.Add(self.gaze_limit_upper_x_ctrl, 0, wx.ALL, 3)
 
         # --------------
-        gaze_limit_lower_x_tooltip = __("目線キーフレで設定する縦方向の値の下限。\n下限を超えた回転量になった場合、下限までしか動かしません。")
+        gaze_limit_lower_x_tooltip = __(
+            "目線キーフレで設定する縦方向の値の下限。\n下限を超えた回転量になった場合、下限までしか動かしません。"
+        )
 
-        self.gaze_limit_lower_x_title_ctrl = wx.StaticText(self.window, wx.ID_ANY, __("縦下限"), wx.DefaultPosition, wx.DefaultSize, 0)
+        self.gaze_limit_lower_x_title_ctrl = wx.StaticText(
+            self.window, wx.ID_ANY, __("縦下限"), wx.DefaultPosition, wx.DefaultSize, 0
+        )
         self.gaze_limit_lower_x_title_ctrl.SetToolTip(gaze_limit_lower_x_tooltip)
         self.gaze_sizer.Add(self.gaze_limit_lower_x_title_ctrl, 0, wx.ALL, 3)
 
-        self.gaze_limit_lower_x_ctrl = WheelSpinCtrl(self.window, initial=-7, min=-45, max=0, size=wx.Size(50, -1))
+        self.gaze_limit_lower_x_ctrl = WheelSpinCtrl(
+            self.window, initial=-7, min=-45, max=0, size=wx.Size(50, -1)
+        )
         self.gaze_limit_lower_x_ctrl.SetToolTip(gaze_limit_lower_x_tooltip)
         self.gaze_sizer.Add(self.gaze_limit_lower_x_ctrl, 0, wx.ALL, 3)
 
         # --------------
-        gaze_ratio_y_tooltip = __("目線キーフレで設定する横方向の値の大きさ。\n値が大きいほど、目線を大きく動かすようになります。")
+        gaze_ratio_y_tooltip = __(
+            "目線キーフレで設定する横方向の値の大きさ。\n値が大きいほど、目線を大きく動かすようになります。"
+        )
 
-        self.gaze_ratio_y_title_ctrl = wx.StaticText(self.window, wx.ID_ANY, __("横振り幅"), wx.DefaultPosition, wx.DefaultSize, 0)
+        self.gaze_ratio_y_title_ctrl = wx.StaticText(
+            self.window,
+            wx.ID_ANY,
+            __("横振り幅"),
+            wx.DefaultPosition,
+            wx.DefaultSize,
+            0,
+        )
         self.gaze_ratio_y_title_ctrl.SetToolTip(gaze_ratio_y_tooltip)
         self.gaze_sizer.Add(self.gaze_ratio_y_title_ctrl, 0, wx.ALL, 3)
 
-        self.gaze_ratio_y_ctrl = WheelSpinCtrlDouble(self.window, initial=0.7, min=0.5, max=1.5, inc=0.01, size=wx.Size(55, -1))
+        self.gaze_ratio_y_ctrl = WheelSpinCtrlDouble(
+            self.window, initial=0.7, min=0.5, max=1.5, inc=0.01, size=wx.Size(55, -1)
+        )
         self.gaze_ratio_y_ctrl.SetToolTip(gaze_ratio_y_tooltip)
         self.gaze_sizer.Add(self.gaze_ratio_y_ctrl, 0, wx.ALL, 3)
 
         # --------------
-        gaze_limit_upper_y_tooltip = __("目線キーフレで設定する横方向の値の上限（向かって左側）。\n上限を超えた回転量になった場合、上限までしか動かしません。")
+        gaze_limit_upper_y_tooltip = __(
+            "目線キーフレで設定する横方向の値の上限（向かって左側）。\n上限を超えた回転量になった場合、上限までしか動かしません。"
+        )
 
-        self.gaze_limit_upper_y_title_ctrl = wx.StaticText(self.window, wx.ID_ANY, __("横上限"), wx.DefaultPosition, wx.DefaultSize, 0)
+        self.gaze_limit_upper_y_title_ctrl = wx.StaticText(
+            self.window, wx.ID_ANY, __("横上限"), wx.DefaultPosition, wx.DefaultSize, 0
+        )
         self.gaze_limit_upper_y_title_ctrl.SetToolTip(gaze_limit_upper_y_tooltip)
         self.gaze_sizer.Add(self.gaze_limit_upper_y_title_ctrl, 0, wx.ALL, 3)
 
-        self.gaze_limit_upper_y_ctrl = WheelSpinCtrl(self.window, initial=10, min=0, max=45, size=wx.Size(55, -1))
+        self.gaze_limit_upper_y_ctrl = WheelSpinCtrl(
+            self.window, initial=10, min=0, max=45, size=wx.Size(55, -1)
+        )
         self.gaze_limit_upper_y_ctrl.SetToolTip(gaze_limit_upper_y_tooltip)
         self.gaze_sizer.Add(self.gaze_limit_upper_y_ctrl, 0, wx.ALL, 3)
 
         # --------------
-        gaze_limit_lower_y_tooltip = __("目線キーフレで設定する横方向の値の下限（向かって右側）。\n下限を超えた回転量になった場合、下限までしか動かしません。")
+        gaze_limit_lower_y_tooltip = __(
+            "目線キーフレで設定する横方向の値の下限（向かって右側）。\n下限を超えた回転量になった場合、下限までしか動かしません。"
+        )
 
-        self.gaze_limit_lower_y_title_ctrl = wx.StaticText(self.window, wx.ID_ANY, __("横下限"), wx.DefaultPosition, wx.DefaultSize, 0)
+        self.gaze_limit_lower_y_title_ctrl = wx.StaticText(
+            self.window, wx.ID_ANY, __("横下限"), wx.DefaultPosition, wx.DefaultSize, 0
+        )
         self.gaze_limit_lower_y_title_ctrl.SetToolTip(gaze_limit_lower_y_tooltip)
         self.gaze_sizer.Add(self.gaze_limit_lower_y_title_ctrl, 0, wx.ALL, 3)
 
-        self.gaze_limit_lower_y_ctrl = WheelSpinCtrl(self.window, initial=-10, min=-45, max=0, size=wx.Size(55, -1))
+        self.gaze_limit_lower_y_ctrl = WheelSpinCtrl(
+            self.window, initial=-10, min=-45, max=0, size=wx.Size(55, -1)
+        )
         self.gaze_limit_lower_y_ctrl.SetToolTip(gaze_limit_lower_y_tooltip)
         self.gaze_sizer.Add(self.gaze_limit_lower_y_ctrl, 0, wx.ALL, 3)
 
         # --------------
-        gaze_reset_tooltip = __("目線をリセットするキーフレ間隔\n値が小さいほど、目線を細かくリセットします")
+        gaze_reset_tooltip = __(
+            "目線をリセットするキーフレ間隔\n値が小さいほど、目線を細かくリセットします"
+        )
 
-        self.gaze_reset_title_ctrl = wx.StaticText(self.window, wx.ID_ANY, __("リセット"), wx.DefaultPosition, wx.DefaultSize, 0)
+        self.gaze_reset_title_ctrl = wx.StaticText(
+            self.window,
+            wx.ID_ANY,
+            __("リセット"),
+            wx.DefaultPosition,
+            wx.DefaultSize,
+            0,
+        )
         self.gaze_reset_title_ctrl.SetToolTip(gaze_reset_tooltip)
         self.gaze_sizer.Add(self.gaze_reset_title_ctrl, 0, wx.ALL, 3)
 
-        self.gaze_reset_ctrl = WheelSpinCtrl(self.window, initial=12, min=5, max=30, size=wx.Size(50, -1))
+        self.gaze_reset_ctrl = WheelSpinCtrl(
+            self.window, initial=12, min=5, max=30, size=wx.Size(50, -1)
+        )
         self.gaze_reset_ctrl.SetToolTip(gaze_reset_tooltip)
         self.gaze_sizer.Add(self.gaze_reset_ctrl, 0, wx.ALL, 3)
 
         # --------------
-        gaze_blink_tooltip = __("目線の上下に合わせたまばたきモーフを追加する際の補正係数")
+        gaze_blink_tooltip = __(
+            "目線の上下に合わせたまばたきモーフを追加する際の補正係数"
+        )
 
-        self.gaze_blink_title_ctrl = wx.StaticText(self.window, wx.ID_ANY, __("まばたき係数"), wx.DefaultPosition, wx.DefaultSize, 0)
+        self.gaze_blink_title_ctrl = wx.StaticText(
+            self.window,
+            wx.ID_ANY,
+            __("まばたき係数"),
+            wx.DefaultPosition,
+            wx.DefaultSize,
+            0,
+        )
         self.gaze_blink_title_ctrl.SetToolTip(gaze_blink_tooltip)
         self.gaze_sizer.Add(self.gaze_blink_title_ctrl, 0, wx.ALL, 3)
 
-        self.gaze_blink_ctrl = WheelSpinCtrlDouble(self.window, initial=0.2, min=0.0, max=1.0, inc=0.01, size=wx.Size(55, -1))
+        self.gaze_blink_ctrl = WheelSpinCtrlDouble(
+            self.window, initial=0.2, min=0.0, max=1.0, inc=0.01, size=wx.Size(55, -1)
+        )
         self.gaze_blink_ctrl.SetToolTip(gaze_blink_tooltip)
         self.gaze_sizer.Add(self.gaze_blink_ctrl, 0, wx.ALL, 3)
 

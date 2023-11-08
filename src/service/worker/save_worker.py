@@ -16,7 +16,9 @@ __ = logger.get_text
 
 
 class SaveWorker(BaseWorker):
-    def __init__(self, frame: BaseFrame, panel: BasePanel, result_event: wx.Event) -> None:
+    def __init__(
+        self, frame: BaseFrame, panel: BasePanel, result_event: wx.Event
+    ) -> None:
         super().__init__(frame, result_event)
         self.panel = panel
 
@@ -30,10 +32,16 @@ class SaveWorker(BaseWorker):
         if not self.panel.output_motion_ctrl.data:
             raise MApplicationException("出力用モーションデータが生成されていません")
 
-        if not self.panel.output_motion_ctrl.path or not os.path.exists(os.path.dirname(self.panel.output_motion_ctrl.path)):
-            logger.warning("出力ファイルパスが有効なパスではないため、デフォルトの出力ファイルパスを再設定します。")
+        if not self.panel.output_motion_ctrl.path or not os.path.exists(
+            os.path.dirname(self.panel.output_motion_ctrl.path)
+        ):
+            logger.warning(
+                "出力ファイルパスが有効なパスではないため、デフォルトの出力ファイルパスを再設定します。"
+            )
             self.panel.create_output_path()
-            os.makedirs(os.path.dirname(self.panel.output_motion_ctrl.path), exist_ok=True)
+            os.makedirs(
+                os.path.dirname(self.panel.output_motion_ctrl.path), exist_ok=True
+            )
 
         logger.info("モーション出力開始", decoration=MLogger.Decoration.BOX)
 
@@ -43,13 +51,23 @@ class SaveWorker(BaseWorker):
             self.panel.output_motion_ctrl.path,
         )
 
-        logger.info("*** モーション出力成功 ***\n出力先: {f}", f=self.panel.output_motion_ctrl.path, decoration=MLogger.Decoration.BOX)
+        logger.info(
+            "*** モーション出力成功 ***\n出力先: {f}",
+            f=self.panel.output_motion_ctrl.path,
+            decoration=MLogger.Decoration.BOX,
+        )
 
     def execute_sub(self, model_name: str, output_motion: VmdMotion):
-        if not self.panel.output_motion_ctrl.path or not os.path.exists(os.path.dirname(self.panel.output_motion_ctrl.path)):
-            logger.warning("出力ファイルパスが有効なパスではないため、デフォルトの出力ファイルパスを再設定します。")
+        if not self.panel.output_motion_ctrl.path or not os.path.exists(
+            os.path.dirname(self.panel.output_motion_ctrl.path)
+        ):
+            logger.warning(
+                "出力ファイルパスが有効なパスではないため、デフォルトの出力ファイルパスを再設定します。"
+            )
             self.panel.create_output_path()
-            os.makedirs(os.path.dirname(self.panel.output_motion_ctrl.path), exist_ok=True)
+            os.makedirs(
+                os.path.dirname(self.panel.output_motion_ctrl.path), exist_ok=True
+            )
 
         logger.info("モーション出力開始", decoration=MLogger.Decoration.BOX)
 
@@ -59,9 +77,16 @@ class SaveWorker(BaseWorker):
             self.panel.output_motion_ctrl.path,
         )
 
-        logger.info("*** モーション出力成功 ***\n出力先: {f}", f=self.panel.output_motion_ctrl.path, decoration=MLogger.Decoration.BOX)
+        logger.info(
+            "*** モーション出力成功 ***\n出力先: {f}",
+            f=self.panel.output_motion_ctrl.path,
+            decoration=MLogger.Decoration.BOX,
+        )
 
     def output_log(self):
-        output_log_path = os.path.join(get_root_dir(), f"{os.path.basename(self.panel.output_motion_ctrl.path)}_save.log")
+        output_log_path = os.path.join(
+            get_root_dir(),
+            f"{os.path.basename(self.panel.output_motion_ctrl.path)}_save.log",
+        )
         # 出力されたメッセージを全部出力
         self.panel.console_ctrl.text_ctrl.SaveFile(filename=output_log_path)

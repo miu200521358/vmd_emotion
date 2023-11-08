@@ -4,7 +4,6 @@ from multiprocessing import freeze_support
 
 import numpy as np
 import wx
-
 from mlib.core.logger import LoggingMode, MLogger
 
 APP_NAME = "VmdEmotion"
@@ -17,7 +16,7 @@ if __name__ == "__main__":
     try:
         # Windowsマルチプロセス対策
         freeze_support()
-    except:
+    except Exception:
         pass
 
     # 引数の取得
@@ -32,7 +31,12 @@ if __name__ == "__main__":
 
     # ロガーの初期化
     MLogger.initialize(
-        args.lang, os.path.dirname(os.path.abspath(__file__)), LoggingMode(args.log_mode), level=args.verbose, is_out_log=args.out_log
+        lang=args.lang,
+        root_dir=os.path.dirname(os.path.abspath(__file__)),
+        version_name=f"{APP_NAME} {VERSION_NAME}",
+        mode=LoggingMode(args.log_mode),
+        level=args.verbose,
+        is_out_log=args.out_log,
     )
 
     from mlib.utils.file_utils import get_path
@@ -41,7 +45,9 @@ if __name__ == "__main__":
     # アプリの起動
     app = wx.App(False)
     icon = wx.Icon(get_path("resources/logo.ico"), wx.BITMAP_TYPE_ICO)
-    frame = MainFrame(app, f"{APP_NAME} {VERSION_NAME}", wx.Size(1100, 880), args.is_saving)
+    frame = MainFrame(
+        app, f"{APP_NAME} {VERSION_NAME}", wx.Size(1100, 880), args.is_saving
+    )
     frame.SetIcon(icon)
     frame.Show(True)
     app.MainLoop()

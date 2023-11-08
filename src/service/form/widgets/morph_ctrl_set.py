@@ -13,7 +13,9 @@ __ = logger.get_text
 
 
 class MorphCtrlSet:
-    def __init__(self, frame: BaseFrame, panel: BasePanel, window: wx.ScrolledWindow) -> None:
+    def __init__(
+        self, frame: BaseFrame, panel: BasePanel, window: wx.ScrolledWindow
+    ) -> None:
         self.frame = frame
         self.panel = panel
         self.window = window
@@ -22,8 +24,17 @@ class MorphCtrlSet:
 
         self.sizer = wx.BoxSizer(wx.HORIZONTAL)
 
-        self.morph_title_ctrl = wx.StaticText(self.window, wx.ID_ANY, __("モーフ置換設定"), wx.DefaultPosition, wx.DefaultSize, 0)
-        self.morph_title_ctrl.SetToolTip(__("ツールで生成するモーフ名をモデルに合わせて変更できます"))
+        self.morph_title_ctrl = wx.StaticText(
+            self.window,
+            wx.ID_ANY,
+            __("モーフ置換設定"),
+            wx.DefaultPosition,
+            wx.DefaultSize,
+            0,
+        )
+        self.morph_title_ctrl.SetToolTip(
+            __("ツールで生成するモーフ名をモデルに合わせて変更できます")
+        )
         self.sizer.Add(self.morph_title_ctrl, 0, wx.ALL, 3)
 
         self.below_eyebrow_morph_ctrl = MorphReplaceSet(self.panel, self.window, self)
@@ -36,16 +47,34 @@ class MorphCtrlSet:
         self.sizer.Add(self.smile_morph_ctrl.sizer, 0, wx.ALL, 3)
 
         # 顔アップ
-        self.async_sub_window_btn = wx.Button(self.window, wx.ID_ANY, __("プレビュー"), wx.DefaultPosition, wx.Size(80, -1))
-        self.async_sub_window_btn.SetToolTip(__("選択されたモーフによる変化をサブウィンドウで確認できます"))
-        self.async_sub_window_btn.Bind(wx.EVT_BUTTON, self.panel.on_show_morph_sub_window)
+        self.async_sub_window_btn = wx.Button(
+            self.window,
+            wx.ID_ANY,
+            __("プレビュー"),
+            wx.DefaultPosition,
+            wx.Size(80, -1),
+        )
+        self.async_sub_window_btn.SetToolTip(
+            __("選択されたモーフによる変化をサブウィンドウで確認できます")
+        )
+        self.async_sub_window_btn.Bind(
+            wx.EVT_BUTTON, self.panel.on_show_morph_sub_window
+        )
         self.sizer.Add(self.async_sub_window_btn, 0, wx.ALL, 3)
 
     def initialize(self, morphs: Morphs) -> None:
         self.morphs = morphs
-        self.below_eyebrow_morph_ctrl.initialize("下", morphs.filter_by_panel(MorphPanel.EYEBROW_LOWER_LEFT) if morphs else [])
-        self.blink_morph_ctrl.initialize("まばたき", morphs.filter_by_panel(MorphPanel.EYE_UPPER_LEFT) if morphs else [])
-        self.smile_morph_ctrl.initialize("笑い", morphs.filter_by_panel(MorphPanel.EYE_UPPER_LEFT) if morphs else [])
+        self.below_eyebrow_morph_ctrl.initialize(
+            "下",
+            morphs.filter_by_panel(MorphPanel.EYEBROW_LOWER_LEFT) if morphs else [],
+        )
+        self.blink_morph_ctrl.initialize(
+            "まばたき",
+            morphs.filter_by_panel(MorphPanel.EYE_UPPER_LEFT) if morphs else [],
+        )
+        self.smile_morph_ctrl.initialize(
+            "笑い", morphs.filter_by_panel(MorphPanel.EYE_UPPER_LEFT) if morphs else []
+        )
 
     def Enable(self, enable: bool) -> None:
         self.below_eyebrow_morph_ctrl.Enable(enable)
@@ -55,7 +84,9 @@ class MorphCtrlSet:
 
 
 class MorphReplaceSet:
-    def __init__(self, panel: BasePanel, window: wx.Window, morph_set: "MorphCtrlSet") -> None:
+    def __init__(
+        self, panel: BasePanel, window: wx.Window, morph_set: "MorphCtrlSet"
+    ) -> None:
         self.panel = panel
         self.window = window
         self.morph_set = morph_set
@@ -70,7 +101,9 @@ class MorphReplaceSet:
             wx.Size(60, -1),
             wx.TE_READONLY | wx.BORDER_NONE | wx.WANTS_CHARS,
         )
-        self.original_name_ctrl.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DLIGHT))
+        self.original_name_ctrl.SetBackgroundColour(
+            wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DLIGHT)
+        )
         self.original_name_ctrl.SetToolTip(__("ツール側で生成するモーフ名"))
         self.sizer.Add(self.original_name_ctrl, 0, wx.ALL, 3)
 
@@ -92,7 +125,9 @@ class MorphReplaceSet:
             wx.Size(150, -1),
             choices=[],
         )
-        self.choice_ctrl.SetToolTip(__("置き換えモーフの選択肢\n表示枠に記載されているモーフのみが選択可能です"))
+        self.choice_ctrl.SetToolTip(
+            __("置き換えモーフの選択肢\n表示枠に記載されているモーフのみが選択可能です")
+        )
         self.choice_ctrl.Bind(wx.EVT_CHOICE, self.on_change_morph)
         self.sizer.Add(self.choice_ctrl, 0, wx.ALL, 3)
 
@@ -103,7 +138,9 @@ class MorphReplaceSet:
             wx.DefaultPosition,
             wx.Size(20, -1),
         )
-        self.right_btn_ctrl.SetToolTip(__("モーフ組み合わせプルダウンの選択肢を下方向に移動できます。"))
+        self.right_btn_ctrl.SetToolTip(
+            __("モーフ組み合わせプルダウンの選択肢を下方向に移動できます。")
+        )
         self.right_btn_ctrl.Bind(wx.EVT_BUTTON, self.on_change_right)
         self.sizer.Add(self.right_btn_ctrl, 0, wx.ALL, 3)
 
@@ -116,7 +153,11 @@ class MorphReplaceSet:
 
         if original_morph_name in self.morph_names:
             # 元々のモーフ名と同じモーフがある場合、設定
-            self.choice_ctrl.SetSelection([i for i, m in enumerate(self.morph_names) if m == original_morph_name][0])
+            self.choice_ctrl.SetSelection(
+                [i for i, m in enumerate(self.morph_names) if m == original_morph_name][
+                    0
+                ]
+            )
 
     def on_change_right(self, event: wx.Event) -> None:
         selection = self.choice_ctrl.GetSelection()
@@ -142,4 +183,6 @@ class MorphReplaceSet:
 
     def GetValue(self) -> str:
         # 選択肢が空の場合は元々のモーフ名を代用する
-        return self.choice_ctrl.GetStringSelection() or self.original_name_ctrl.GetValue()
+        return (
+            self.choice_ctrl.GetStringSelection() or self.original_name_ctrl.GetValue()
+        )

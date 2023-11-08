@@ -26,7 +26,9 @@ class MorphSubCanvasWindow(BaseFrame):
         **kw,
     ):
         super().__init__(parent.app, title, size, *args, parent=parent, **kw)
-        self.panel = MorphSubCanvasPanel(self, look_at_model_names, look_at_bone_names, morph_names)
+        self.panel = MorphSubCanvasPanel(
+            self, look_at_model_names, look_at_bone_names, morph_names
+        )
 
         self.Bind(wx.EVT_CLOSE, self.on_close)
 
@@ -46,7 +48,14 @@ class MorphSubCanvasPanel(AsyncSubCanvasPanel):
         *args,
         **kw,
     ):
-        super().__init__(frame, look_at_model_names, look_at_bone_names, *args, canvas_height_ratio=0.7, **kw)
+        super().__init__(
+            frame,
+            look_at_model_names,
+            look_at_bone_names,
+            *args,
+            canvas_height_ratio=0.7,
+            **kw,
+        )
         self.morph_names = morph_names
 
         self.morph_choice_ctrl = wx.Choice(
@@ -56,7 +65,9 @@ class MorphSubCanvasPanel(AsyncSubCanvasPanel):
             wx.Size(300, -1),
             choices=morph_names,
         )
-        self.morph_choice_ctrl.SetToolTip(__("置き換えモーフの選択肢\n表示枠に記載されているモーフのみが選択可能です"))
+        self.morph_choice_ctrl.SetToolTip(
+            __("置き換えモーフの選択肢\n表示枠に記載されているモーフのみが選択可能です")
+        )
         if len(morph_names):
             self.morph_choice_ctrl.SetSelection(0)
         self.morph_choice_ctrl.Bind(wx.EVT_CHOICE, self.on_change_morph)

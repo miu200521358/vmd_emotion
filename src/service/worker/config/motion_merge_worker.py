@@ -15,7 +15,9 @@ __ = logger.get_text
 
 
 class MotionMergeWorker(BaseWorker):
-    def __init__(self, frame: BaseFrame, panel: BasePanel, result_event: wx.Event) -> None:
+    def __init__(
+        self, frame: BaseFrame, panel: BasePanel, result_event: wx.Event
+    ) -> None:
         super().__init__(frame, result_event)
         self.panel = panel
 
@@ -27,16 +29,23 @@ class MotionMergeWorker(BaseWorker):
             if motion.valid():
                 motion_paths.append(motion.path)
 
-        output_motion = MotionMergeUsecase().merge(motion_paths, self.panel.output_motion_ctrl.path)
+        output_motion = MotionMergeUsecase().merge(
+            motion_paths, self.panel.output_motion_ctrl.path
+        )
 
         fnos: list[int] = []
         self.result_data = motion, output_motion, fnos
 
-        SaveWorker(self.frame, self.panel, self.result_func).execute_sub("統合データ", output_motion)
+        SaveWorker(self.frame, self.panel, self.result_func).execute_sub(
+            "統合データ", output_motion
+        )
 
         logger.info("モーション統合完了", decoration=MLogger.Decoration.BOX)
 
     def output_log(self):
-        output_log_path = os.path.join(get_root_dir(), f"{os.path.basename(self.panel.output_motion_ctrl.path)}_merge.log")
+        output_log_path = os.path.join(
+            get_root_dir(),
+            f"{os.path.basename(self.panel.output_motion_ctrl.path)}_merge.log",
+        )
         # 出力されたメッセージを全部出力
         self.panel.console_ctrl.text_ctrl.SaveFile(filename=output_log_path)

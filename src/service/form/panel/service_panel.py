@@ -126,7 +126,9 @@ class ServicePanel(NotebookPanel):
             __(f"{self.exec_label}停止"),
             self.exec,
             250,
-            __(f"生成した{self.emotion_type}をVMDモーションデータとして出力します\nデータ読み込み後、クリックできるようになります"),
+            __(
+                f"生成した{self.emotion_type}をVMDモーションデータとして出力します\nデータ読み込み後、クリックできるようになります"
+            ),
         )
         self.btn_sizer.Add(self.exec_btn_ctrl, 0, wx.ALL, 3)
 
@@ -182,16 +184,24 @@ class ServicePanel(NotebookPanel):
                 self.Enable(False)
                 self.EnableLoad(True)
 
-                logger.warning("人物モデル欄に有効なパスが設定されていない為、読み込みを中断します。")
+                logger.warning(
+                    "人物モデル欄に有効なパスが設定されていない為、読み込みを中断します。"
+                )
                 return
             if self.motion_ctrl and not self.motion_ctrl.valid():
                 self.Enable(False)
                 self.EnableLoad(True)
 
-                logger.warning("モーション欄に有効なパスが設定されていない為、読み込みを中断します。")
+                logger.warning(
+                    "モーション欄に有効なパスが設定されていない為、読み込みを中断します。"
+                )
                 return
 
-            if self.model_ctrl and self.motion_ctrl and (not self.model_ctrl.data or not self.motion_ctrl.data):
+            if (
+                self.model_ctrl
+                and self.motion_ctrl
+                and (not self.model_ctrl.data or not self.motion_ctrl.data)
+            ):
                 # 読み込む
                 self.save_histories()
 
@@ -203,7 +213,9 @@ class ServicePanel(NotebookPanel):
     def on_preparer_result(
         self,
         result: bool,
-        data: Optional[tuple[PmxModel, PmxModel, VmdMotion, VmdMotion, dict[str, float]]],
+        data: Optional[
+            tuple[PmxModel, PmxModel, VmdMotion, VmdMotion, dict[str, float]]
+        ],
         elapsed_time: str,
     ):
         MLogger.console_handler = ConsoleHandler(self.console_ctrl.text_ctrl)
@@ -237,7 +249,10 @@ class ServicePanel(NotebookPanel):
         logger.debug("出力モーション生成")
 
         if not (self.model_ctrl.data and self.motion_ctrl.data):
-            logger.warning("モデルデータもしくはモーションデータが正常に配置できませんでした", decoration=MLogger.Decoration.BOX)
+            logger.warning(
+                "モデルデータもしくはモーションデータが正常に配置できませんでした",
+                decoration=MLogger.Decoration.BOX,
+            )
             return
 
         self.blink_conditions = blink_conditions
@@ -270,7 +285,12 @@ class ServicePanel(NotebookPanel):
         self.save_histories_on_exec()
         self.service_worker.start()
 
-    def on_exec_result(self, result: bool, data: tuple[VmdMotion, VmdMotion, list[int]], elapsed_time: str):
+    def on_exec_result(
+        self,
+        result: bool,
+        data: tuple[VmdMotion, VmdMotion, list[int]],
+        elapsed_time: str,
+    ):
         self.frame.running_worker = False
         MLogger.console_handler = ConsoleHandler(self.console_ctrl.text_ctrl)
         self.console_ctrl.write(f"\n----------------\n{elapsed_time}")
@@ -316,9 +336,18 @@ class ServicePanel(NotebookPanel):
         self.EnableLoad(True)
 
     def create_output_path(self) -> None:
-        if self.model_ctrl and self.motion_ctrl and self.model_ctrl.valid() and self.motion_ctrl.valid():
-            model_dir_path, model_file_name, model_file_ext = separate_path(self.model_ctrl.path)
-            motion_dir_path, motion_file_name, motion_file_ext = separate_path(self.motion_ctrl.path)
+        if (
+            self.model_ctrl
+            and self.motion_ctrl
+            and self.model_ctrl.valid()
+            and self.motion_ctrl.valid()
+        ):
+            model_dir_path, model_file_name, model_file_ext = separate_path(
+                self.model_ctrl.path
+            )
+            motion_dir_path, motion_file_name, motion_file_ext = separate_path(
+                self.motion_ctrl.path
+            )
             motion_file_names = motion_file_name.split("_")
             self.model_ctrl.read_name()
             self.motion_ctrl.read_name()

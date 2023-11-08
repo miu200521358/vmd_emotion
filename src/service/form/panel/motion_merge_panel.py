@@ -89,12 +89,24 @@ class MotionMergePanel(ServicePanel):
     def _initialize_service_ui_header(self) -> None:
         self.header_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
-        self.add_ctrl = wx.Button(self, wx.ID_ANY, __("統合モーション追加"), wx.DefaultPosition, wx.Size(120, -1))
+        self.add_ctrl = wx.Button(
+            self,
+            wx.ID_ANY,
+            __("統合モーション追加"),
+            wx.DefaultPosition,
+            wx.Size(120, -1),
+        )
         self.add_ctrl.SetToolTip(__("統合対象モーションを追加できます"))
         self.add_ctrl.Bind(wx.EVT_BUTTON, self.on_add_motion)
         self.header_sizer.Add(self.add_ctrl, 0, wx.ALL, 3)
 
-        self.clear_ctrl = wx.Button(self, wx.ID_ANY, __("統合モーション全削除"), wx.DefaultPosition, wx.Size(120, -1))
+        self.clear_ctrl = wx.Button(
+            self,
+            wx.ID_ANY,
+            __("統合モーション全削除"),
+            wx.DefaultPosition,
+            wx.Size(120, -1),
+        )
         self.clear_ctrl.SetToolTip(__("全ての統合対象モーションを削除できます"))
         self.clear_ctrl.Bind(wx.EVT_BUTTON, self.on_clear_motion)
         self.header_sizer.Add(self.clear_ctrl, 0, wx.ALL, 3)
@@ -117,7 +129,9 @@ class MotionMergePanel(ServicePanel):
             __(f"{self.exec_label}停止"),
             self.exec,
             250,
-            __("統合モーションをVMDモーションデータとして出力します\nモーションを1件でも指定した後、クリックできるようになります"),
+            __(
+                "統合モーションをVMDモーションデータとして出力します\nモーションを1件でも指定した後、クリックできるようになります"
+            ),
         )
         self.btn_sizer.Add(self.exec_btn_ctrl, 0, wx.ALL, 3)
 
@@ -131,7 +145,12 @@ class MotionMergePanel(ServicePanel):
             condition.Enable(enable)
         # 統合可能なモーションが2件以上あれば保存可能
         if self.exec_btn_ctrl:
-            self.exec_btn_ctrl.Enable(1 < len([motion_ctrl for motion_ctrl in self.motions if motion_ctrl.valid()]))
+            self.exec_btn_ctrl.Enable(
+                1
+                < len(
+                    [motion_ctrl for motion_ctrl in self.motions if motion_ctrl.valid()]
+                )
+            )
 
     def save_histories_on_exec(self) -> None:
         for motion_ctrl in self.motions:
@@ -170,7 +189,9 @@ class MotionMergePanel(ServicePanel):
         if 1 > len(self.motions) or not self.motions[0].valid():
             return
 
-        motion_dir_path, motion_file_name, motion_file_ext = separate_path(self.motions[0].path)
+        motion_dir_path, motion_file_name, motion_file_ext = separate_path(
+            self.motions[0].path
+        )
         self.output_motion_ctrl.path = os.path.join(
             motion_dir_path,
             f"{motion_file_name}_{__('統合')}_{datetime.now():%Y%m%d_%H%M%S}{motion_file_ext}",

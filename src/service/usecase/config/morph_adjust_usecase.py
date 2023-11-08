@@ -54,15 +54,27 @@ class MorphAdjustUsecase:
         interpolation.end.x = end_x
         interpolation.end.y = end_y
 
-        logger.info("モーフ条件調整[{m}]", m=morph_name, decoration=MLogger.Decoration.LINE)
+        logger.info(
+            "モーフ条件調整[{m}]", m=morph_name, decoration=MLogger.Decoration.LINE
+        )
 
         for n, mf in enumerate(motion.morphs[morph_name]):
-            logger.count("モーフ条件調整[{m}]", m=morph_name, index=n, total_index_count=len(motion.morphs[morph_name]), display_block=10000)
-            _, ry, _ = evaluate(interpolation, min_v, int((mf.ratio + abs(min_ratio)) * 100), max_v)
+            logger.count(
+                "モーフ条件調整[{m}]",
+                m=morph_name,
+                index=n,
+                total_index_count=len(motion.morphs[morph_name]),
+                display_block=10000,
+            )
+            _, ry, _ = evaluate(
+                interpolation, min_v, int((mf.ratio + abs(min_ratio)) * 100), max_v
+            )
             r = mf.ratio * ry * ratio
 
             mname = replace_morph_name if replace_morph_name else mf.name
-            prev_index, now_index, next_index = output_motion.morphs[mname].range_indexes(mf.index)
+            prev_index, now_index, next_index = output_motion.morphs[
+                mname
+            ].range_indexes(mf.index)
             new_mf = VmdMorphFrame(now_index, mname, r)
 
             if prev_index == now_index == next_index:

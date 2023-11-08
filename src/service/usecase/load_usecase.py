@@ -23,7 +23,9 @@ class LoadUsecase:
             "右目",
             "両目",
         }
-        missing_bone_names = sorted(list(required_bone_names - set(original_model.bones.names)))
+        missing_bone_names = sorted(
+            list(required_bone_names - set(original_model.bones.names))
+        )
         if missing_bone_names:
             raise MApplicationException(
                 "モデルの表情生成に必要なボーンが不足しています。\n不足ボーン: {b}",

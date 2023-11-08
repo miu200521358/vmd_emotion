@@ -19,7 +19,15 @@ __ = logger.get_text
 
 
 class BezierDialog(wx.Dialog):
-    def __init__(self, parent: BaseFrame, condition_ctrl: MorphConditionCtrl, title: str, size: wx.Size, *args, **kw):
+    def __init__(
+        self,
+        parent: BaseFrame,
+        condition_ctrl: MorphConditionCtrl,
+        title: str,
+        size: wx.Size,
+        *args,
+        **kw,
+    ):
         super().__init__(parent, *args, title=title, size=size, **kw)
         self.condition_ctrl = condition_ctrl
         self.bezier_panel = BezierDialogPanel(self)
@@ -32,10 +40,18 @@ class BezierDialog(wx.Dialog):
         event.Skip()
 
     def on_ok(self, event: wx.Event):
-        self.condition_ctrl.start_x_ctrl.SetValue(self.bezier_panel.bezier_ctrl.start_x_ctrl.GetValue())
-        self.condition_ctrl.start_y_ctrl.SetValue(self.bezier_panel.bezier_ctrl.start_y_ctrl.GetValue())
-        self.condition_ctrl.end_x_ctrl.SetValue(self.bezier_panel.bezier_ctrl.end_x_ctrl.GetValue())
-        self.condition_ctrl.end_y_ctrl.SetValue(self.bezier_panel.bezier_ctrl.end_y_ctrl.GetValue())
+        self.condition_ctrl.start_x_ctrl.SetValue(
+            self.bezier_panel.bezier_ctrl.start_x_ctrl.GetValue()
+        )
+        self.condition_ctrl.start_y_ctrl.SetValue(
+            self.bezier_panel.bezier_ctrl.start_y_ctrl.GetValue()
+        )
+        self.condition_ctrl.end_x_ctrl.SetValue(
+            self.bezier_panel.bezier_ctrl.end_x_ctrl.GetValue()
+        )
+        self.condition_ctrl.end_y_ctrl.SetValue(
+            self.bezier_panel.bezier_ctrl.end_y_ctrl.GetValue()
+        )
 
         self.on_close(event)
 
@@ -51,7 +67,9 @@ class BezierDialogPanel(BasePanel):
 
         super().__init__(frame)
 
-        self.bezier_ctrl = BezierCtrl(frame, self, wx.Size(160, 160), change_event=self.on_change_ratio)
+        self.bezier_ctrl = BezierCtrl(
+            frame, self, wx.Size(160, 160), change_event=self.on_change_ratio
+        )
         self.root_sizer.Add(self.bezier_ctrl.sizer, 0, wx.ALL, 3)
         self.canvas = PmxCanvas(self, True)
         self.root_sizer.Add(self.canvas, 0, wx.ALL, 3)
@@ -77,17 +95,23 @@ class BezierDialogPanel(BasePanel):
             "resources/icon/visibility_on.png",
             wx.Size(15, 15),
             self.on_view_bezier,
-            __("ボタンをOFFにすると元々のモーフの変化量による変化に切り替えられます\nもう一度ONにすると、補間曲線に準拠した変化量になります"),
+            __(
+                "ボタンをOFFにすると元々のモーフの変化量による変化に切り替えられます\nもう一度ONにすると、補間曲線に準拠した変化量になります"
+            ),
         )
         self.view_off_ctrl.SetBackgroundColour(self.active_background_color)
         self.btn_sizer.Add(self.view_off_ctrl, 0, wx.ALL, 3)
 
-        self.ok_ctrl = wx.Button(self, wx.ID_ANY, "OK", wx.DefaultPosition, wx.Size(60, -1))
+        self.ok_ctrl = wx.Button(
+            self, wx.ID_ANY, "OK", wx.DefaultPosition, wx.Size(60, -1)
+        )
         self.ok_ctrl.SetToolTip(__("補間曲線をメイン画面に適用します"))
         self.ok_ctrl.Bind(wx.EVT_BUTTON, self.frame.on_ok)
         self.btn_sizer.Add(self.ok_ctrl, 0, wx.ALL, 3)
 
-        self.cancel_ctrl = wx.Button(self, wx.ID_ANY, "Cancel", wx.DefaultPosition, wx.Size(60, -1))
+        self.cancel_ctrl = wx.Button(
+            self, wx.ID_ANY, "Cancel", wx.DefaultPosition, wx.Size(60, -1)
+        )
         self.cancel_ctrl.SetToolTip(__("補間曲線を適用せずにウィンドウを閉じます"))
         self.cancel_ctrl.Bind(wx.EVT_BUTTON, self.frame.on_cancel)
         self.btn_sizer.Add(self.cancel_ctrl, 0, wx.ALL, 3)
@@ -102,25 +126,52 @@ class BezierDialogPanel(BasePanel):
         interpolation.end.y = self.bezier_ctrl.end_y_ctrl.GetValue()
 
         min_v = 0
-        max_v = int(self.frame.condition_ctrl.max_ctrl.GetValue() * 100) + int(abs(self.frame.condition_ctrl.min_ctrl.GetValue()) * 100)
+        max_v = int(self.frame.condition_ctrl.max_ctrl.GetValue() * 100) + int(
+            abs(self.frame.condition_ctrl.min_ctrl.GetValue()) * 100
+        )
 
         _, ry, _ = evaluate(
-            interpolation, min_v, int((self.slider.GetValue() + abs(self.frame.condition_ctrl.min_ctrl.GetValue())) * 100), max_v
+            interpolation,
+            min_v,
+            int(
+                (
+                    self.slider.GetValue()
+                    + abs(self.frame.condition_ctrl.min_ctrl.GetValue())
+                )
+                * 100
+            ),
+            max_v,
         )
-        ratio = self.slider.GetValue() * ry if self.is_view_bezier else self.slider.GetValue()
+        ratio = (
+            self.slider.GetValue() * ry
+            if self.is_view_bezier
+            else self.slider.GetValue()
+        )
 
         motion = VmdMotion()
-        motion.append_morph_frame(VmdMorphFrame(0, self.frame.condition_ctrl.morph_name_ctrl.choice_ctrl.GetStringSelection(), ratio))
+        motion.append_morph_frame(
+            VmdMorphFrame(
+                0,
+                self.frame.condition_ctrl.morph_name_ctrl.choice_ctrl.GetStringSelection(),
+                ratio,
+            )
+        )
         self.canvas.model_sets[0].motion = motion
         self.canvas.change_motion(event, is_bone_deform=False)
 
     def on_view_bezier(self, event: wx.Event):
         if not self.is_view_bezier:
             self.view_off_ctrl.SetBackgroundColour(self.active_background_color)
-            self.view_off_ctrl.SetBitmap(self.view_off_ctrl.create_bitmap("resources/icon/visibility_on.png"))
+            self.view_off_ctrl.SetBitmap(
+                self.view_off_ctrl.create_bitmap("resources/icon/visibility_on.png")
+            )
         else:
-            self.view_off_ctrl.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE))
-            self.view_off_ctrl.SetBitmap(self.view_off_ctrl.create_bitmap("resources/icon/visibility_off.png"))
+            self.view_off_ctrl.SetBackgroundColour(
+                wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE)
+            )
+            self.view_off_ctrl.SetBitmap(
+                self.view_off_ctrl.create_bitmap("resources/icon/visibility_off.png")
+            )
         self.is_view_bezier = not self.is_view_bezier
         self.on_change_ratio(event)
 

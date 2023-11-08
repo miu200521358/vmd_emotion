@@ -124,27 +124,48 @@ class ServiceCanvasPanel(CanvasPanel):
         frame_tooltip = "\n".join(
             [
                 __("モーションの任意のキーフレの結果の表示や再生ができます"),
-                __(f"{self.emotion_type}を生成した後、スライダー上でホイールを動かすと生成キーフレにジャンプできます"),
+                __(
+                    f"{self.emotion_type}を生成した後、スライダー上でホイールを動かすと生成キーフレにジャンプできます"
+                ),
             ]
         )
 
-        self.frame_title_ctrl = wx.StaticText(self.window, wx.ID_ANY, __("モーション"), wx.DefaultPosition, wx.DefaultSize, 0)
+        self.frame_title_ctrl = wx.StaticText(
+            self.window,
+            wx.ID_ANY,
+            __("モーション"),
+            wx.DefaultPosition,
+            wx.DefaultSize,
+            0,
+        )
         self.frame_title_ctrl.SetToolTip(frame_tooltip)
         self.play_sizer.Add(self.frame_title_ctrl, 0, wx.ALL, 3)
 
         # スライダー
         self.frame_slider = FrameSliderCtrl(
-            self.window, border=3, size=wx.Size(760, -1), tooltip=frame_tooltip, change_event=self.on_frame_change
+            self.window,
+            border=3,
+            size=wx.Size(760, -1),
+            tooltip=frame_tooltip,
+            change_event=self.on_frame_change,
         )
         self.play_sizer.Add(self.frame_slider.sizer, 0, wx.ALL, 0)
 
-        self.play_ctrl = wx.Button(self.window, wx.ID_ANY, __("再生"), wx.DefaultPosition, wx.Size(80, -1))
-        self.play_ctrl.SetToolTip(__("モーションを再生することができます（ただし重いです）"))
+        self.play_ctrl = wx.Button(
+            self.window, wx.ID_ANY, __("再生"), wx.DefaultPosition, wx.Size(80, -1)
+        )
+        self.play_ctrl.SetToolTip(
+            __("モーションを再生することができます（ただし重いです）")
+        )
         self.play_ctrl.Bind(wx.EVT_BUTTON, self.on_play)
         self.play_sizer.Add(self.play_ctrl, 0, wx.ALL, 3)
 
-        self.sub_window_ctrl = wx.Button(self.window, wx.ID_ANY, __("顔アップ"), wx.DefaultPosition, wx.Size(80, -1))
-        self.sub_window_ctrl.SetToolTip(__("顔アップ固定のプレビューをサブウィンドウで確認出来ます"))
+        self.sub_window_ctrl = wx.Button(
+            self.window, wx.ID_ANY, __("顔アップ"), wx.DefaultPosition, wx.Size(80, -1)
+        )
+        self.sub_window_ctrl.SetToolTip(
+            __("顔アップ固定のプレビューをサブウィンドウで確認出来ます")
+        )
         self.sub_window_ctrl.Bind(wx.EVT_BUTTON, self.on_show_sync_window)
         self.play_sizer.Add(self.sub_window_ctrl, 0, wx.ALL, 3)
 
@@ -180,7 +201,9 @@ class ServiceCanvasPanel(CanvasPanel):
             __(f"{self.exec_label}停止"),
             self.exec,
             250,
-            __(f"生成した{self.emotion_type}をVMDモーションデータとして出力します\nデータ読み込み後、クリックできるようになります"),
+            __(
+                f"生成した{self.emotion_type}をVMDモーションデータとして出力します\nデータ読み込み後、クリックできるようになります"
+            ),
         )
         self.btn_sizer.Add(self.exec_btn_ctrl, 0, wx.ALL, 3)
 
@@ -201,13 +224,17 @@ class ServiceCanvasPanel(CanvasPanel):
                 self.Enable(False)
                 self.EnableLoad(True)
 
-                logger.warning("人物モデル欄に有効なパスが設定されていない為、読み込みを中断します。")
+                logger.warning(
+                    "人物モデル欄に有効なパスが設定されていない為、読み込みを中断します。"
+                )
                 return
             if not self.motion_ctrl.valid():
                 self.Enable(False)
                 self.EnableLoad(True)
 
-                logger.warning("モーション欄に有効なパスが設定されていない為、読み込みを中断します。")
+                logger.warning(
+                    "モーション欄に有効なパスが設定されていない為、読み込みを中断します。"
+                )
                 return
 
             if not self.model_ctrl.data or not self.motion_ctrl.data:
@@ -222,8 +249,12 @@ class ServiceCanvasPanel(CanvasPanel):
             else:
                 # 既に読み取りが完了していたらそのまま表示
                 self.canvas.model_sets[0].motion = self.motion_ctrl.data
-                self.canvas.look_at_center = self.canvas.shader.INITIAL_LOOK_AT_CENTER_POSITION.copy()
-                self.canvas.vertical_degrees = self.canvas.shader.INITIAL_VERTICAL_DEGREES
+                self.canvas.look_at_center = (
+                    self.canvas.shader.INITIAL_LOOK_AT_CENTER_POSITION.copy()
+                )
+                self.canvas.vertical_degrees = (
+                    self.canvas.shader.INITIAL_VERTICAL_DEGREES
+                )
                 self.canvas.change_motion(event, model_index=0)
                 self.canvas.Refresh()
 
@@ -236,7 +267,9 @@ class ServiceCanvasPanel(CanvasPanel):
     def on_preparer_result(
         self,
         result: bool,
-        data: Optional[tuple[PmxModel, PmxModel, VmdMotion, VmdMotion, dict[str, float]]],
+        data: Optional[
+            tuple[PmxModel, PmxModel, VmdMotion, VmdMotion, dict[str, float]]
+        ],
         elapsed_time: str,
     ):
         MLogger.console_handler = ConsoleHandler(self.console_ctrl.text_ctrl)
@@ -272,7 +305,10 @@ class ServiceCanvasPanel(CanvasPanel):
         logger.debug("出力モーション生成")
 
         if not (self.model_ctrl.data and self.motion_ctrl.data):
-            logger.warning("モデルデータもしくはモーションデータが正常に配置できませんでした", decoration=MLogger.Decoration.BOX)
+            logger.warning(
+                "モデルデータもしくはモーションデータが正常に配置できませんでした",
+                decoration=MLogger.Decoration.BOX,
+            )
             return
 
         self.frame_slider.SetMaxFrameNo(motion.max_fno)
@@ -281,7 +317,9 @@ class ServiceCanvasPanel(CanvasPanel):
         self.blink_conditions = blink_conditions
         logger.debug("blink_conditions")
 
-        self.canvas.append_model_set(self.model_ctrl.data, self.motion_ctrl.data, bone_alpha=0.0)
+        self.canvas.append_model_set(
+            self.model_ctrl.data, self.motion_ctrl.data, bone_alpha=0.0
+        )
         self.canvas.Refresh()
 
         self.Enable(False)
@@ -298,7 +336,12 @@ class ServiceCanvasPanel(CanvasPanel):
         self.exec_btn_ctrl.Enable(True)
         self.service_worker.start()
 
-    def on_exec_result(self, result: bool, data: tuple[VmdMotion, VmdMotion, list[int]], elapsed_time: str):
+    def on_exec_result(
+        self,
+        result: bool,
+        data: tuple[VmdMotion, VmdMotion, list[int]],
+        elapsed_time: str,
+    ):
         self.frame.running_worker = False
         MLogger.console_handler = ConsoleHandler(self.console_ctrl.text_ctrl)
         self.console_ctrl.write(f"\n----------------\n{elapsed_time}")
@@ -313,7 +356,11 @@ class ServiceCanvasPanel(CanvasPanel):
         if 1 < len(fnos):
             self.frame_slider.SetKeyFrames(fnos)
         else:
-            key_fnos = [fno for bone_name in self.key_names for fno in output_motion.bones[bone_name].indexes]
+            key_fnos = [
+                fno
+                for bone_name in self.key_names
+                for fno in output_motion.bones[bone_name].indexes
+            ]
             if key_fnos:
                 self.frame_slider.SetKeyFrames(sorted(set(key_fnos)))
 
@@ -344,8 +391,12 @@ class ServiceCanvasPanel(CanvasPanel):
 
     def create_output_path(self) -> None:
         if self.model_ctrl.valid() and self.motion_ctrl.valid():
-            model_dir_path, model_file_name, model_file_ext = separate_path(self.model_ctrl.path)
-            motion_dir_path, motion_file_name, motion_file_ext = separate_path(self.motion_ctrl.path)
+            model_dir_path, model_file_name, model_file_ext = separate_path(
+                self.model_ctrl.path
+            )
+            motion_dir_path, motion_file_name, motion_file_ext = separate_path(
+                self.motion_ctrl.path
+            )
             motion_file_names = motion_file_name.split("_")
             self.model_ctrl.read_name()
             self.motion_ctrl.read_name()

@@ -24,10 +24,17 @@ __ = logger.get_text
 
 
 class MainFrame(NotebookFrame):
-    def __init__(self, app: wx.App, title: str, size: wx.Size, is_saving: bool, *args, **kw) -> None:
+    def __init__(
+        self, app: wx.App, title: str, size: wx.Size, is_saving: bool, *args, **kw
+    ) -> None:
         super().__init__(
             app,
-            history_keys=["model_pmx", "motion_vmd", "morph_condition", "motion_condition"],
+            history_keys=[
+                "model_pmx",
+                "motion_vmd",
+                "morph_condition",
+                "motion_condition",
+            ],
             title=title,
             size=size,
             is_saving=is_saving,
@@ -81,16 +88,25 @@ class MainFrame(NotebookFrame):
                 model: Optional[PmxModel] = panel.model_ctrl.data
                 if model:
                     self.morph_sub_window.panel.canvas.clear_model_set()
-                    self.morph_sub_window.panel.canvas.append_model_set(model, VmdMotion(), bone_alpha=0.0, is_sub=True)
+                    self.morph_sub_window.panel.canvas.append_model_set(
+                        model, VmdMotion(), bone_alpha=0.0, is_sub=True
+                    )
                     self.morph_sub_window.panel.canvas.vertical_degrees = 5
-                    self.morph_sub_window.panel.canvas.look_at_center = model.bones["頭"].position.copy()
+                    self.morph_sub_window.panel.canvas.look_at_center = model.bones[
+                        "頭"
+                    ].position.copy()
                     self.morph_sub_window.panel.canvas.Refresh()
                     self.morph_sub_window.panel.canvas.camera_offset_position.y = (
                         model.bones["頭"].position.y - MShader.INITIAL_CAMERA_POSITION_Y
                     )
 
                 frame_x, frame_y = self.GetPosition()
-                self.morph_sub_window.SetPosition(wx.Point(max(0, frame_x + self.GetSize().GetWidth() + 10), max(0, frame_y + 30)))
+                self.morph_sub_window.SetPosition(
+                    wx.Point(
+                        max(0, frame_x + self.GetSize().GetWidth() + 10),
+                        max(0, frame_y + 30),
+                    )
+                )
 
                 self.morph_sub_window.Show()
             elif self.morph_sub_window.IsShown():
@@ -101,7 +117,12 @@ class MainFrame(NotebookFrame):
         model: Optional[PmxModel] = panel.model_ctrl.data
         if not self.morph_sub_window and model:
             self.morph_sub_window = MorphSubCanvasWindow(
-                self, __("モーフプレビュー"), self.morph_sub_window_size, [model.name], [model.bones.names], model.morphs.names
+                self,
+                __("モーフプレビュー"),
+                self.morph_sub_window_size,
+                [model.name],
+                [model.bones.names],
+                model.morphs.names,
             )
 
     def show_sync_sub_window(self, event: wx.Event, panel: BasePanel) -> None:
@@ -118,11 +139,18 @@ class MainFrame(NotebookFrame):
                 model: Optional[PmxModel] = panel.model_ctrl.data
                 if model:
                     self.sync_sub_window.panel.canvas.clear_model_set()
-                    self.sync_sub_window.panel.canvas.append_model_set(model, VmdMotion(), bone_alpha=0.0, is_sub=True)
+                    self.sync_sub_window.panel.canvas.append_model_set(
+                        model, VmdMotion(), bone_alpha=0.0, is_sub=True
+                    )
                     self.sync_sub_window.panel.canvas.Refresh()
 
                 frame_x, frame_y = self.GetPosition()
-                self.sync_sub_window.SetPosition(wx.Point(max(0, frame_x - self.sync_sub_window_size.x - 10), max(0, frame_y)))
+                self.sync_sub_window.SetPosition(
+                    wx.Point(
+                        max(0, frame_x - self.sync_sub_window_size.x - 10),
+                        max(0, frame_y),
+                    )
+                )
 
                 self.sync_sub_window.Show()
             elif self.sync_sub_window.IsShown():
@@ -133,7 +161,12 @@ class MainFrame(NotebookFrame):
         model: Optional[PmxModel] = panel.model_ctrl.data
         if not self.sync_sub_window and model:
             self.sync_sub_window = SyncSubCanvasWindow(
-                self, panel.canvas, __("アッププレビュー"), self.sync_sub_window_size, [model.name], [model.bones.names]
+                self,
+                panel.canvas,
+                __("アッププレビュー"),
+                self.sync_sub_window_size,
+                [model.name],
+                [model.bones.names],
             )
 
     def on_change_tab(self, event: wx.Event) -> None:
@@ -146,7 +179,9 @@ class MainFrame(NotebookFrame):
         # 処理が終わっている場合、動かしてOK
         self.selected_tab_idx = self.notebook.GetSelection()
 
-    def show_bezier_dialog(self, event: wx.Event, panel: BasePanel, condition: MorphConditionCtrl) -> None:
+    def show_bezier_dialog(
+        self, event: wx.Event, panel: BasePanel, condition: MorphConditionCtrl
+    ) -> None:
         panel.Enable(False)
         self.create_bezier_dialog(panel, condition)
 
@@ -160,23 +195,40 @@ class MainFrame(NotebookFrame):
             if not self.bezier_dialog.IsShown():
                 model: Optional[PmxModel] = panel.model_ctrl.data
                 if model:
-                    self.bezier_dialog.bezier_panel.bezier_ctrl.start_x_ctrl.SetValue(condition.start_x_ctrl.GetValue())
-                    self.bezier_dialog.bezier_panel.bezier_ctrl.start_y_ctrl.SetValue(condition.start_y_ctrl.GetValue())
-                    self.bezier_dialog.bezier_panel.bezier_ctrl.end_x_ctrl.SetValue(condition.end_x_ctrl.GetValue())
-                    self.bezier_dialog.bezier_panel.bezier_ctrl.end_y_ctrl.SetValue(condition.end_y_ctrl.GetValue())
+                    self.bezier_dialog.bezier_panel.bezier_ctrl.start_x_ctrl.SetValue(
+                        condition.start_x_ctrl.GetValue()
+                    )
+                    self.bezier_dialog.bezier_panel.bezier_ctrl.start_y_ctrl.SetValue(
+                        condition.start_y_ctrl.GetValue()
+                    )
+                    self.bezier_dialog.bezier_panel.bezier_ctrl.end_x_ctrl.SetValue(
+                        condition.end_x_ctrl.GetValue()
+                    )
+                    self.bezier_dialog.bezier_panel.bezier_ctrl.end_y_ctrl.SetValue(
+                        condition.end_y_ctrl.GetValue()
+                    )
                     self.bezier_dialog.bezier_panel.slider.SetValue(0.0)
 
                     self.bezier_dialog.bezier_panel.canvas.clear_model_set()
-                    self.bezier_dialog.bezier_panel.canvas.append_model_set(model, VmdMotion(), bone_alpha=0.0, is_sub=True)
+                    self.bezier_dialog.bezier_panel.canvas.append_model_set(
+                        model, VmdMotion(), bone_alpha=0.0, is_sub=True
+                    )
                     self.bezier_dialog.bezier_panel.canvas.vertical_degrees = 5
-                    self.bezier_dialog.bezier_panel.canvas.look_at_center = model.bones["頭"].position.copy()
+                    self.bezier_dialog.bezier_panel.canvas.look_at_center = model.bones[
+                        "頭"
+                    ].position.copy()
                     self.bezier_dialog.bezier_panel.canvas.camera_offset_position.y = (
                         model.bones["頭"].position.y - MShader.INITIAL_CAMERA_POSITION_Y
                     )
                     self.bezier_dialog.bezier_panel.canvas.Refresh()
 
                     frame_x, frame_y = self.GetPosition()
-                    self.bezier_dialog.SetPosition(wx.Point(max(0, frame_x + self.GetSize().GetWidth() + 10), max(0, frame_y + 30)))
+                    self.bezier_dialog.SetPosition(
+                        wx.Point(
+                            max(0, frame_x + self.GetSize().GetWidth() + 10),
+                            max(0, frame_y + 30),
+                        )
+                    )
 
                     self.bezier_dialog.ShowModal()
 
@@ -185,6 +237,10 @@ class MainFrame(NotebookFrame):
         panel.Enable(True)
         event.Skip()
 
-    def create_bezier_dialog(self, panel: BasePanel, condition: MorphConditionCtrl) -> None:
+    def create_bezier_dialog(
+        self, panel: BasePanel, condition: MorphConditionCtrl
+    ) -> None:
         if not self.bezier_dialog:
-            self.bezier_dialog = BezierDialog(self, condition, __("補間曲線プレビュー"), self.bezier_dialog_size)
+            self.bezier_dialog = BezierDialog(
+                self, condition, __("補間曲線プレビュー"), self.bezier_dialog_size
+            )
