@@ -1077,3 +1077,9 @@ msgstr "*** Stop processing ***"
 
 msgid "初期姿勢計算"
 msgstr "Initial Attitude Calculation"
+
+msgid "[{v}]\n予期せぬエラーが発生しました"
+msgstr "[{v}]\nUnexpected error occurred"
+
+msgid "[{v}]\n処理が継続できないため、中断しました\n----------------\n{m}"
+msgstr "[{v}]\nProcessing cannot continue, it has been aborted\n----------------\n{m}"

@@ -1077,3 +1077,9 @@ msgstr "***停止处理***"
 
 msgid "初期姿勢計算"
 msgstr "初始姿态计算"
+
+msgid "[{v}]\n予期せぬエラーが発生しました"
+msgstr "[{v}]/nUnexpected error occurred"
+
+msgid "[{v}]\n処理が継続できないため、中断しました\n----------------\n{m}"
+msgstr "[{v}]\nProcessing cannot continue and has been aborted,\n----------------\n{m}"
