@@ -3,7 +3,6 @@ from datetime import datetime
 from typing import Iterable
 
 import wx
-
 from mlib.core.logger import MLogger
 from mlib.service.form.notebook_frame import NotebookFrame
 from mlib.service.form.widgets.console_ctrl import ConsoleCtrl
@@ -38,7 +37,7 @@ class MotionMergePanel(ServicePanel):
         return []
 
     def create_service_worker(self) -> MotionMergeWorker:
-        return MotionMergeWorker(self.frame, self, self.on_exec_result)
+        return MotionMergeWorker(self, self.on_exec_result)
 
     def _initialize_ui(self) -> None:
         self.header_sizer = wx.BoxSizer(wx.VERTICAL)
@@ -129,9 +128,7 @@ class MotionMergePanel(ServicePanel):
             __(f"{self.exec_label}停止"),
             self.exec,
             250,
-            __(
-                "統合モーションをVMDモーションデータとして出力します\nモーションを1件でも指定した後、クリックできるようになります"
-            ),
+            __("統合モーションをVMDモーションデータとして出力します\nモーションを1件でも指定した後、クリックできるようになります"),
         )
         self.btn_sizer.Add(self.exec_btn_ctrl, 0, wx.ALL, 3)
 

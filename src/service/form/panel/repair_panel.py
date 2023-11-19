@@ -2,7 +2,6 @@ import os
 from typing import Iterable
 
 import wx
-
 from mlib.core.logger import MLogger
 from mlib.service.form.notebook_frame import NotebookFrame
 from mlib.service.form.widgets.spin_ctrl import WheelSpinCtrlDouble
@@ -30,7 +29,7 @@ class RepairPanel(ServiceCanvasPanel):
         return []
 
     def create_service_worker(self) -> MorphRepairWorker:
-        return MorphRepairWorker(self.frame, self, self.on_exec_result)
+        return MorphRepairWorker(self, self.on_exec_result)
 
     def _initialize_service_ui(self) -> None:
         self.repair_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -46,24 +45,16 @@ class RepairPanel(ServiceCanvasPanel):
         self.repair_title_ctrl.SetToolTip(
             "\n".join(
                 [
-                    __(
-                        "モデルとモーフの組み合わせによって破綻している箇所がある場合、補正します"
-                    ),
-                    __(
-                        "表情生成後、出力vmdファイル名の末尾にrepairを付けてvmd出力します"
-                    ),
-                    __(
-                        "補正キーフレだけ出力するため、元となった表情モーションの後に読み込んでください"
-                    ),
+                    __("モデルとモーフの組み合わせによって破綻している箇所がある場合、補正します"),
+                    __("表情生成後、出力vmdファイル名の末尾にrepairを付けてvmd出力します"),
+                    __("補正キーフレだけ出力するため、元となった表情モーションの後に読み込んでください"),
                 ]
             )
         )
         self.repair_sizer.Add(self.repair_title_ctrl, 0, wx.ALL, 3)
 
         # --------------
-        check_morph_tooltip = __(
-            "チェック対象となるモーフの合計変形量\n値が小さいほど、少しのモーフ変形量でもチェックを行います"
-        )
+        check_morph_tooltip = __("チェック対象となるモーフの合計変形量\n値が小さいほど、少しのモーフ変形量でもチェックを行います")
 
         self.check_morph_title_ctrl = wx.StaticText(
             self.window,
@@ -83,9 +74,7 @@ class RepairPanel(ServiceCanvasPanel):
         self.repair_sizer.Add(self.check_morph_threshold_ctrl, 0, wx.ALL, 3)
 
         # --------------
-        repair_morph_tooltip = __(
-            "モーフが破綻している場合の補正係数\n値が小さいほど、補正が強くかかります"
-        )
+        repair_morph_tooltip = __("モーフが破綻している場合の補正係数\n値が小さいほど、補正が強くかかります")
 
         self.repair_morph_title_ctrl = wx.StaticText(
             self.window,

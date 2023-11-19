@@ -1,11 +1,9 @@
 import os
 
 import wx
-
 from mlib.core.logger import MLogger
 from mlib.pmx.pmx_collection import PmxModel
 from mlib.service.base_worker import BaseWorker
-from mlib.service.form.base_frame import BaseFrame
 from mlib.service.form.base_panel import BasePanel
 from mlib.utils.file_utils import get_root_dir
 from mlib.vmd.vmd_collection import VmdMotion
@@ -17,11 +15,8 @@ __ = logger.get_text
 
 
 class MorphRepairWorker(BaseWorker):
-    def __init__(
-        self, frame: BaseFrame, panel: BasePanel, result_event: wx.Event
-    ) -> None:
-        super().__init__(frame, result_event)
-        self.panel = panel
+    def __init__(self, panel: BasePanel, result_event: wx.Event) -> None:
+        super().__init__(panel, result_event)
 
     def thread_execute(self):
         model: PmxModel = self.panel.model_ctrl.data
@@ -38,9 +33,7 @@ class MorphRepairWorker(BaseWorker):
 
         self.result_data = motion, output_motion, fnos
 
-        SaveWorker(self.frame, self.panel, self.result_func).execute_sub(
-            model.name, output_motion
-        )
+        SaveWorker(self.panel, self.result_func).execute_sub(model.name, output_motion)
 
         logger.info("モーフ破綻補正完了", decoration=MLogger.Decoration.BOX)
 

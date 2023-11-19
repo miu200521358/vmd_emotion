@@ -1,11 +1,9 @@
 import os
 
 import wx
-
 from mlib.core.exception import MApplicationException
 from mlib.core.logger import MLogger
 from mlib.service.base_worker import BaseWorker
-from mlib.service.form.base_frame import BaseFrame
 from mlib.service.form.base_panel import BasePanel
 from mlib.utils.file_utils import get_root_dir
 from mlib.vmd.vmd_collection import VmdMotion
@@ -16,11 +14,8 @@ __ = logger.get_text
 
 
 class SaveWorker(BaseWorker):
-    def __init__(
-        self, frame: BaseFrame, panel: BasePanel, result_event: wx.Event
-    ) -> None:
-        super().__init__(frame, result_event)
-        self.panel = panel
+    def __init__(self, panel: BasePanel, result_event: wx.Event) -> None:
+        super().__init__(panel, result_event)
 
     def thread_execute(self):
         if self.panel.model_ctrl and not self.panel.model_ctrl.data:
@@ -35,9 +30,7 @@ class SaveWorker(BaseWorker):
         if not self.panel.output_motion_ctrl.path or not os.path.exists(
             os.path.dirname(self.panel.output_motion_ctrl.path)
         ):
-            logger.warning(
-                "出力ファイルパスが有効なパスではないため、デフォルトの出力ファイルパスを再設定します。"
-            )
+            logger.warning("出力ファイルパスが有効なパスではないため、デフォルトの出力ファイルパスを再設定します。")
             self.panel.create_output_path()
             os.makedirs(
                 os.path.dirname(self.panel.output_motion_ctrl.path), exist_ok=True
@@ -61,9 +54,7 @@ class SaveWorker(BaseWorker):
         if not self.panel.output_motion_ctrl.path or not os.path.exists(
             os.path.dirname(self.panel.output_motion_ctrl.path)
         ):
-            logger.warning(
-                "出力ファイルパスが有効なパスではないため、デフォルトの出力ファイルパスを再設定します。"
-            )
+            logger.warning("出力ファイルパスが有効なパスではないため、デフォルトの出力ファイルパスを再設定します。")
             self.panel.create_output_path()
             os.makedirs(
                 os.path.dirname(self.panel.output_motion_ctrl.path), exist_ok=True

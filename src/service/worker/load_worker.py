@@ -2,12 +2,10 @@ import os
 from typing import Optional
 
 import wx
-
 from mlib.core.logger import MLogger
 from mlib.pmx.pmx_collection import PmxModel
 from mlib.service.base_worker import BaseWorker
 from mlib.service.form.base_panel import BasePanel
-from mlib.service.form.notebook_frame import NotebookFrame
 from mlib.utils.file_utils import get_root_dir
 from mlib.vmd.vmd_collection import VmdMotion
 from service.usecase.load_usecase import LoadUsecase
@@ -17,11 +15,8 @@ __ = logger.get_text
 
 
 class LoadWorker(BaseWorker):
-    def __init__(
-        self, frame: NotebookFrame, panel: BasePanel, result_event: wx.Event
-    ) -> None:
-        super().__init__(frame, result_event)
-        self.panel = panel
+    def __init__(self, panel: BasePanel, result_event: wx.Event) -> None:
+        super().__init__(panel, result_event)
 
     def thread_execute(self):
         model: Optional[PmxModel] = None

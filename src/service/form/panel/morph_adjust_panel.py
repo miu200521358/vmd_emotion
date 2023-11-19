@@ -2,7 +2,6 @@ import os
 from typing import Iterable, Optional
 
 import wx
-
 from mlib.core.logger import MLogger
 from mlib.pmx.pmx_collection import PmxModel
 from mlib.service.form.notebook_frame import NotebookFrame
@@ -36,7 +35,7 @@ class MorphAdjustPanel(ServicePanel):
         return []
 
     def create_service_worker(self) -> MorphAdjustWorker:
-        return MorphAdjustWorker(self.frame, self, self.on_exec_result)
+        return MorphAdjustWorker(self, self.on_exec_result)
 
     def _initialize_service_ui_header(self) -> None:
         self.header_sizer = wx.BoxSizer(wx.HORIZONTAL)

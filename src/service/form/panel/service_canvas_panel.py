@@ -3,7 +3,6 @@ from datetime import datetime
 from typing import Iterable, Optional
 
 import wx
-
 from mlib.core.logger import ConsoleHandler, MLogger
 from mlib.pmx.canvas import CanvasPanel
 from mlib.pmx.pmx_collection import PmxModel
@@ -26,7 +25,7 @@ class ServiceCanvasPanel(CanvasPanel):
         super().__init__(frame, tab_idx, 1.0, 0.4, *args, **kw)
         self.enabled_save = False
 
-        self.load_worker = LoadWorker(frame, self, self.on_preparer_result)
+        self.load_worker = LoadWorker(self, self.on_preparer_result)
         self.load_worker.panel = self
 
         self.service_worker = self.create_service_worker()
@@ -63,7 +62,7 @@ class ServiceCanvasPanel(CanvasPanel):
         return []
 
     def create_service_worker(self) -> BaseWorker:
-        return BaseWorker(self.frame, self.on_exec_result)
+        return BaseWorker(self.on_exec_result)
 
     def _initialize_ui(self) -> None:
         self.window = wx.ScrolledWindow(
@@ -124,9 +123,7 @@ class ServiceCanvasPanel(CanvasPanel):
         frame_tooltip = "\n".join(
             [
                 __("モーションの任意のキーフレの結果の表示や再生ができます"),
-                __(
-                    f"{self.emotion_type}を生成した後、スライダー上でホイールを動かすと生成キーフレにジャンプできます"
-                ),
+                __(f"{self.emotion_type}を生成した後、スライダー上でホイールを動かすと生成キーフレにジャンプできます"),
             ]
         )
 
@@ -154,18 +151,14 @@ class ServiceCanvasPanel(CanvasPanel):
         self.play_ctrl = wx.Button(
             self.window, wx.ID_ANY, __("再生"), wx.DefaultPosition, wx.Size(80, -1)
         )
-        self.play_ctrl.SetToolTip(
-            __("モーションを再生することができます（ただし重いです）")
-        )
+        self.play_ctrl.SetToolTip(__("モーションを再生することができます（ただし重いです）"))
         self.play_ctrl.Bind(wx.EVT_BUTTON, self.on_play)
         self.play_sizer.Add(self.play_ctrl, 0, wx.ALL, 3)
 
         self.sub_window_ctrl = wx.Button(
             self.window, wx.ID_ANY, __("顔アップ"), wx.DefaultPosition, wx.Size(80, -1)
         )
-        self.sub_window_ctrl.SetToolTip(
-            __("顔アップ固定のプレビューをサブウィンドウで確認出来ます")
-        )
+        self.sub_window_ctrl.SetToolTip(__("顔アップ固定のプレビューをサブウィンドウで確認出来ます"))
         self.sub_window_ctrl.Bind(wx.EVT_BUTTON, self.on_show_sync_window)
         self.play_sizer.Add(self.sub_window_ctrl, 0, wx.ALL, 3)
 
@@ -201,9 +194,7 @@ class ServiceCanvasPanel(CanvasPanel):
             __(f"{self.exec_label}停止"),
             self.exec,
             250,
-            __(
-                f"生成した{self.emotion_type}をVMDモーションデータとして出力します\nデータ読み込み後、クリックできるようになります"
-            ),
+            __(f"生成した{self.emotion_type}をVMDモーションデータとして出力します\nデータ読み込み後、クリックできるようになります"),
         )
         self.btn_sizer.Add(self.exec_btn_ctrl, 0, wx.ALL, 3)
 
@@ -224,17 +215,13 @@ class ServiceCanvasPanel(CanvasPanel):
                 self.Enable(False)
                 self.EnableLoad(True)
 
-                logger.warning(
-                    "人物モデル欄に有効なパスが設定されていない為、読み込みを中断します。"
-                )
+                logger.warning("人物モデル欄に有効なパスが設定されていない為、読み込みを中断します。")
                 return
             if not self.motion_ctrl.valid():
                 self.Enable(False)
                 self.EnableLoad(True)
 
-                logger.warning(
-                    "モーション欄に有効なパスが設定されていない為、読み込みを中断します。"
-                )
+                logger.warning("モーション欄に有効なパスが設定されていない為、読み込みを中断します。")
                 return
 
             if not self.model_ctrl.data or not self.motion_ctrl.data:

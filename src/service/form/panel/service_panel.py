@@ -3,7 +3,6 @@ from datetime import datetime
 from typing import Iterable, Optional
 
 import wx
-
 from mlib.core.logger import ConsoleHandler, MLogger
 from mlib.pmx.pmx_collection import PmxModel
 from mlib.service.base_worker import BaseWorker
@@ -24,7 +23,7 @@ class ServicePanel(NotebookPanel):
     def __init__(self, frame: NotebookFrame, tab_idx: int, *args, **kw) -> None:
         super().__init__(frame, tab_idx, *args, **kw)
 
-        self.load_worker = LoadWorker(frame, self, self.on_preparer_result)
+        self.load_worker = LoadWorker(self, self.on_preparer_result)
         self.load_worker.panel = self
 
         self.service_worker = self.create_service_worker()
@@ -61,7 +60,7 @@ class ServicePanel(NotebookPanel):
         return []
 
     def create_service_worker(self) -> BaseWorker:
-        return BaseWorker(self.frame, self.on_exec_result)
+        return BaseWorker(self.on_exec_result)
 
     def _create_file_set(self) -> None:
         self.model_ctrl = MPmxFilePickerCtrl(
@@ -126,9 +125,7 @@ class ServicePanel(NotebookPanel):
             __(f"{self.exec_label}停止"),
             self.exec,
             250,
-            __(
-                f"生成した{self.emotion_type}をVMDモーションデータとして出力します\nデータ読み込み後、クリックできるようになります"
-            ),
+            __(f"生成した{self.emotion_type}をVMDモーションデータとして出力します\nデータ読み込み後、クリックできるようになります"),
         )
         self.btn_sizer.Add(self.exec_btn_ctrl, 0, wx.ALL, 3)
 
@@ -184,17 +181,13 @@ class ServicePanel(NotebookPanel):
                 self.Enable(False)
                 self.EnableLoad(True)
 
-                logger.warning(
-                    "人物モデル欄に有効なパスが設定されていない為、読み込みを中断します。"
-                )
+                logger.warning("人物モデル欄に有効なパスが設定されていない為、読み込みを中断します。")
                 return
             if self.motion_ctrl and not self.motion_ctrl.valid():
                 self.Enable(False)
                 self.EnableLoad(True)
 
-                logger.warning(
-                    "モーション欄に有効なパスが設定されていない為、読み込みを中断します。"
-                )
+                logger.warning("モーション欄に有効なパスが設定されていない為、読み込みを中断します。")
                 return
 
             if (

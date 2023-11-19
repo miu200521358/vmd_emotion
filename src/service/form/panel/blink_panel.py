@@ -2,7 +2,6 @@ import os
 from typing import Iterable, Optional
 
 import wx
-
 from mlib.core.logger import MLogger
 from mlib.pmx.pmx_collection import PmxModel
 from mlib.service.form.notebook_frame import NotebookFrame
@@ -33,7 +32,7 @@ class BlinkPanel(ServiceCanvasPanel):
         return ("まばたき",)
 
     def create_service_worker(self) -> BlinkWorker:
-        return BlinkWorker(self.frame, self, self.on_exec_result)
+        return BlinkWorker(self, self.on_exec_result)
 
     def _initialize_service_ui(self) -> None:
         # --------------
@@ -53,9 +52,7 @@ class BlinkPanel(ServiceCanvasPanel):
             "\n".join(
                 [
                     __("頭などの動きに合わせてをまばたきを生成します"),
-                    __(
-                        "まばたき・下モーフを使用しますが、モデルに該当モーフがなく他で代用できる場合は置き換えてください"
-                    ),
+                    __("まばたき・下モーフを使用しますが、モデルに該当モーフがなく他で代用できる場合は置き換えてください"),
                 ]
             )
         )
