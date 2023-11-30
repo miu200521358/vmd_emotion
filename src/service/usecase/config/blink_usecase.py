@@ -2,7 +2,6 @@ import os
 from enum import Enum
 
 import numpy as np
-
 from mlib.core.interpolation import Interpolation, get_infections
 from mlib.core.logger import MLogger
 from mlib.core.math import MQuaternion, MVector2D, MVector3D
@@ -91,40 +90,33 @@ class BlinkUsecase:
                 display_block=100,
             )
             eye_global_direction_vector = eye_matrixes[
-                fno, "両目"
+                "両目", fno
             ].global_matrix * MVector3D(0, 0, -1)
             eye_vector = (
-                eye_global_direction_vector - eye_matrixes[fno, "両目"].position
+                eye_global_direction_vector - eye_matrixes["両目", fno].position
             ).normalized() * -1
             upper_ratio_ys.append(
-                eye_matrixes[fno, "上半身"].position.y
-                / model.bones["上半身"].position.y
+                eye_matrixes["上半身", fno].position.y / model.bones["上半身"].position.y
             )
             if 0 < kick_probability:
                 left_ankle_ys.append(
-                    eye_matrixes[fno, "左足首"].position.y
-                    / model.bones["左ひざ"].position.y
+                    eye_matrixes["左足首", fno].position.y / model.bones["左ひざ"].position.y
                 )
                 right_ankle_ys.append(
-                    eye_matrixes[fno, "右足首"].position.y
-                    / model.bones["右ひざ"].position.y
+                    eye_matrixes["右足首", fno].position.y / model.bones["右ひざ"].position.y
                 )
             if 0 < wrist_probability:
                 left_wrist_distance_ratios.append(
-                    eye_matrixes[fno, "左手首"].position.distance(
-                        eye_matrixes[fno, "両目"].position
+                    eye_matrixes["左手首", fno].position.distance(
+                        eye_matrixes["両目", fno].position
                     )
-                    / model.bones["左手首"].position.distance(
-                        model.bones["左ひじ"].position
-                    )
+                    / model.bones["左手首"].position.distance(model.bones["左ひじ"].position)
                 )
                 right_wrist_distance_ratios.append(
-                    eye_matrixes[fno, "右手首"].position.distance(
-                        eye_matrixes[fno, "両目"].position
+                    eye_matrixes["右手首", fno].position.distance(
+                        eye_matrixes["両目", fno].position
                     )
-                    / model.bones["右手首"].position.distance(
-                        model.bones["右ひじ"].position
-                    )
+                    / model.bones["右手首"].position.distance(model.bones["右ひじ"].position)
                 )
 
             if not prev_blink:
@@ -505,9 +497,7 @@ class BlinkUsecase:
                 f"まばたき[{weight}(DB:{is_double_before}, DA:{is_double_after})] start[{start_fno}], close[{close_fno}], "
                 + f"weight[{weight_fno}], open[{open_fno}], end[{end_fno}]"
             )
-            logger.info(
-                "-- まばたき生成 [キーフレ: {f}][種類: {t}]", f=weight_fno, t=blink_type
-            )
+            logger.info("-- まばたき生成 [キーフレ: {f}][種類: {t}]", f=weight_fno, t=blink_type)
 
             prev_fno = fno
             nums += 1

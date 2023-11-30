@@ -1,7 +1,6 @@
 import os
 
 import numpy as np
-
 from mlib.core.logger import MLogger
 from mlib.core.math import MMatrix4x4, MVector3D
 from mlib.pmx.pmx_collection import PmxModel
@@ -335,7 +334,7 @@ class MorphRepairUsecase:
                     ):
                         mat += (
                             morph_matrixes[
-                                0, model.bones[bone_index].name
+                                model.bones[bone_index].name, 0
                             ].local_matrix.vector
                             * bone_weight
                         )
@@ -377,7 +376,7 @@ class MorphRepairUsecase:
                             ):
                                 mat += (
                                     morph_matrixes[
-                                        0, model.bones[bone_index].name
+                                        model.bones[bone_index].name, 0
                                     ].local_matrix.vector
                                     * bone_weight
                                 )

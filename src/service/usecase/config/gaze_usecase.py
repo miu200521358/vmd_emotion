@@ -1,14 +1,13 @@
 import os
 
 import numpy as np
-from numpy.linalg import solve
-
 from mlib.core.interpolation import IP_MAX, create_interpolation, get_infections
 from mlib.core.logger import MLogger
 from mlib.core.math import MQuaternion, MVector2D, MVector3D, MVectorDict
 from mlib.pmx.pmx_collection import PmxModel
 from mlib.vmd.vmd_collection import VmdMotion
 from mlib.vmd.vmd_part import VmdBoneFrame, VmdMorphFrame
+from numpy.linalg import solve
 
 logger = MLogger(os.path.basename(__file__), level=1)
 __ = logger.get_text
@@ -65,11 +64,9 @@ class GazeUsecase:
                 total_index_count=len(eye_fnos),
                 display_block=100,
             )
-            eye_global_direction_vector = (
-                eye_matrixes[fno, "両目"].global_matrix * Z_AXIS
-            )
+            eye_global_direction_vector = eye_matrixes["両目", fno].global_matrix * Z_AXIS
             gaze_vector = (
-                eye_global_direction_vector - eye_matrixes[fno, "両目"].position
+                eye_global_direction_vector - eye_matrixes["両目", fno].position
             ).normalized()
 
             if not prev_gaze:
@@ -209,9 +206,7 @@ class GazeUsecase:
                     motion.append_bone_frame(now_before_reset_bf)
                     output_motion.append_bone_frame(now_before_reset_bf.copy())
 
-                    now_before_reset_mf = VmdMorphFrame(
-                        now_before_reset_fno, "まばたき"
-                    )
+                    now_before_reset_mf = VmdMorphFrame(now_before_reset_fno, "まばたき")
                     motion.append_morph_frame(now_before_reset_mf)
                     output_motion.append_morph_frame(now_before_reset_mf.copy())
 
@@ -273,7 +268,7 @@ class GazeUsecase:
                 "目線生成[{f}] 向き[{d}] 回転[{r}]",
                 f=fno,
                 d=infection_gaze_vector,
-                r=gaze_qq.to_euler_degrees_mmd(),
+                r=gaze_qq.to_euler_degrees().mmd,
             )
 
         # 最後に元に戻す ----------

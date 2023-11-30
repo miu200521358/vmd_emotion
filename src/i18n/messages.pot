@@ -1438,3 +1438,63 @@ msgstr ""
 
 msgid "[{v}]\n処理が継続できないため、中断しました\n----------------\n{m}"
 msgstr ""
+
+msgid "-- テクスチャデータ読み取り [{i} ({p:.2f}%)]"
+msgstr ""
+
+
+msgid "-- 表示枠データ読み取り [{i} ({p:.2f}%)]"
+msgstr ""
+
+
+msgid "-- 剛体データ読み取り [{i} ({p:.2f}%)]"
+msgstr ""
+
+
+msgid "-- ジョイントデータ読み取り [{i} ({p:.2f}%)]"
+msgstr ""
+
+
+msgid "-- IKデータ読み取り [{i} ({p:.2f}%)]"
+msgstr ""
+
+
+msgid "キーフレーム確認[{d}]"
+msgstr ""
+
+
+msgid "-- キーフレーム確認[{d}] [{i} ({p:.2f}%)]"
+msgstr ""
+
+
+msgid "ボーンモーフ計算[{d}]"
+msgstr ""
+
+
+msgid "ボーンモーション計算[{d}]"
+msgstr ""
+
+
+msgid "ボーン計算[{d}]"
+msgstr ""
+
+
+msgid "-- ボーン計算[{d}] [{i} ({p:.2f}%)]"
+msgstr ""
+
+
+msgid "ボーン行列計算[{d}]"
+msgstr ""
+
+
+msgid "ボーン変形行列リストアップ[{d}]"
+msgstr ""
+
+
+msgid "ボーン変形行列積[{d}]"
+msgstr ""
+
+
+msgid "-- ボーン変形行列積[{d}] [{i} ({p:.2f}%)]"
+msgstr ""
+
